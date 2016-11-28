@@ -13,6 +13,6 @@ $t = Test-ModuleManifest -Path "C:\Development\GitHub\PoShMon\PoShMon\src\0.1.0\
 
 $t
 
-$t.ExportedCommands
+$t.ExportedCommands.Keys
 
 #Remove-Module PoShMon
