@@ -20,7 +20,9 @@ Function Invoke-SPMonitoring
         [string[]]$MailToList,
         [string[]]$EventLogCodes = 'Critical',
         [string]$ConfigurationName = $null,
-        [bool]$SendEmail = $true
+        [bool]$SendEmail = $true,
+        [string]$MailFrom,
+        [string]$SMTPAddress
     )
 
     $emailBody = Get-EmailHeader "SharePoint Environment Monitoring Report"
@@ -80,7 +82,7 @@ Function Invoke-SPMonitoring
     } else {
         if ($SendEmail)
         {
-            Send-MailMessage -Subject "[PoshMon Monitoring] Monitoring Results" -Body $emailBody -BodyAsHtml -To $MailToList -From "SPMonitoring@maitlandgroup.co.za" -SmtpServer "ZAMGNTEXCH01.ZA.GROUP.COM"
+            Send-MailMessage -Subject "[PoshMon Monitoring] Monitoring Results" -Body $emailBody -BodyAsHtml -To $MailToList -From $MailFrom -SmtpServer $SMTPAddress
         } 
     }
 }

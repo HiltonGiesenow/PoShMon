@@ -28,7 +28,7 @@ Function Test-EventLogs
 {
     [CmdletBinding()]
     param (
-        [string[]]$ServerNames = ('ZAMGNTSPAPP1', 'ZAMGNTSPWEB1', 'ZAMGNTSPWEB2'),
+        [string[]]$ServerNames = @(),
         [int]$MinutesToScanHistory = 1440, # one day
         [string]$SeverityCode = 'Critical',
         [hashtable]$EventIDIgnoreList = @{}
@@ -173,11 +173,13 @@ Function Invoke-OSMonitoring
     Param(
         #[parameter(Mandatory=$true, HelpMessage=”Path to file”)]
         [int]$MinutesToScanHistory = 15,
-        [string[]]$ServerNames = ('ZAMGNTSPAPP1', 'ZAMGNTSPWEB1', 'ZAMGNTSPWEB2'),
-        [string[]]$MailToList = ("hilton@giesenow.com", "hilton.giesenow@maitlandgroup.co.za"),
+        [string[]]$ServerNames = @(),
+        [string[]]$MailToList = @(),
         [string[]]$EventLogCodes = 'Critical',
         [hashtable]$EventIDIgnoreList = @{},
-        [bool]$SendEmail = $true
+        [bool]$SendEmail = $true,
+        [string]$MailFrom,
+        [string]$SMTPAddress
     )
 
     $emailBody = Get-EmailHeader
@@ -204,7 +206,7 @@ Function Invoke-OSMonitoring
     } else {
         if ($SendEmail)
         {
-            Send-MailMessage -Subject "[PoshMon Monitoring] Monitoring Results" -Body $emailBody -BodyAsHtml -To $MailToList -From "SPMonitoring@maitlandgroup.co.za" -SmtpServer "ZAMGNTEXCH01.ZA.GROUP.COM"
+            Send-MailMessage -Subject "[PoshMon Monitoring] Monitoring Results" -Body $emailBody -BodyAsHtml -To $MailToList -From $MailFrom -SmtpServer $SMTPAddress
         } 
     }
 }
