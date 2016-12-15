@@ -33,7 +33,7 @@ Function Invoke-SPMonitoring
     try {
         # Auto-Discover Servers
         $ServerNames = Invoke-Command -Session $remoteSession -ScriptBlock { Get-SPServer | Where Role -ne "Invalid" | Select Name } | % { $_.Name }
-
+        <#
         # Event Logs
         foreach ($eventLogCode in $EventLogCodes)
         {
@@ -46,12 +46,9 @@ Function Invoke-SPMonitoring
         $driveSpaceOutput = Test-DriveSpace -ServerNames $ServerNames
         $emailBody += Get-EmailOutputGroup -SectionHeader "Server Drive Space" -output $driveSpaceOutput
         $NoIssuesFound = $NoIssuesFound -and $driveSpaceOutput.NoIssuesFound
-
+        #>
         # Failing Timer Jobs
-        $jobHealthOutput = Invoke-Command -Session $remoteSession -ScriptBlock {
-                                param($MinutesToScanHistory)
-                                Test-JobHealth $MinutesToScanHistory
-                            } -ArgumentList $MinutesToScanHistory
+        $jobHealthOutput = Test-JobHealth  -RemoteSession $remoteSession -MinutesToScanHistory $MinutesToScanHistory
         $emailBody += Get-EmailOutput -SectionHeader "Failed Timer Jobs" -output $jobHealthOutput
         $NoIssuesFound = $NoIssuesFound -and $jobHealthOutput.NoIssuesFound
 
@@ -59,15 +56,17 @@ Function Invoke-SPMonitoring
         #$serverHealthOutput = Invoke-Command -Session $remoteSession -ScriptBlock {
         #                        Test-SPServerStatus
         #                      }
-        $serverHealthOutput = Test-SPServerStatus
+        $serverHealthOutput = Test-SPServerStatus -ServerNames $ServerNames -ConfigurationName $ConfigurationName
         $emailBody += Get-EmailOutput -SectionHeader "Farm Server Status" -output $serverHealthOutput
         $NoIssuesFound = $NoIssuesFound -and $serverHealthOutput.NoIssuesFound
 
-        $searchHealthOutput = Invoke-Command -Session $remoteSession -ScriptBlock {
-                                Test-SearchHealth
-                              }
+        $searchHealthOutput = Test-SearchHealth -RemoteSession $remoteSession
         $emailBody += Get-EmailOutput -SectionHeader "Search Status" -output $searchHealthOutput
         $NoIssuesFound = $NoIssuesFound -and $searchHealthOutput.NoIssuesFound
+
+        $databaseHealthOutput = Test-DatabasesNeedingUpgrade -RemoteSession $remoteSession
+        $emailBody += Get-EmailOutput -SectionHeader "Database Status" -output $databaseHealthOutput
+        $NoIssuesFound = $NoIssuesFound -and $databaseHealthOutput.NoIssuesFound
     
     } finally {
         Disconnect-RemoteSession $remoteSession
@@ -99,8 +98,8 @@ Function Connect-RemoteSharePointSession
     $remoteSession = Connect-RemoteSession @PSBoundParameters
 
     Invoke-Command -Session $remoteSession -ScriptBlock {
-        Add-PSSnapin Microsoft.SharePoint.PowerShell
-        Import-Module "X:\Admin Scripts\PoShMon_Dev\0.1.0\Modules\PoShMon.psd1" #TODO: need to improve this once PoShMon is packaged and, e.g. on PowerShellGallery
+        Add-PSSnapin Microsoft.SharePoint.PowerShell -ErrorAction SilentlyContinue
+        #Import-Module "X:\Admin Scripts\PoShMon_Dev\0.1.0\Modules\PoShMon.psd1" #TODO: need to improve this once PoShMon is packaged and, e.g. on PowerShellGallery
     }
 
     return $remoteSession
@@ -110,24 +109,33 @@ Function Test-SearchHealth
 {
     [CmdletBinding()]
     param (
-        [string]$emailBody
+        [System.Management.Automation.Runspaces.PSSession]$RemoteSession
     )
+
+    Write-Verbose "Testing Search Health..."
 
     $NoIssuesFound = $true
     $outputHeaders = @{ 'ComponentName' = 'Component'; 'ServerName' = 'Server Name'; 'State' = 'State' }
     $outputValues = @()
 
-    $ssa = Get-SPEnterpriseSearchServiceApplication
+    $remoteComponents = Invoke-Command -Session $RemoteSession -ScriptBlock {
+        $ssa = Get-SPEnterpriseSearchServiceApplication
 
-    $searchComponentStates = Get-SPEnterpriseSearchStatus -SearchApplication $ssa -Detailed #| Where State -ne "Active"
+        $searchComponentStates = Get-SPEnterpriseSearchStatus -SearchApplication $ssa -Detailed #| Where State -ne "Active"
 
-    $componentTopology = Get-SPEnterpriseSearchComponent -SearchTopology $ssa.ActiveTopology | Select Name,ServerName
+        $componentTopology = Get-SPEnterpriseSearchComponent -SearchTopology $ssa.ActiveTopology | Select Name,ServerName
 
-    foreach ($searchComponentState in $searchComponentStates)
+        return @{
+            "SearchComponentStates" = $searchComponentStates;
+            "ComponentTopology" = $componentTopology
+        }
+    }
+
+    foreach ($searchComponentState in $remoteComponents.SearchComponentStates)
     {
         $highlight = @()
 
-        foreach ($componentTopologyItem in $componentTopology)
+        foreach ($componentTopologyItem in $remoteComponents.ComponentTopology)
         {
             if ($componentTopologyItem.Name.ToLower() -eq $searchComponentState.Name.ToLower())
             {
@@ -157,26 +165,35 @@ Function Test-SearchHealth
         }
 }
 <#
-    $output = Test-SearchHealth
+    $output = Test-SearchHealth $remoteSession
 #>
 
 Function Test-JobHealth
 {
     [CmdletBinding()]
     param (
+        [System.Management.Automation.Runspaces.PSSession]$RemoteSession,
         [int]$MinutesToScanHistory = 1440 # one day
     )
+
+    Write-Verbose "Testing Timer Job Health..."
 
     $NoIssuesFound = $true
     $outputHeaders = @{ 'JobDefinitionTitle' = 'Job Definition Title'; 'EndTime' = 'End Time'; 'ServerName' = 'Server Name'; 'WebApplicationName' = 'Web Application Name'; 'ErrorMessage' ='Error Message' }
     $outputValues = @()
 
-    $farm = Get-SPFarm
-    $timerJobService = $farm.TimerService
-
     $startDate = (Get-Date).AddMinutes(-$MinutesToScanHistory) #.ToUniversalTime()
 
-    $jobHistoryEntries = $timerJobService.JobHistoryEntries | Where-Object { $_.Status -eq "Failed" -and $_.StartTime -gt $startDate }
+    $jobHistoryEntries = Invoke-Command -Session $RemoteSession -ScriptBlock {
+                                param($StartDate)
+
+                                $farm = Get-SPFarm
+                                $timerJobService = $farm.TimerService
+
+                                $jobHistoryEntries = $timerJobService.JobHistoryEntries | Where-Object { $_.Status -eq "Failed" -and $_.StartTime -gt $StartDate }
+
+                                return $jobHistoryEntries
+                            } -ArgumentList $startDate
 
     if ($jobHistoryEntries.Count -gt 0)
     {
@@ -204,7 +221,7 @@ Function Test-JobHealth
         }
 }
 <#
-    $output = Test-JobHealth -MinutesToScanHistory 2000 -Verbose
+    $output = Test-JobHealth -RemoteSession $remoteSession -MinutesToScanHistory 2000 -Verbose
     Persist-Output $output
     Get-EmailOutput $output
 #>
@@ -272,6 +289,8 @@ Function Test-SPServerStatus
         [string[]]$ServerNames,
         [string]$ConfigurationName = $null
     )
+
+    Write-Verbose "Testing Server Statuses..."
 
     $NoIssuesFound = $true
     $outputHeaders = @{ 'ServerName' = 'Server Name'; 'Role' = 'Role'; 'NeedsUpgrade' = 'Needs Upgrade?'; 'Status' ='Status' }
@@ -344,13 +363,18 @@ Function Test-DatabasesNeedingUpgrade
 {
     [CmdletBinding()]
     param (
+        [System.Management.Automation.Runspaces.PSSession]$RemoteSession
     )
+
+    Write-Verbose "Testing Database Health..."
 
     $NoIssuesFound = $true
     $outputHeaders = @{ 'DatabaseName' = 'Database Name'; 'ApplicationName' = 'Application Name'; 'NeedsUpgrade' = 'Needs Upgrade?' }
     $outputValues = @()
 
-    $spDatabases = Get-SPDatabase
+    $spDatabases = Invoke-Command -Session $RemoteSession -ScriptBlock {
+                                return Get-SPDatabase
+                            }
 
     foreach ($spDatabase in $spDatabases)
     {
@@ -358,7 +382,7 @@ Function Test-DatabasesNeedingUpgrade
         {
             $NoIssuesFound = $false
 
-            Write-Host ($spDatabase.DisplayName + " (" + $spDatabase.ApplicationName + ") is listed as Needing Upgrade")
+            Write-Verbose ($spDatabase.DisplayName + " (" + $spDatabase.ApplicationName + ") is listed as Needing Upgrade")
 
             $outputItem = @{
                 'DatabaseName' = $spDatabase.DisplayName;
@@ -375,6 +399,24 @@ Function Test-DatabasesNeedingUpgrade
         "OutputHeaders" = $outputHeaders;
         "OutputValues" = $outputValues
         }
+}
+
+Function Test-DistributedCacheStatus
+{
+    [CmdletBinding()]
+    param (
+        [System.Management.Automation.Runspaces.PSSession]$RemoteSession
+    )
+
+    Write-Verbose "Testing Database Health..."
+
+    $NoIssuesFound = $true
+    $outputHeaders = @{ 'DatabaseName' = 'Database Name'; 'ApplicationName' = 'Application Name'; 'NeedsUpgrade' = 'Needs Upgrade?' }
+    $outputValues = @()
+
+    $spDatabases = Invoke-Command -Session $RemoteSession -ScriptBlock {
+                                return Get-SPDatabase
+                            }
 }
 
 <#
