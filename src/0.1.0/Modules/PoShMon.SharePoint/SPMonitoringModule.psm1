@@ -57,9 +57,9 @@ Function Invoke-SPMonitoring
 
         # Server Status
         #$serverHealthOutput = Invoke-Command -Session $remoteSession -ScriptBlock {
-        #                        Test-SPServersStatus
+        #                        Test-SPServerStatus
         #                      }
-        $serverHealthOutput = Test-SPServersStatus
+        $serverHealthOutput = Test-SPServerStatus
         $emailBody += Get-EmailOutput -SectionHeader "Farm Server Status" -output $serverHealthOutput
         $NoIssuesFound = $NoIssuesFound -and $serverHealthOutput.NoIssuesFound
 
@@ -209,7 +209,7 @@ Function Test-JobHealth
     Get-EmailOutput $output
 #>
 
-<#Function Test-SPServersStatus
+<#Function Test-SPServerStatus
 {
     [CmdletBinding()]
     param (
@@ -265,7 +265,7 @@ Function Test-JobHealth
         }
 }
 #>
-Function Test-SPServersStatus
+Function Test-SPServerStatus
 {
     [CmdletBinding()]
     param (
@@ -337,7 +337,7 @@ Function Test-SPServersStatus
         }
 }
 <#
-    $output = Test-SPServersStatus -Verbose
+    $output = Test-SPServerStatus -Verbose
 #>
 
 Function Test-DatabasesNeedingUpgrade
