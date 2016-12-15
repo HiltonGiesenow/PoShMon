@@ -28,7 +28,7 @@ Function Invoke-SPMonitoring
     $emailBody = Get-EmailHeader "SharePoint Environment Monitoring Report"
     $NoIssuesFound = $true
 
-    $remoteSession = Connect-RemoteSession -ServerName $PrimaryServerName -ConfigurationName $ConfigurationName
+    $remoteSession = Connect-RemoteSharePointSession -ServerName $PrimaryServerName -ConfigurationName $ConfigurationName
     
     try {
         # Auto-Discover Servers
@@ -56,9 +56,10 @@ Function Invoke-SPMonitoring
         $NoIssuesFound = $NoIssuesFound -and $jobHealthOutput.NoIssuesFound
 
         # Server Status
-        $serverHealthOutput = Invoke-Command -Session $remoteSession -ScriptBlock {
-                                Test-SPServersStatus
-                              }
+        #$serverHealthOutput = Invoke-Command -Session $remoteSession -ScriptBlock {
+        #                        Test-SPServersStatus
+        #                      }
+        $serverHealthOutput = Test-SPServersStatus
         $emailBody += Get-EmailOutput -SectionHeader "Farm Server Status" -output $serverHealthOutput
         $NoIssuesFound = $NoIssuesFound -and $serverHealthOutput.NoIssuesFound
 
@@ -85,6 +86,24 @@ Function Invoke-SPMonitoring
             Send-MailMessage -Subject "[PoshMon Monitoring] Monitoring Results" -Body $emailBody -BodyAsHtml -To $MailToList -From $MailFrom -SmtpServer $SMTPAddress
         } 
     }
+}
+
+Function Connect-RemoteSharePointSession
+{
+    [cmdletbinding()]
+    param(
+        [parameter(Mandatory=$true)][string]$ServerName,
+        [string]$ConfigurationName = $null
+    )
+
+    $remoteSession = Connect-RemoteSession @PSBoundParameters
+
+    Invoke-Command -Session $remoteSession -ScriptBlock {
+        Add-PSSnapin Microsoft.SharePoint.PowerShell
+        Import-Module "X:\Admin Scripts\PoShMon_Dev\0.1.0\Modules\PoShMon.psd1" #TODO: need to improve this once PoShMon is packaged and, e.g. on PowerShellGallery
+    }
+
+    return $remoteSession
 }
 
 Function Test-SearchHealth
@@ -190,7 +209,7 @@ Function Test-JobHealth
     Get-EmailOutput $output
 #>
 
-Function Test-SPServersStatus
+<#Function Test-SPServersStatus
 {
     [CmdletBinding()]
     param (
@@ -203,7 +222,7 @@ Function Test-SPServersStatus
     #$farm = Get-SPFarm
     #$farm.BuildVersion
 
-    $servers = Get-SPServer
+    $servers = Get-SPServer | Where Role -ne "Invalid" # removes DB and SMTP servers
 
     foreach ($server in $servers) # $farm.Servers
     {
@@ -219,6 +238,78 @@ Function Test-SPServersStatus
             Write-Verbose ($server.DisplayName + " is listed as Needing Upgrade")
         } else {
             $needsUpgradeValue = "No"
+        }
+
+        $outputItem = @{
+            'ServerName' = $server.DisplayName;
+            'NeedsUpgrade' = $needsUpgradeValue;
+            'Status' = $server.Status.ToString();
+            'Role' = $server.Role.ToString();
+            'Highlight' = $highlight
+        }
+
+        $outputValues += $outputItem
+
+        if ($server.Status -ne "Online")
+        {
+            $NoIssuesFound = $false
+
+            Write-Verbose ($server.DisplayName + " is in status " + $server.Status)
+        }
+    }
+
+    return @{
+        "NoIssuesFound" = $NoIssuesFound;
+        "OutputHeaders" = $outputHeaders;
+        "OutputValues" = $outputValues
+        }
+}
+#>
+Function Test-SPServersStatus
+{
+    [CmdletBinding()]
+    param (
+        [string[]]$ServerNames,
+        [string]$ConfigurationName = $null
+    )
+
+    $NoIssuesFound = $true
+    $outputHeaders = @{ 'ServerName' = 'Server Name'; 'Role' = 'Role'; 'NeedsUpgrade' = 'Needs Upgrade?'; 'Status' ='Status' }
+    $outputValues = @()
+
+    #$farm = Get-SPFarm
+    #$farm.BuildVersion
+
+    foreach ($ServerName in $ServerNames) # $farm.Servers
+    {
+        try {
+            $remoteSession = Connect-RemoteSession -ServerName $ServerName -ConfigurationName $ConfigurationName
+
+            $server = Invoke-Command -Session $remoteSession -ScriptBlock {
+                                        Add-PSSnapin Microsoft.SharePoint.PowerShell
+                                        Get-SPServer | Where Address -eq $env:COMPUTERNAME
+                                    }
+        } finally {
+            Disconnect-RemoteSession $remoteSession
+        }
+
+        $highlight = @()
+
+        if ($server.NeedsUpgrade)
+        {
+            $needsUpgradeValue = "Yes"
+            $highlight += 'NeedsUpgrade'
+            $NoIssuesFound = $false
+            Write-Verbose ($server.DisplayName + " is listed as Needing Upgrade")
+        } else {
+            $needsUpgradeValue = "No"
+        }
+
+        if ($server.Status -ne 'Online')
+        {
+            $highlight += 'Status'
+            $NoIssuesFound = $false
+            Write-Verbose ($server.DisplayName + " is not listed as Online")
         }
 
         $outputItem = @{

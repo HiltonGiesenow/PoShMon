@@ -24,11 +24,6 @@ Function Connect-RemoteSession
     else
         { $remoteSession = New-PSSession -ComputerName $ServerName }
 
-    Invoke-Command -Session $remoteSession -ScriptBlock {
-        Add-PSSnapin Microsoft.SharePoint.PowerShell
-        Import-Module "X:\Admin Scripts\PoShMon\SPMonitoringModule.psm1"
-    }
-
     return $remoteSession
 }
 
