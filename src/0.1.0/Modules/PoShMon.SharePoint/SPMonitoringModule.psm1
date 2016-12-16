@@ -67,6 +67,10 @@ Function Invoke-SPMonitoring
         $databaseHealthOutput = Test-DatabasesNeedingUpgrade -RemoteSession $remoteSession
         $emailBody += Get-EmailOutput -SectionHeader "Database Status" -output $databaseHealthOutput
         $NoIssuesFound = $NoIssuesFound -and $databaseHealthOutput.NoIssuesFound
+
+        $cacheHealthOutput = Test-DistributedCacheStatus -RemoteSession $remoteSession
+        $emailBody += Get-EmailOutput -SectionHeader "Distributed Cache Status" -output $cacheHealthOutput
+        $NoIssuesFound = $NoIssuesFound -and $cacheHealthOutput.NoIssuesFound
     
     } finally {
         Disconnect-RemoteSession $remoteSession
@@ -378,20 +382,81 @@ Function Test-DatabasesNeedingUpgrade
 
     foreach ($spDatabase in $spDatabases)
     {
+        $highlight = @()
+
         if ($spDatabase.NeedsUpgrade)
         {
             $NoIssuesFound = $false
 
             Write-Verbose ($spDatabase.DisplayName + " (" + $spDatabase.ApplicationName + ") is listed as Needing Upgrade")
 
-            $outputItem = @{
-                'DatabaseName' = $spDatabase.DisplayName;
-                'ApplicationName' = $spDatabase.ApplicationName;
-                'NeedsUpgrade' = $spDatabase.NeedsUpgrade
-            }
-
-            $outputValues += $outputItem
+            $highlight += 'NeedsUpgrade'
         }
+
+        $outputItem = @{
+            'DatabaseName' = $spDatabase.DisplayName;
+            'ApplicationName' = $spDatabase.ApplicationName;
+            'NeedsUpgrade' = $spDatabase.NeedsUpgrade;
+            'Highlight' = $highlight
+        }
+
+        $outputValues += $outputItem
+    }
+
+    return @{
+        "NoIssuesFound" = $NoIssuesFound;
+        "OutputHeaders" = $outputHeaders;
+        "OutputValues" = $outputValues
+        }
+}
+<#
+    $output = Test-DatabasesNeedingUpgrade $remoteSession -Verbose
+#>
+
+Function Test-DistributedCacheStatus
+{
+    [CmdletBinding()]
+    param (
+        [System.Management.Automation.Runspaces.PSSession]$RemoteSession
+    )
+
+    Write-Verbose "Testing Distributed Cache Health..."
+
+    $NoIssuesFound = $true
+    $outputHeaders = @{ 'Server' = 'Server'; 'Online' = 'Online?' }
+    $outputValues = @()
+
+    $cacheServers = Invoke-Command -Session $RemoteSession -ScriptBlock {
+                                return Get-SPServiceInstance | ? {($_.service.tostring()) -eq “SPDistributedCacheService Name=AppFabricCachingService”} | select Server, Status
+                            }
+    # Possible extensions:
+    <#
+    Use-CacheCluster
+        Get-CacheHost
+
+        Get-CacheClusterHealth
+    #>
+
+    foreach ($cacheServer in $cacheServers)
+    {
+        $highlight = @()
+
+        if ($cacheServer.Status.Value -ne 'Online')
+        {
+            $NoIssuesFound = $false
+
+            Write-Verbose ($cacheServer.Server.DisplayName + " is listed as " + $cacheServer.Status)
+
+            $highlight += 'Status'
+        }
+
+        $outputItem = @{
+            'Server' = $cacheServer.Server.DisplayName;
+            'Status' = $cacheServer.Status.Value;
+            'Highlight' = $highlight
+        }
+
+        $outputValues += $outputItem
     }
 
     return @{
@@ -401,29 +466,6 @@ Function Test-DatabasesNeedingUpgrade
         }
 }
 
-Function Test-DistributedCacheStatus
-{
-    [CmdletBinding()]
-    param (
-        [System.Management.Automation.Runspaces.PSSession]$RemoteSession
-    )
-
-    Write-Verbose "Testing Database Health..."
-
-    $NoIssuesFound = $true
-    $outputHeaders = @{ 'DatabaseName' = 'Database Name'; 'ApplicationName' = 'Application Name'; 'NeedsUpgrade' = 'Needs Upgrade?' }
-    $outputValues = @()
-
-    $spDatabases = Invoke-Command -Session $RemoteSession -ScriptBlock {
-                                return Get-SPDatabase
-                            }
-}
-
 <#
-Get-SPServiceInstance | ? {($_.service.tostring()) -eq “SPDistributedCacheService Name=AppFabricCachingService”} | select Server, Status
-
-Get-CacheHost
-    Use-CacheCluster issue
-
-Get-CacheClusterHealth
+    $output = Test-DistributedCacheStatus $remoteSession -Verbose
 #>
