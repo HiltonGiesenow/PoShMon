@@ -33,7 +33,7 @@ Function Invoke-SPMonitoring
     try {
         # Auto-Discover Servers
         $ServerNames = Invoke-Command -Session $remoteSession -ScriptBlock { Get-SPServer | Where Role -ne "Invalid" | Select Name } | % { $_.Name }
-        <#
+        
         # Event Logs
         foreach ($eventLogCode in $EventLogCodes)
         {
@@ -46,7 +46,7 @@ Function Invoke-SPMonitoring
         $driveSpaceOutput = Test-DriveSpace -ServerNames $ServerNames
         $emailBody += Get-EmailOutputGroup -SectionHeader "Server Drive Space" -output $driveSpaceOutput
         $NoIssuesFound = $NoIssuesFound -and $driveSpaceOutput.NoIssuesFound
-        #>
+        
         # Failing Timer Jobs
         $jobHealthOutput = Test-JobHealth  -RemoteSession $remoteSession -MinutesToScanHistory $MinutesToScanHistory
         $emailBody += Get-EmailOutput -SectionHeader "Failed Timer Jobs" -output $jobHealthOutput
