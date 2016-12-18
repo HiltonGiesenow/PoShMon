@@ -14,7 +14,7 @@
 
         $webResponse = Invoke-Command -Session $remoteSession -ScriptBlock {
                                     param($SiteUrl)
-                                    Invoke-WebRequest $SiteUrl
+                                    Invoke-WebRequest $SiteUrl -UseDefaultCredentials
                                 } -ArgumentList $SiteUrl
     } finally {
         Disconnect-RemoteSession $remoteSession
@@ -47,7 +47,7 @@ Function Test-WebSite
         {
             Write-Verbose ("Scanning Site $SiteUrl (Direct)")
 
-            $webRequest = Invoke-WebRequest $SiteUrl
+            $webRequest = Invoke-WebRequest $SiteUrl -UseDefaultCredentials
         } else {
             $serverName = $ServerNames[$i]
             

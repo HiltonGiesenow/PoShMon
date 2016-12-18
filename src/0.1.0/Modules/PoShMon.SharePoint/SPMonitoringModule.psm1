@@ -19,6 +19,7 @@ Function Invoke-SPMonitoring
         [parameter(Mandatory=$true)][string]$PrimaryServerName,
         [string[]]$MailToList,
         [string[]]$EventLogCodes = 'Critical',
+        [hashtable]$WebsiteDetails = @{},
         [string]$ConfigurationName = $null,
         [bool]$SendEmail = $true,
         [string]$MailFrom,
@@ -71,7 +72,14 @@ Function Invoke-SPMonitoring
         $cacheHealthOutput = Test-DistributedCacheStatus -RemoteSession $remoteSession
         $emailBody += Get-EmailOutput -SectionHeader "Distributed Cache Status" -output $cacheHealthOutput
         $NoIssuesFound = $NoIssuesFound -and $cacheHealthOutput.NoIssuesFound
-    
+
+        foreach ($websiteDetailKey in $WebsiteDetails.Keys)
+        {
+            $websiteDetail = $WebsiteDetails[$websiteDetailKey]
+            $websiteTestOutput = Test-WebSite -SiteUrl $WebsiteDetailKey -TextToLocate $websiteDetail -ServerNames $ServerNames -ConfigurationName $ConfigurationName
+            $emailBody += Get-EmailOutput -SectionHeader ("Web Test - " + $websiteDetailKey) -output $websiteTestOutput
+            $NoIssuesFound = $NoIssuesFound -and $websiteTestOutput.NoIssuesFound
+        }
     } finally {
         Disconnect-RemoteSession $remoteSession
     }
@@ -423,7 +431,7 @@ Function Test-DistributedCacheStatus
     Write-Verbose "Testing Distributed Cache Health..."
 
     $NoIssuesFound = $true
-    $outputHeaders = @{ 'Server' = 'Server'; 'Online' = 'Online?' }
+    $outputHeaders = @{ 'Server' = 'Server'; 'Status' = 'Status' }
     $outputValues = @()
 
     $cacheServers = Invoke-Command -Session $RemoteSession -ScriptBlock {
