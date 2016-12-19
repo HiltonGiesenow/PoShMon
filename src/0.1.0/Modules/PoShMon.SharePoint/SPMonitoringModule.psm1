@@ -10,7 +10,7 @@ Function Discover-ServersInFarm
 }
 #>
 
-Function Invoke-SPMonitoring
+Function Invoke-SPMonitoringDaily
 {
     [CmdletBinding()]
     Param(
@@ -22,6 +22,7 @@ Function Invoke-SPMonitoring
         [hashtable]$WebsiteDetails = @{},
         [string]$ConfigurationName = $null,
         [bool]$SendEmail = $true,
+        [bool]$SendEmailOnlyOnFailure = $false,
         [string]$MailFrom,
         [string]$SMTPAddress
     )
@@ -34,7 +35,7 @@ Function Invoke-SPMonitoring
     try {
         # Auto-Discover Servers
         $ServerNames = Invoke-Command -Session $remoteSession -ScriptBlock { Get-SPServer | Where Role -ne "Invalid" | Select Name } | % { $_.Name }
-        
+
         # Event Logs
         foreach ($eventLogCode in $EventLogCodes)
         {
@@ -88,7 +89,96 @@ Function Invoke-SPMonitoring
 
     Write-Verbose $emailBody
 
-    if ($NoIssuesFound)
+    if ($NoIssuesFound -and $SendEmailOnlyOnFailure -eq $true)
+    {
+        Write-Verbose "No major issues encountered, skipping email"
+    } else {
+        if ($SendEmail)
+        {
+            Send-MailMessage -Subject "[PoshMon Monitoring] Monitoring Results" -Body $emailBody -BodyAsHtml -To $MailToList -From $MailFrom -SmtpServer $SMTPAddress
+        } 
+    }
+}
+
+Function Invoke-SPMonitoringCritical
+{
+    [CmdletBinding()]
+    Param(
+        #[parameter(Mandatory=$true, HelpMessage=”Path to file”)]
+        [int]$MinutesToScanHistory = 15,
+        [parameter(Mandatory=$true)][string]$PrimaryServerName,
+        [string[]]$MailToList,
+        [string[]]$EventLogCodes = 'Critical',
+        [hashtable]$WebsiteDetails = @{},
+        [string]$ConfigurationName = $null,
+        [bool]$SendEmail = $true,
+        [bool]$SendEmailOnlyOnFailure = $false,
+        [string]$MailFrom,
+        [string]$SMTPAddress
+    )
+
+    $emailBody = Get-EmailHeader "SharePoint Environment Monitoring Report - Critical Issues"
+    $NoIssuesFound = $true
+
+    $remoteSession = Connect-RemoteSharePointSession -ServerName $PrimaryServerName -ConfigurationName $ConfigurationName
+    
+    try {
+        # Auto-Discover Servers
+        $ServerNames = Invoke-Command -Session $remoteSession -ScriptBlock { Get-SPServer | Where Role -ne "Invalid" | Select Name } | % { $_.Name }
+
+        # Event Logs
+        foreach ($eventLogCode in $EventLogCodes)
+        {
+            $eventLogOutput = Test-EventLogs -ServerNames $ServerNames -MinutesToScanHistory $MinutesToScanHistory -SeverityCode $eventLogCode
+            if ($eventLogOutput.NoIssuesFound -eq $false)
+                { $emailBody += Get-EmailOutputGroup -SectionHeader ($eventLogCode + " Event Log Entries") -output $eventLogOutput }
+            $NoIssuesFound = $NoIssuesFound -and $eventLogOutput.NoIssuesFound
+        }
+
+        # Drive Space
+        $driveSpaceOutput = Test-DriveSpace -ServerNames $ServerNames
+        if ($driveSpaceOutput.NoIssuesFound -eq $false)
+            { $emailBody += Get-EmailOutputGroup -SectionHeader "Server Drive Space" -output $driveSpaceOutput }
+        $NoIssuesFound = $NoIssuesFound -and $driveSpaceOutput.NoIssuesFound
+        
+        # Server Status
+        $serverHealthOutput = Test-SPServerStatus -ServerNames $ServerNames -ConfigurationName $ConfigurationName
+        if ($serverHealthOutput.NoIssuesFound -eq $false)
+            { $emailBody += Get-EmailOutput -SectionHeader "Farm Server Status" -output $serverHealthOutput }
+        $NoIssuesFound = $NoIssuesFound -and $serverHealthOutput.NoIssuesFound
+
+        $searchHealthOutput = Test-SearchHealth -RemoteSession $remoteSession
+        if ($searchHealthOutput.NoIssuesFound -eq $false)
+            { $emailBody += Get-EmailOutput -SectionHeader "Search Status" -output $searchHealthOutput } 
+        $NoIssuesFound = $NoIssuesFound -and $searchHealthOutput.NoIssuesFound
+
+        $databaseHealthOutput = Test-DatabasesNeedingUpgrade -RemoteSession $remoteSession
+        if ($databaseHealthOutput.NoIssuesFound -eq $false)
+            { $emailBody += Get-EmailOutput -SectionHeader "Database Status" -output $databaseHealthOutput }
+        $NoIssuesFound = $NoIssuesFound -and $databaseHealthOutput.NoIssuesFound
+
+        $cacheHealthOutput = Test-DistributedCacheStatus -RemoteSession $remoteSession
+        if ($cacheHealthOutput.NoIssuesFound -eq $false)
+            { $emailBody += Get-EmailOutput -SectionHeader "Distributed Cache Status" -output $cacheHealthOutput }
+        $NoIssuesFound = $NoIssuesFound -and $cacheHealthOutput.NoIssuesFound
+
+        foreach ($websiteDetailKey in $WebsiteDetails.Keys)
+        {
+            $websiteDetail = $WebsiteDetails[$websiteDetailKey]
+            $websiteTestOutput = Test-WebSite -SiteUrl $WebsiteDetailKey -TextToLocate $websiteDetail -ServerNames $ServerNames -ConfigurationName $ConfigurationName
+            if ($websiteTestOutput.NoIssuesFound -eq $false)
+                { $emailBody += Get-EmailOutput -SectionHeader ("Web Test - " + $websiteDetailKey) -output $websiteTestOutput }
+            $NoIssuesFound = $NoIssuesFound -and $websiteTestOutput.NoIssuesFound
+        }
+    } finally {
+        Disconnect-RemoteSession $remoteSession
+    }
+
+    $emailBody += Get-EmailFooter
+
+    Write-Verbose $emailBody
+
+    if ($NoIssuesFound -and $SendEmailOnlyOnFailure -eq $true)
     {
         Write-Verbose "No major issues encountered, skipping email"
     } else {
@@ -404,7 +494,7 @@ Function Test-DatabasesNeedingUpgrade
         $outputItem = @{
             'DatabaseName' = $spDatabase.DisplayName;
             'ApplicationName' = $spDatabase.ApplicationName;
-            'NeedsUpgrade' = $spDatabase.NeedsUpgrade;
+            'NeedsUpgrade' = &{if($spDatabase.NeedsUpgrade) {"Yes"} else {"No"}}
             'Highlight' = $highlight
         }
 
