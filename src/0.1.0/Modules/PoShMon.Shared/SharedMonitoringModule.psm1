@@ -69,7 +69,12 @@ Function Get-EmailOutput
                 $style = ''
             }
 
-            $emailBody += '<td valign="top"' + $style + '>' + $fieldValue + '</td>'
+            $align = 'left'
+            $temp = ''
+            if ([decimal]::TryParse($fieldValue, [ref]$temp))
+                { $align = 'right' }
+
+            $emailBody += '<td valign="top"' + $style + ' align="' + $align +'">' + $fieldValue + '</td>'
         }
 
         $emailBody += '</tr>'

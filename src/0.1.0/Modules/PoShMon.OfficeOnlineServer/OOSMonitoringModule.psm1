@@ -1,22 +1,10 @@
-﻿<#
-Function Discover-ServersInFarm
-{
-    [cmdletbinding()]
-    param(
-        [string]$InitialServerName
-    )
-
-    $servers = Get-SPServer 
-}
-#>
-
-Function Invoke-SPMonitoring
+﻿Function Invoke-OOSMonitoringDaily
 {
     [CmdletBinding()]
     Param(
         #[parameter(Mandatory=$true, HelpMessage=”Path to file”)]
         [int]$MinutesToScanHistory = 15,
-        [string]$PrimaryServerName = 'localhost',
+        [parameter(Mandatory=$true)][string]$PrimaryServerName,
         [string[]]$MailToList,
         [string[]]$EventLogCodes = 'Critical',
         [hashtable]$WebsiteDetails = @{},
@@ -27,11 +15,10 @@ Function Invoke-SPMonitoring
         [string]$SMTPAddress
     )
 
-    $emailBody = Get-EmailHeader "SharePoint Environment Monitoring Report"
+    $emailBody = Get-EmailHeader "Office Online Server Environment Monitoring Report"
     $NoIssuesFound = $true
-    $outputValues = @() 
 
-    $remoteSession = Connect-RemoteSharePointSession -ServerName $PrimaryServerName -ConfigurationName $ConfigurationName
+    $remoteSession = Connect-RemoteOOSSession -ServerName $PrimaryServerName -ConfigurationName $ConfigurationName
     
     try {
         # Auto-Discover Servers
@@ -41,55 +28,46 @@ Function Invoke-SPMonitoring
         foreach ($eventLogCode in $EventLogCodes)
         {
             $eventLogOutput = Test-EventLogs -ServerNames $ServerNames -MinutesToScanHistory $MinutesToScanHistory -SeverityCode $eventLogCode
-            if ($SendEmailOnlyOnFailure -eq $false -or $eventLogOutput.NoIssuesFound -eq $false)
-                { $emailBody += Get-EmailOutputGroup -SectionHeader ($eventLogCode + " Event Log Entries") -output $eventLogOutput }
+            $emailBody += Get-EmailOutputGroup -SectionHeader ($eventLogCode + " Event Log Entries") -output $eventLogOutput
             $NoIssuesFound = $NoIssuesFound -and $eventLogOutput.NoIssuesFound
-            $outputValues += $eventLogOutput
         }
 
         # Drive Space
         $driveSpaceOutput = Test-DriveSpace -ServerNames $ServerNames
-        if ($SendEmailOnlyOnFailure -eq $false -or $driveSpaceOutput.NoIssuesFound -eq $false)
-            { $emailBody += Get-EmailOutputGroup -SectionHeader "Server Drive Space" -output $driveSpaceOutput }
+        $emailBody += Get-EmailOutputGroup -SectionHeader "Server Drive Space" -output $driveSpaceOutput
         $NoIssuesFound = $NoIssuesFound -and $driveSpaceOutput.NoIssuesFound
-        $outputValues += $driveSpaceOutput
         
+        # Failing Timer Jobs
+        $jobHealthOutput = Test-JobHealth  -RemoteSession $remoteSession -MinutesToScanHistory $MinutesToScanHistory
+        $emailBody += Get-EmailOutput -SectionHeader "Failed Timer Jobs" -output $jobHealthOutput
+        $NoIssuesFound = $NoIssuesFound -and $jobHealthOutput.NoIssuesFound
+
         # Server Status
-        #TEMPORARILY REMOVED
-        <#
+        #$serverHealthOutput = Invoke-Command -Session $remoteSession -ScriptBlock {
+        #                        Test-SPServerStatus
+        #                      }
         $serverHealthOutput = Test-SPServerStatus -ServerNames $ServerNames -ConfigurationName $ConfigurationName
-        if ($serverHealthOutput.NoIssuesFound -eq $false)
-            { $emailBody += Get-EmailOutput -SectionHeader "Farm Server Status" -output $serverHealthOutput }
+        $emailBody += Get-EmailOutput -SectionHeader "Farm Server Status" -output $serverHealthOutput
         $NoIssuesFound = $NoIssuesFound -and $serverHealthOutput.NoIssuesFound
-        $outputValues += $serverHealthOutput
-        #>
 
         $searchHealthOutput = Test-SearchHealth -RemoteSession $remoteSession
-        if ($SendEmailOnlyOnFailure -eq $false -or $searchHealthOutput.NoIssuesFound -eq $false)
-            { $emailBody += Get-EmailOutput -SectionHeader "Search Status" -output $searchHealthOutput } 
+        $emailBody += Get-EmailOutput -SectionHeader "Search Status" -output $searchHealthOutput
         $NoIssuesFound = $NoIssuesFound -and $searchHealthOutput.NoIssuesFound
-        $outputValues += $searchHealthOutput
 
-        $databaseHealthOutput = Test-DatabaseHealth -RemoteSession $remoteSession
-        if ($SendEmailOnlyOnFailure -eq $false -or $databaseHealthOutput.NoIssuesFound -eq $false)
-            { $emailBody += Get-EmailOutput -SectionHeader "Database Status" -output $databaseHealthOutput }
+        $databaseHealthOutput = Test-DatabasesNeedingUpgrade -RemoteSession $remoteSession
+        $emailBody += Get-EmailOutput -SectionHeader "Database Status" -output $databaseHealthOutput
         $NoIssuesFound = $NoIssuesFound -and $databaseHealthOutput.NoIssuesFound
-        $outputValues += $databaseHealthOutput
 
         $cacheHealthOutput = Test-DistributedCacheStatus -RemoteSession $remoteSession
-        if ($SendEmailOnlyOnFailure -eq $false -or $cacheHealthOutput.NoIssuesFound -eq $false)
-            { $emailBody += Get-EmailOutput -SectionHeader "Distributed Cache Status" -output $cacheHealthOutput }
+        $emailBody += Get-EmailOutput -SectionHeader "Distributed Cache Status" -output $cacheHealthOutput
         $NoIssuesFound = $NoIssuesFound -and $cacheHealthOutput.NoIssuesFound
-        $outputValues += $cacheHealthOutput
 
         foreach ($websiteDetailKey in $WebsiteDetails.Keys)
         {
             $websiteDetail = $WebsiteDetails[$websiteDetailKey]
             $websiteTestOutput = Test-WebSite -SiteUrl $WebsiteDetailKey -TextToLocate $websiteDetail -ServerNames $ServerNames -ConfigurationName $ConfigurationName
-            if ($SendEmailOnlyOnFailure -eq $false -or $websiteTestOutput.NoIssuesFound -eq $false)
-                { $emailBody += Get-EmailOutput -SectionHeader ("Web Test - " + $websiteDetailKey) -output $websiteTestOutput }
+            $emailBody += Get-EmailOutput -SectionHeader ("Web Test - " + $websiteDetailKey) -output $websiteTestOutput
             $NoIssuesFound = $NoIssuesFound -and $websiteTestOutput.NoIssuesFound
-            $outputValues += $websiteTestOutput
         }
     } finally {
         Disconnect-RemoteSession $remoteSession
@@ -108,11 +86,100 @@ Function Invoke-SPMonitoring
             Send-MailMessage -Subject "[PoshMon Monitoring] Monitoring Results" -Body $emailBody -BodyAsHtml -To $MailToList -From $MailFrom -SmtpServer $SMTPAddress
         } 
     }
-
-    return $outputValues
 }
 
-Function Connect-RemoteSharePointSession
+Function Invoke-SPMonitoringCritical
+{
+    [CmdletBinding()]
+    Param(
+        #[parameter(Mandatory=$true, HelpMessage=”Path to file”)]
+        [int]$MinutesToScanHistory = 15,
+        [parameter(Mandatory=$true)][string]$PrimaryServerName,
+        [string[]]$MailToList,
+        [string[]]$EventLogCodes = 'Critical',
+        [hashtable]$WebsiteDetails = @{},
+        [string]$ConfigurationName = $null,
+        [bool]$SendEmail = $true,
+        [bool]$SendEmailOnlyOnFailure = $false,
+        [string]$MailFrom,
+        [string]$SMTPAddress
+    )
+
+    $emailBody = Get-EmailHeader "Office Online Server Environment Monitoring Report - Critical Issues"
+    $NoIssuesFound = $true
+
+    $remoteSession = Connect-RemoteSharePointSession -ServerName $PrimaryServerName -ConfigurationName $ConfigurationName
+    
+    try {
+        # Auto-Discover Servers
+        $ServerNames = Invoke-Command -Session $remoteSession -ScriptBlock { Get-SPServer | Where Role -ne "Invalid" | Select Name } | % { $_.Name }
+
+        # Event Logs
+        foreach ($eventLogCode in $EventLogCodes)
+        {
+            $eventLogOutput = Test-EventLogs -ServerNames $ServerNames -MinutesToScanHistory $MinutesToScanHistory -SeverityCode $eventLogCode
+            if ($eventLogOutput.NoIssuesFound -eq $false)
+                { $emailBody += Get-EmailOutputGroup -SectionHeader ($eventLogCode + " Event Log Entries") -output $eventLogOutput }
+            $NoIssuesFound = $NoIssuesFound -and $eventLogOutput.NoIssuesFound
+        }
+
+        # Drive Space
+        $driveSpaceOutput = Test-DriveSpace -ServerNames $ServerNames
+        if ($driveSpaceOutput.NoIssuesFound -eq $false)
+            { $emailBody += Get-EmailOutputGroup -SectionHeader "Server Drive Space" -output $driveSpaceOutput }
+        $NoIssuesFound = $NoIssuesFound -and $driveSpaceOutput.NoIssuesFound
+        
+        # Server Status
+        <#
+        $serverHealthOutput = Test-SPServerStatus -ServerNames $ServerNames -ConfigurationName $ConfigurationName
+        if ($serverHealthOutput.NoIssuesFound -eq $false)
+            { $emailBody += Get-EmailOutput -SectionHeader "Farm Server Status" -output $serverHealthOutput }
+        $NoIssuesFound = $NoIssuesFound -and $serverHealthOutput.NoIssuesFound
+        #>
+
+        $searchHealthOutput = Test-SearchHealth -RemoteSession $remoteSession
+        if ($searchHealthOutput.NoIssuesFound -eq $false)
+            { $emailBody += Get-EmailOutput -SectionHeader "Search Status" -output $searchHealthOutput } 
+        $NoIssuesFound = $NoIssuesFound -and $searchHealthOutput.NoIssuesFound
+
+        $databaseHealthOutput = Test-DatabasesNeedingUpgrade -RemoteSession $remoteSession
+        if ($databaseHealthOutput.NoIssuesFound -eq $false)
+            { $emailBody += Get-EmailOutput -SectionHeader "Database Status" -output $databaseHealthOutput }
+        $NoIssuesFound = $NoIssuesFound -and $databaseHealthOutput.NoIssuesFound
+
+        $cacheHealthOutput = Test-DistributedCacheStatus -RemoteSession $remoteSession
+        if ($cacheHealthOutput.NoIssuesFound -eq $false)
+            { $emailBody += Get-EmailOutput -SectionHeader "Distributed Cache Status" -output $cacheHealthOutput }
+        $NoIssuesFound = $NoIssuesFound -and $cacheHealthOutput.NoIssuesFound
+
+        foreach ($websiteDetailKey in $WebsiteDetails.Keys)
+        {
+            $websiteDetail = $WebsiteDetails[$websiteDetailKey]
+            $websiteTestOutput = Test-WebSite -SiteUrl $WebsiteDetailKey -TextToLocate $websiteDetail -ServerNames $ServerNames -ConfigurationName $ConfigurationName
+            if ($websiteTestOutput.NoIssuesFound -eq $false)
+                { $emailBody += Get-EmailOutput -SectionHeader ("Web Test - " + $websiteDetailKey) -output $websiteTestOutput }
+            $NoIssuesFound = $NoIssuesFound -and $websiteTestOutput.NoIssuesFound
+        }
+    } finally {
+        Disconnect-RemoteSession $remoteSession
+    }
+
+    $emailBody += Get-EmailFooter
+
+    Write-Verbose $emailBody
+
+    if ($NoIssuesFound -and $SendEmailOnlyOnFailure -eq $true)
+    {
+        Write-Verbose "No major issues encountered, skipping email"
+    } else {
+        if ($SendEmail)
+        {
+            Send-MailMessage -Subject "[PoshMon Monitoring] Monitoring Results" -Body $emailBody -BodyAsHtml -To $MailToList -From $MailFrom -SmtpServer $SMTPAddress
+        } 
+    }
+}
+
+Function Connect-RemoteOOSSession
 {
     [cmdletbinding()]
     param(
@@ -124,7 +191,6 @@ Function Connect-RemoteSharePointSession
 
     Invoke-Command -Session $remoteSession -ScriptBlock {
         Add-PSSnapin Microsoft.SharePoint.PowerShell -ErrorAction SilentlyContinue
-        #Import-Module "X:\Admin Scripts\PoShMon_Dev\0.1.0\Modules\PoShMon.psd1" #TODO: need to improve this once PoShMon is packaged and, e.g. on PowerShellGallery
     }
 
     return $remoteSession
@@ -384,7 +450,7 @@ Function Test-SPServerStatus
     $output = Test-SPServerStatus -Verbose
 #>
 
-Function Test-DatabaseHealth
+Function Test-DatabasesNeedingUpgrade
 {
     [CmdletBinding()]
     param (
@@ -394,7 +460,7 @@ Function Test-DatabaseHealth
     Write-Verbose "Testing Database Health..."
 
     $NoIssuesFound = $true
-    $outputHeaders = @{ 'DatabaseName' = 'Database Name'; 'Size' = 'Size (MB)'; 'NeedsUpgrade' = 'Needs Upgrade?' }
+    $outputHeaders = @{ 'DatabaseName' = 'Database Name'; 'ApplicationName' = 'Application Name'; 'NeedsUpgrade' = 'Needs Upgrade?' }
     $outputValues = @()
 
     $spDatabases = Invoke-Command -Session $RemoteSession -ScriptBlock {
@@ -416,8 +482,8 @@ Function Test-DatabaseHealth
 
         $outputItem = @{
             'DatabaseName' = $spDatabase.DisplayName;
-            'NeedsUpgrade' = &{if($spDatabase.NeedsUpgrade) {"Yes"} else {"No"}};
-            'Size' = ($spDatabase.DiskSizeRequired | Format-Gigs);
+            'ApplicationName' = $spDatabase.ApplicationName;
+            'NeedsUpgrade' = &{if($spDatabase.NeedsUpgrade) {"Yes"} else {"No"}}
             'Highlight' = $highlight
         }
 
@@ -431,7 +497,7 @@ Function Test-DatabaseHealth
         }
 }
 <#
-    $output = Test-DatabaseHealth $remoteSession -Verbose
+    $output = Test-DatabasesNeedingUpgrade $remoteSession -Verbose
 #>
 
 Function Test-DistributedCacheStatus
