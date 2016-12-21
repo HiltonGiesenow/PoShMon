@@ -61,7 +61,7 @@ Function Invoke-SPMonitoring
         $NoIssuesFound = $NoIssuesFound -and $serverHealthOutput.NoIssuesFound
         $outputValues += $serverHealthOutput
 
-        $jobHealthOutput = Test-JobHealth -RemoteSession $remoteSession
+        $jobHealthOutput = Test-JobHealth -RemoteSession $remoteSession -MinutesToScanHistory $MinutesToScanHistory
         if ($jobHealthOutput.NoIssuesFound -eq $false)
             { $emailBody += Get-EmailOutput -Output $jobHealthOutput }
         $NoIssuesFound = $NoIssuesFound -and $jobHealthOutput.NoIssuesFound

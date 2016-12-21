@@ -116,12 +116,12 @@ Function Test-DriveSpace
 
     $threshhold = 10000
 
-    $sectionHeader = "Getting Server Drive Space..."
+    $sectionHeader = "Harddrive Space Review"
     $NoIssuesFound = $true
     $outputHeaders = @{ 'DriveLetter' = 'Drive Letter'; 'TotalSpace' = 'Total Space (GB)'; 'FreeSpace' = 'Free Space (GB)' }
     $outputValues = @()
 
-    Write-Verbose "Harddrive Space Review"
+    Write-Verbose "Getting Server Drive Space..."
 
     foreach ($serverName in $ServerNames)
     {
