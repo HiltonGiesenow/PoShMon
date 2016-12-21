@@ -42,7 +42,7 @@ Function Invoke-SPMonitoring
         {
             $eventLogOutput = Test-EventLogs -ServerNames $ServerNames -MinutesToScanHistory $MinutesToScanHistory -SeverityCode $eventLogCode
             if ($SendEmailOnlyOnFailure -eq $false -or $eventLogOutput.NoIssuesFound -eq $false)
-                { $emailBody += Get-EmailOutputGroup -SectionHeader ($eventLogCode + " Event Log Entries") -output $eventLogOutput }
+                { $emailBody += Get-EmailOutputGroup -output $eventLogOutput }
             $NoIssuesFound = $NoIssuesFound -and $eventLogOutput.NoIssuesFound
             $outputValues += $eventLogOutput
         }
@@ -50,35 +50,38 @@ Function Invoke-SPMonitoring
         # Drive Space
         $driveSpaceOutput = Test-DriveSpace -ServerNames $ServerNames
         if ($SendEmailOnlyOnFailure -eq $false -or $driveSpaceOutput.NoIssuesFound -eq $false)
-            { $emailBody += Get-EmailOutputGroup -SectionHeader "Server Drive Space" -output $driveSpaceOutput }
+            { $emailBody += Get-EmailOutputGroup -Output $driveSpaceOutput }
         $NoIssuesFound = $NoIssuesFound -and $driveSpaceOutput.NoIssuesFound
         $outputValues += $driveSpaceOutput
         
         # Server Status
-        #TEMPORARILY REMOVED
-        <#
         $serverHealthOutput = Test-SPServerStatus -ServerNames $ServerNames -ConfigurationName $ConfigurationName
         if ($serverHealthOutput.NoIssuesFound -eq $false)
-            { $emailBody += Get-EmailOutput -SectionHeader "Farm Server Status" -output $serverHealthOutput }
+            { $emailBody += Get-EmailOutput -Output $serverHealthOutput }
         $NoIssuesFound = $NoIssuesFound -and $serverHealthOutput.NoIssuesFound
         $outputValues += $serverHealthOutput
-        #>
+
+        $jobHealthOutput = Test-JobHealth -RemoteSession $remoteSession
+        if ($jobHealthOutput.NoIssuesFound -eq $false)
+            { $emailBody += Get-EmailOutput -Output $jobHealthOutput }
+        $NoIssuesFound = $NoIssuesFound -and $jobHealthOutput.NoIssuesFound
+        $outputValues += $jobHealthOutput
 
         $searchHealthOutput = Test-SearchHealth -RemoteSession $remoteSession
         if ($SendEmailOnlyOnFailure -eq $false -or $searchHealthOutput.NoIssuesFound -eq $false)
-            { $emailBody += Get-EmailOutput -SectionHeader "Search Status" -output $searchHealthOutput } 
+            { $emailBody += Get-EmailOutput -Output $searchHealthOutput } 
         $NoIssuesFound = $NoIssuesFound -and $searchHealthOutput.NoIssuesFound
         $outputValues += $searchHealthOutput
 
         $databaseHealthOutput = Test-DatabaseHealth -RemoteSession $remoteSession
         if ($SendEmailOnlyOnFailure -eq $false -or $databaseHealthOutput.NoIssuesFound -eq $false)
-            { $emailBody += Get-EmailOutput -SectionHeader "Database Status" -output $databaseHealthOutput }
+            { $emailBody += Get-EmailOutput -Output $databaseHealthOutput }
         $NoIssuesFound = $NoIssuesFound -and $databaseHealthOutput.NoIssuesFound
         $outputValues += $databaseHealthOutput
 
         $cacheHealthOutput = Test-DistributedCacheStatus -RemoteSession $remoteSession
         if ($SendEmailOnlyOnFailure -eq $false -or $cacheHealthOutput.NoIssuesFound -eq $false)
-            { $emailBody += Get-EmailOutput -SectionHeader "Distributed Cache Status" -output $cacheHealthOutput }
+            { $emailBody += Get-EmailOutput -Output $cacheHealthOutput }
         $NoIssuesFound = $NoIssuesFound -and $cacheHealthOutput.NoIssuesFound
         $outputValues += $cacheHealthOutput
 
@@ -139,6 +142,7 @@ Function Test-SearchHealth
 
     Write-Verbose "Testing Search Health..."
 
+    $sectionHeader = "Search Status"
     $NoIssuesFound = $true
     $outputHeaders = @{ 'ComponentName' = 'Component'; 'ServerName' = 'Server Name'; 'State' = 'State' }
     $outputValues = @()
@@ -184,6 +188,7 @@ Function Test-SearchHealth
     }
 
     return @{
+        "SectionHeader" = $sectionHeader;
         "NoIssuesFound" = $NoIssuesFound;
         "OutputHeaders" = $outputHeaders;
         "OutputValues" = $outputValues
@@ -203,6 +208,7 @@ Function Test-JobHealth
 
     Write-Verbose "Testing Timer Job Health..."
 
+    $sectionHeader = "Timer Job Health"
     $NoIssuesFound = $true
     $outputHeaders = @{ 'JobDefinitionTitle' = 'Job Definition Title'; 'EndTime' = 'End Time'; 'ServerName' = 'Server Name'; 'WebApplicationName' = 'Web Application Name'; 'ErrorMessage' ='Error Message' }
     $outputValues = @()
@@ -240,6 +246,7 @@ Function Test-JobHealth
     }
 
     return @{
+        "SectionHeader" = $sectionHeader;
         "NoIssuesFound" = $NoIssuesFound;
         "OutputHeaders" = $outputHeaders;
         "OutputValues" = $outputValues
@@ -317,6 +324,7 @@ Function Test-SPServerStatus
 
     Write-Verbose "Testing Server Statuses..."
 
+    $sectionHeader = "Farm Server Status"
     $NoIssuesFound = $true
     $outputHeaders = @{ 'ServerName' = 'Server Name'; 'Role' = 'Role'; 'NeedsUpgrade' = 'Needs Upgrade?'; 'Status' ='Status' }
     $outputValues = @()
@@ -375,6 +383,7 @@ Function Test-SPServerStatus
     }
 
     return @{
+        "SectionHeader" = $sectionHeader;
         "NoIssuesFound" = $NoIssuesFound;
         "OutputHeaders" = $outputHeaders;
         "OutputValues" = $outputValues
@@ -393,6 +402,7 @@ Function Test-DatabaseHealth
 
     Write-Verbose "Testing Database Health..."
 
+    $sectionHeader = "Database Status"
     $NoIssuesFound = $true
     $outputHeaders = @{ 'DatabaseName' = 'Database Name'; 'Size' = 'Size (MB)'; 'NeedsUpgrade' = 'Needs Upgrade?' }
     $outputValues = @()
@@ -425,6 +435,7 @@ Function Test-DatabaseHealth
     }
 
     return @{
+        "SectionHeader" = $sectionHeader;
         "NoIssuesFound" = $NoIssuesFound;
         "OutputHeaders" = $outputHeaders;
         "OutputValues" = $outputValues
@@ -442,7 +453,7 @@ Function Test-DistributedCacheStatus
     )
 
     Write-Verbose "Testing Distributed Cache Health..."
-
+    $sectionHeader = "Distributed Cache Status"
     $NoIssuesFound = $true
     $outputHeaders = @{ 'Server' = 'Server'; 'Status' = 'Status' }
     $outputValues = @()
@@ -481,6 +492,7 @@ Function Test-DistributedCacheStatus
     }
 
     return @{
+        "SectionHeader" = $sectionHeader;
         "NoIssuesFound" = $NoIssuesFound;
         "OutputHeaders" = $outputHeaders;
         "OutputValues" = $outputValues

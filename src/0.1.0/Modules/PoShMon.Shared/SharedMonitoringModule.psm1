@@ -41,11 +41,10 @@ Function Get-EmailOutput
 {
     [cmdletbinding()]
     param(
-        [string]$SectionHeader,
-        $output
+        $Output
     )
 
-    $emailBody += '<p><h1>' + $SectionHeader + '</h1>'
+    $emailBody += '<p><h1>' + $Output.SectionHeader + '</h1>'
     $emailBody += '<table border="1"><thead><tr>'
 
     foreach ($headerKey in $output.OutputHeaders.Keys)
@@ -89,11 +88,10 @@ Function Get-EmailOutputGroup
 {
     [cmdletbinding()]
     param(
-        [string]$SectionHeader,
         $output
     )
 
-    $emailBody += '<p><h1>' + $SectionHeader + '</h1>'
+    $emailBody += '<p><h1>' + $Output.SectionHeader + '</h1>'
     $emailBody += '<table border="1">'
     
     foreach ($groupOutputValue in $output.OutputValues)
@@ -139,7 +137,7 @@ Function Get-EmailHeader
 {
     [CmdletBinding()]
     param(
-        [string]$ReportTitle = $null
+        [string]$ReportTitle = "PoShMon Monitoring Report"
     )
 
     $emailBody = '<head><title>' + $ReportTitle + '</title>

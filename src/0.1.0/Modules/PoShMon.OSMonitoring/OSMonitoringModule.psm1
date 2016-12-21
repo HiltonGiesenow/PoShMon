@@ -35,6 +35,7 @@ Function Test-EventLogs
     )
    
     $NoIssuesFound = $true
+    $sectionHeader = "$SeverityCode Event Log Issues"
     $outputHeaders = @{ 'EventID' = 'Event ID'; 'InstanceCount' = 'Count'; 'Source' = 'Source'; 'User' = 'User'; 'Timestamp' = 'Timestamp'; 'Message' ='Message' }
     $outputValues = @()
 
@@ -43,7 +44,7 @@ Function Test-EventLogs
     $wmidate.SetVarDate($wmiStartDate, $true)
     $wmiStartDateWmi = $wmidate.value
 
-    Write-Verbose ($SeverityCode + " Event Log Issues")
+    Write-Verbose "Getting $SeverityCode Event Log Issues..."
 
     foreach ($serverName in $ServerNames)
     {
@@ -99,6 +100,7 @@ Function Test-EventLogs
     }
 
     return @{
+        "SectionHeader" = $sectionHeader;
         "NoIssuesFound" = $NoIssuesFound;
         "OutputHeaders" = $outputHeaders;
         "OutputValues" = $outputValues
@@ -114,6 +116,7 @@ Function Test-DriveSpace
 
     $threshhold = 10000
 
+    $sectionHeader = "Getting Server Drive Space..."
     $NoIssuesFound = $true
     $outputHeaders = @{ 'DriveLetter' = 'Drive Letter'; 'TotalSpace' = 'Total Space (GB)'; 'FreeSpace' = 'Free Space (GB)' }
     $outputValues = @()
@@ -161,6 +164,7 @@ Function Test-DriveSpace
     }
 
     return @{
+        "SectionHeader" = $sectionHeader;
         "NoIssuesFound" = $NoIssuesFound;
         "OutputHeaders" = $outputHeaders;
         "OutputValues" = $outputValues
@@ -178,29 +182,37 @@ Function Invoke-OSMonitoring
         [string[]]$EventLogCodes = 'Critical',
         [hashtable]$EventIDIgnoreList = @{},
         [bool]$SendEmail = $true,
+        [bool]$SendEmailOnlyOnFailure = $false,
         [string]$MailFrom,
         [string]$SMTPAddress
     )
 
     $emailBody = Get-EmailHeader
     $NoIssuesFound = $true 
+    $outputValues = @()
 
     # Event Logs
     foreach ($eventLogCode in $EventLogCodes)
     {
         $eventLogOutput = Test-EventLogs -ServerNames $ServerNames -MinutesToScanHistory $MinutesToScanHistory -SeverityCode $eventLogCode -EventIDIgnoreList $EventIDIgnoreList
-        $emailBody += Get-EmailOutputGroup -SectionHeader ($eventLogCode + " Event Log Entries") -output $eventLogOutput
+        if ($SendEmailOnlyOnFailure -eq $false -or $eventLogOutput.NoIssuesFound -eq $false)
+            { $emailBody += Get-EmailOutputGroup -output $eventLogOutput }
         $NoIssuesFound = $NoIssuesFound -and $eventLogOutput.NoIssuesFound
+        $outputValues += $eventLogOutput
     }
 
     # Drive Space
     $driveSpaceOutput = Test-DriveSpace -ServerNames $ServerNames
-    $emailBody += Get-EmailOutputGroup -SectionHeader "Server Drive Space" -output $driveSpaceOutput
+    if ($SendEmailOnlyOnFailure -eq $false -or $driveSpaceOutput.NoIssuesFound -eq $false)
+        { $emailBody += Get-EmailOutputGroup -Output $driveSpaceOutput }
     $NoIssuesFound = $NoIssuesFound -and $driveSpaceOutput.NoIssuesFound
+    $outputValues += $driveSpaceOutput
 
     $emailBody += Get-EmailFooter
 
-    if ($NoIssuesFound)
+    Write-Verbose $emailBody
+
+    if ($NoIssuesFound -and $SendEmailOnlyOnFailure -eq $true)
     {
         Write-Verbose "No major issues encountered, skipping email"
     } else {
@@ -209,4 +221,6 @@ Function Invoke-OSMonitoring
             Send-MailMessage -Subject "[PoshMon Monitoring] Monitoring Results" -Body $emailBody -BodyAsHtml -To $MailToList -From $MailFrom -SmtpServer $SMTPAddress
         } 
     }
+
+    return $outputValues
 }
