@@ -47,7 +47,6 @@ Function Invoke-SPMonitoring
             $NoIssuesFound = $NoIssuesFound -and $eventLogOutput.NoIssuesFound
             $outputValues += $eventLogOutput
         }
-
         # Drive Space
         $driveSpaceOutput = Test-DriveSpace -ServerNames $ServerNames
         if ($SendEmailOnlyOnFailure -eq $false -or $driveSpaceOutput.NoIssuesFound -eq $false)
@@ -57,20 +56,20 @@ Function Invoke-SPMonitoring
         
         # Server Status
         $serverHealthOutput = Test-SPServerStatus -ServerNames $ServerNames -ConfigurationName $ConfigurationName
-        if ($serverHealthOutput.NoIssuesFound -eq $false)
+        if ($SendEmailOnlyOnFailure -eq $false -or $serverHealthOutput.NoIssuesFound -eq $false)
             { $emailBody += Get-EmailOutput -Output $serverHealthOutput }
         $NoIssuesFound = $NoIssuesFound -and $serverHealthOutput.NoIssuesFound
         $outputValues += $serverHealthOutput
-
+        
         #Windows Service State
         $windowsServiceHealthOutput = Test-SPWindowsServiceState -RemoteSession $remoteSession -SpecialWindowsServices $SpecialWindowsServices
-        if ($windowsServiceHealthOutput.NoIssuesFound -eq $false)
-            { $emailBody += Get-EmailOutput -Output $windowsServiceHealthOutput }
+        if ($SendEmailOnlyOnFailure -eq $false -or $windowsServiceHealthOutput.NoIssuesFound -eq $false)
+            { $emailBody += Get-EmailOutputGroup -Output $windowsServiceHealthOutput }
         $NoIssuesFound = $NoIssuesFound -and $windowsServiceHealthOutput.NoIssuesFound
         $outputValues += $windowsServiceHealthOutput
-
+        
         $jobHealthOutput = Test-JobHealth -RemoteSession $remoteSession -MinutesToScanHistory $MinutesToScanHistory
-        if ($jobHealthOutput.NoIssuesFound -eq $false)
+        if ($SendEmailOnlyOnFailure -eq $false -or $jobHealthOutput.NoIssuesFound -eq $false)
             { $emailBody += Get-EmailOutput -Output $jobHealthOutput }
         $NoIssuesFound = $NoIssuesFound -and $jobHealthOutput.NoIssuesFound
         $outputValues += $jobHealthOutput
@@ -409,6 +408,9 @@ Function Test-SPWindowsServiceState
         [string[]]$SpecialWindowsServices
     )
 
+    Write-Verbose "Getting Windows Service State..."
+
+    Write-Verbose "`tGetting SharePoint service list..."
     $spServiceInstances = Invoke-Command -Session $remoteSession -ScriptBlock {
                             Get-SPServiceInstance | Where Service -like '* Name=*' | Select Server, Service, Status | Sort Server
                         }
@@ -417,11 +419,11 @@ Function Test-SPWindowsServiceState
     $NoIssuesFound = $true
     $outputHeaders = @{ 'DisplayName' = 'Display Name'; 'Name' = 'Name'; 'Status' = 'Status' }
     $outputValues = @()
-
-    Write-Verbose "Getting Windows Service State..."
     
     $serversWithServices = @{}
-    $defaultServiceList = 'IISADMIN','SPAdminV4','SPTimerV4','SPTraceV4','SPWriterV4' + $SpecialWindowsServices
+    $defaultServiceList = 'IISADMIN','SPAdminV4','SPTimerV4','SPTraceV4','SPWriterV4'
+    if ($SpecialWindowsServices -ne $null -and $SpecialWindowsServices.Count -gt 0)
+        { $defaultServiceList += $SpecialWindowsServices }
 
     foreach ($spServiceInstance in $spServiceInstances)
     {
@@ -440,10 +442,13 @@ Function Test-SPWindowsServiceState
         }
     }
 
+    Write-Verbose "`tGetting state of services per server..."
     foreach ($serverWithServicesKey in $serversWithServices.Keys)
     {
         $serverWithServices = $serversWithServices[$serverWithServicesKey]
         $groupedoutputItem = Test-ServiceStatePartial -ServerName $serverWithServicesKey -Services $serverWithServices
+
+        $NoIssuesFound = $NoIssuesFound -and $groupedoutputItem.NoIssuesFound
 
         $outputValues += $groupedoutputItem
     }

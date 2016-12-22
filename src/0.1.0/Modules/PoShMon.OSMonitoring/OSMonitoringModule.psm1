@@ -273,6 +273,8 @@ Function Test-ServiceStatePartial
 
         $serviceFound = $serviceFoundOnServer | Where Name -eq $service
 
+        $highlight = ""
+
         if ($serviceFound -eq $null)
         {
             $NoIssuesFound = $false
@@ -283,7 +285,8 @@ Function Test-ServiceStatePartial
             $outputItem = @{
                 'DisplayName' = "[Not Found]";
                 'Name' = $service;
-                'State' = "[Not Found]";
+                'Status' = "[Not Found]";
+                'Highlight' = $highlight
             }
         } else {
             if ($ServiceState -ne $serviceFound.Status)
@@ -299,7 +302,8 @@ Function Test-ServiceStatePartial
             $outputItem = @{
                 'DisplayName' = $serviceFound.DisplayName;
                 'Name' = $serviceFound.Name;
-                'State' = $serviceFound.Status;
+                'Status' = $serviceFound.Status;
+                'Highlight' = $highlight
             }
         }
 
