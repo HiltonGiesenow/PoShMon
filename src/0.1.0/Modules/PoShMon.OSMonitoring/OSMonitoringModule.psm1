@@ -265,11 +265,11 @@ Function Test-ServiceStatePartial
 
     $serviceFoundOnServer = Get-Service -ComputerName $ServerName
 
+    $itemOutputValues = @()
+
     foreach ($service in $Services)
     {
         Write-Verbose "`t`t Checking '$service'..."
-
-        $itemOutputValues = @()
 
         $serviceFound = $serviceFoundOnServer | Where Name -eq $service
 
@@ -281,8 +281,8 @@ Function Test-ServiceStatePartial
             Write-Host "Service '$service' on $serverName Not Found!" -ForegroundColor Red
 
             $outputItem = @{
-                'DisplayName' = $service;
-                'Name' = "[Not Found]";
+                'DisplayName' = "[Not Found]";
+                'Name' = $service;
                 'State' = "[Not Found]";
             }
         } else {
@@ -297,7 +297,7 @@ Function Test-ServiceStatePartial
             }
 
             $outputItem = @{
-                'DisplayName' = $service;
+                'DisplayName' = $serviceFound.DisplayName;
                 'Name' = $serviceFound.Name;
                 'State' = $serviceFound.Status;
             }
