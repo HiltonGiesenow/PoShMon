@@ -291,7 +291,7 @@ Function Test-ServiceStatePartial
                 $NoIssuesFound = $false
                 $highlight += "Status"
 
-                Write-Host "$service' on $serverName state incorrect - expected $ServiceState" -ForegroundColor Red
+                Write-Host "'$service' on $serverName state incorrect - expected $ServiceState" -ForegroundColor Red
             } else {
                 Write-Verbose "`t`t'$service' found and in correct state"
             }
