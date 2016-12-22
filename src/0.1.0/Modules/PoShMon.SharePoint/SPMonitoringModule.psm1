@@ -20,7 +20,7 @@ Function Invoke-SPMonitoring
         [string[]]$MailToList,
         [string[]]$EventLogCodes = 'Critical',
         [hashtable]$WebsiteDetails = @{},
-        [string[]]$SpecialWindowsServices,
+        [string[]]$SpecialWindowsServices = $null,
         [string]$ConfigurationName = $null,
         [bool]$SendEmail = $true,
         [bool]$SendEmailOnlyOnFailure = $false,
