@@ -20,6 +20,7 @@ Function Invoke-SPMonitoring
         [string[]]$MailToList,
         [string[]]$EventLogCodes = 'Critical',
         [hashtable]$WebsiteDetails = @{},
+        [string[]]$SpecialWindowsServices,
         [string]$ConfigurationName = $null,
         [bool]$SendEmail = $true,
         [bool]$SendEmailOnlyOnFailure = $false,
@@ -60,6 +61,13 @@ Function Invoke-SPMonitoring
             { $emailBody += Get-EmailOutput -Output $serverHealthOutput }
         $NoIssuesFound = $NoIssuesFound -and $serverHealthOutput.NoIssuesFound
         $outputValues += $serverHealthOutput
+
+        #Windows Service State
+        $windowsServiceHealthOutput = Test-SPWindowsServiceState -RemoteSession $remoteSession -SpecialWindowsServices $SpecialWindowsServices
+        if ($windowsServiceHealthOutput.NoIssuesFound -eq $false)
+            { $emailBody += Get-EmailOutput -Output $windowsServiceHealthOutput }
+        $NoIssuesFound = $NoIssuesFound -and $windowsServiceHealthOutput.NoIssuesFound
+        $outputValues += $windowsServiceHealthOutput
 
         $jobHealthOutput = Test-JobHealth -RemoteSession $remoteSession -MinutesToScanHistory $MinutesToScanHistory
         if ($jobHealthOutput.NoIssuesFound -eq $false)
@@ -391,6 +399,64 @@ Function Test-SPServerStatus
 }
 <#
     $output = Test-SPServerStatus -Verbose
+#>
+
+Function Test-SPWindowsServiceState
+{
+    [CmdletBinding()]
+    param (
+        [System.Management.Automation.Runspaces.PSSession]$RemoteSession,
+        [string[]]$SpecialWindowsServices
+    )
+
+    $spServiceInstances = Invoke-Command -Session $remoteSession -ScriptBlock {
+                            Get-SPServiceInstance | Where Service -like '* Name=*' | Select Server, Service, Status | Sort Server
+                        }
+    
+    $sectionHeader = "Windows Service State"
+    $NoIssuesFound = $true
+    $outputHeaders = @{ 'DisplayName' = 'Display Name'; 'Name' = 'Name'; 'Status' = 'Status' }
+    $outputValues = @()
+
+    Write-Verbose "Getting Windows Service State..."
+    
+    $serversWithServices = @{}
+    $defaultServiceList = 'IISADMIN','SPAdminV4','SPTimerV4','SPTraceV4','SPWriterV4' + $SpecialWindowsServices
+
+    foreach ($spServiceInstance in $spServiceInstances)
+    {
+        # ignore non Windows services
+        if ($spServiceInstance.Status.Value -eq 'Online' `
+            -and $spServiceInstance.Service.Name -ne 'WSS_Administration' `
+            -and $spServiceInstance.Service.Name -ne 'spworkflowtimerv4'
+        )
+        {
+            if (!$serversWithServices.ContainsKey($spServiceInstance.Server.DisplayName))
+            {
+                $serversWithServices.Add($spServiceInstance.Server.DisplayName, $defaultServiceList)
+            }
+
+            $serversWithServices[$spServiceInstance.Server.DisplayName] += $spServiceInstance.Service.Name
+        }
+    }
+
+    foreach ($serverWithServicesKey in $serversWithServices.Keys)
+    {
+        $serverWithServices = $serversWithServices[$serverWithServicesKey]
+        $groupedoutputItem = Test-ServiceStatePartial -ServerName $serverWithServicesKey -Services $serverWithServices
+
+        $outputValues += $groupedoutputItem
+    }
+
+    return @{
+        "SectionHeader" = $sectionHeader;
+        "NoIssuesFound" = $NoIssuesFound;
+        "OutputHeaders" = $outputHeaders;
+        "OutputValues" = $outputValues
+        }
+}
+<#
+    $output = Test-SPWindowsServiceState -RemoteSession $remoteSession -SpecialWindowsServices $SpecialWindowsServices
 #>
 
 Function Test-DatabaseHealth
