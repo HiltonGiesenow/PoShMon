@@ -309,6 +309,7 @@ Function Test-ServiceStatePartial
     $groupedoutputItem = @{
             'GroupName' = $serverName
             'GroupOutputValues' = $itemOutputValues
+            'NoIssuesFound' = $NoIssuesFound
         }
 
     return $groupedoutputItem
