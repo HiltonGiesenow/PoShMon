@@ -340,6 +340,7 @@ Function Invoke-OSMonitoring
         [string[]]$MailToList = @(),
         [string[]]$EventLogCodes = 'Critical',
         [hashtable]$EventIDIgnoreList = @{},
+        [string[]]$TestsToSkip = @(),
         [bool]$SendEmail = $true,
         [bool]$SendEmailOnlyOnFailure = $false,
         [string]$MailFrom,
@@ -351,15 +352,19 @@ Function Invoke-OSMonitoring
     $outputValues = @()
 
     # Event Logs
-    foreach ($eventLogCode in $EventLogCodes)
-        { $outputValues += Test-EventLogs -ServerNames $ServerNames -MinutesToScanHistory $MinutesToScanHistory -SeverityCode $eventLogCode }
+    if (!$TestsToSkip.Contains("EventLogs"))
+    {
+        foreach ($eventLogCode in $EventLogCodes)
+            { $outputValues += Test-EventLogs -ServerNames $ServerNames -MinutesToScanHistory $MinutesToScanHistory -SeverityCode $eventLogCode }
+    }
 
     # Drive Space
-    $outputValues += Test-DriveSpace -ServerNames $ServerNames
+    if (!$TestsToSkip.Contains("DriveSpace"))
+        { $outputValues += Test-DriveSpace -ServerNames $ServerNames }
 
     $stopWatch.Stop()
 
-    Confirm-SendMonitoringEmail -TestOutputValues $outputValues -SendEmailOnlyOnFailure $SendEmailOnlyOnFailure -SendEmail $SendEmail `
+    Confirm-SendMonitoringEmail -TestOutputValues $outputValues -SkippedTests $TestsToSkip -SendEmailOnlyOnFailure $SendEmailOnlyOnFailure -SendEmail $SendEmail `
         -EnvironmentName $EnvironmentName -MailToList $MailToList -MailFrom $MailFrom -SMTPAddress $SMTPAddress -TotalElapsedTime $stopWatch.Elapsed
 
     return $outputValues

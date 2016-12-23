@@ -8,6 +8,7 @@
         [string]$PrimaryServerName = 'localhost',
         [string[]]$MailToList,
         [string[]]$EventLogCodes = 'Critical',
+        [string[]]$TestsToSkip = @(),
         [hashtable]$WebsiteDetails = @{},
         [string[]]$SpecialWindowsServices = $null,
         [string]$ConfigurationName = $null,
@@ -27,44 +28,56 @@
         $ServerNames = Invoke-Command -Session $remoteSession -ScriptBlock { Get-SPServer | Where Role -ne "Invalid" | Select Name } | % { $_.Name }
 
         # Event Logs
-        foreach ($eventLogCode in $EventLogCodes)
-            { $outputValues += Test-EventLogs -ServerNames $ServerNames -MinutesToScanHistory $MinutesToScanHistory -SeverityCode $eventLogCode }
-
-        # Drive Space
-        $outputValues += Test-DriveSpace -ServerNames $ServerNames
-
-        # Server Status
-        $outputValues += Test-SPServerStatus -ServerNames $ServerNames -ConfigurationName $ConfigurationName
-        
-        # Windows Service State
-        $outputValues += Test-SPWindowsServiceState -RemoteSession $remoteSession -SpecialWindowsServices $SpecialWindowsServices
-        
-        # Failing Timer Jobs
-        $outputValues += Test-JobHealth -RemoteSession $remoteSession -MinutesToScanHistory $MinutesToScanHistory
-
-        # Database Health
-        $outputValues += Test-DatabaseHealth -RemoteSession $remoteSession
-
-        # Search Health
-        $outputValues += Test-SearchHealth -RemoteSession $remoteSession
-
-        # Distributed Cache Health
-        $outputValues += Test-DistributedCacheStatus -RemoteSession $remoteSession
-
-        # Web Tests
-        foreach ($websiteDetailKey in $WebsiteDetails.Keys)
+        if (!$TestsToSkip.Contains("EventLogs"))
         {
-            $websiteDetail = $WebsiteDetails[$websiteDetailKey]
-            $outputValues += Test-WebSite -SiteUrl $WebsiteDetailKey -TextToLocate $websiteDetail -ServerNames $ServerNames -ConfigurationName $ConfigurationName
+            foreach ($eventLogCode in $EventLogCodes)
+                { $outputValues += Test-EventLogs -ServerNames $ServerNames -MinutesToScanHistory $MinutesToScanHistory -SeverityCode $eventLogCode }
         }
 
+        # Drive Space
+        if (!$TestsToSkip.Contains("DriveSpace"))
+            { $outputValues += Test-DriveSpace -ServerNames $ServerNames }
+
+        # Server Status
+        if (!$TestsToSkip.Contains("SPServerStatus"))
+            { $outputValues += Test-SPServerStatus -ServerNames $ServerNames -ConfigurationName $ConfigurationName }
+        
+        # Windows Service State
+        if (!$TestsToSkip.Contains("WindowsServiceState"))
+            { $outputValues += Test-SPWindowsServiceState -RemoteSession $remoteSession -SpecialWindowsServices $SpecialWindowsServices }
+        
+        # Failing Timer Jobs
+        if (!$TestsToSkip.Contains("SPFailingTimerJobs"))
+            { $outputValues += Test-JobHealth -RemoteSession $remoteSession -MinutesToScanHistory $MinutesToScanHistory }
+
+        # Database Health
+        if (!$TestsToSkip.Contains("SPDatabaseHealth"))
+            { $outputValues += Test-DatabaseHealth -RemoteSession $remoteSession }
+
+        # Search Health
+        if (!$TestsToSkip.Contains("SPSearchHealth"))
+            { $outputValues += Test-SearchHealth -RemoteSession $remoteSession }
+
+        # Distributed Cache Health
+        if (!$TestsToSkip.Contains("SPDistributedCacheHealth"))
+            { $outputValues += Test-DistributedCacheStatus -RemoteSession $remoteSession }
+
+        # Web Tests
+        if (!$TestsToSkip.Contains("WebTests"))
+        {
+            foreach ($websiteDetailKey in $WebsiteDetails.Keys)
+            {
+                $websiteDetail = $WebsiteDetails[$websiteDetailKey]
+                $outputValues += Test-WebSite -SiteUrl $WebsiteDetailKey -TextToLocate $websiteDetail -ServerNames $ServerNames -ConfigurationName $ConfigurationName
+            }
+        }
     } finally {
         Disconnect-RemoteSession $remoteSession
         
         $stopWatch.Stop()
     }
 
-    Confirm-SendMonitoringEmail -TestOutputValues $outputValues -SendEmailOnlyOnFailure $SendEmailOnlyOnFailure -SendEmail $SendEmail `
+    Confirm-SendMonitoringEmail -TestOutputValues $outputValues -SkippedTests $TestsToSkip -SendEmailOnlyOnFailure $SendEmailOnlyOnFailure -SendEmail $SendEmail `
         -EnvironmentName $EnvironmentName -MailToList $MailToList -MailFrom $MailFrom -SMTPAddress $SMTPAddress -TotalElapsedTime $stopWatch.Elapsed
 
     return $outputValues
