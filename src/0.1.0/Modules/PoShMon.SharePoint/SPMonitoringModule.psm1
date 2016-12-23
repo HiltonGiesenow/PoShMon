@@ -181,9 +181,9 @@ Function Test-JobHealth
 
     $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
 
-    Write-Verbose "Testing Timer Job Health..."
+    Write-Verbose "Testing Failing Timer Jobs..."
 
-    $sectionHeader = "Timer Job Health"
+    $sectionHeader = "Failing Timer Jobs"
     $NoIssuesFound = $true
     $outputHeaders = @{ 'JobDefinitionTitle' = 'Job Definition Title'; 'EndTime' = 'End Time'; 'ServerName' = 'Server Name'; 'WebApplicationName' = 'Web Application Name'; 'ErrorMessage' ='Error Message' }
     $outputValues = @()
