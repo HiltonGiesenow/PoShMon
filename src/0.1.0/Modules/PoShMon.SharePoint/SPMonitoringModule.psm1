@@ -15,6 +15,7 @@ Function Invoke-SPMonitoring
     [CmdletBinding()]
     Param(
         #[parameter(Mandatory=$true, HelpMessage=”Path to file”)]
+        [string]$EnvironmentName = "SharePoint",        
         [int]$MinutesToScanHistory = 15,
         [string]$PrimaryServerName = 'localhost',
         [string[]]$MailToList,
@@ -73,7 +74,7 @@ Function Invoke-SPMonitoring
     }
 
     Confirm-SendMonitoringEmail -TestOutputValues $outputValues -SendEmailOnlyOnFailure $SendEmailOnlyOnFailure -SendEmail $SendEmail `
-        -EmailBody $emailBody -MailToList $MailToList -MailFrom $MailFrom -SMTPAddress $SMTPAddress
+        -EnvironmentName $EnvironmentName -MailToList $MailToList -MailFrom $MailFrom -SMTPAddress $SMTPAddress
 
     return $outputValues
 }

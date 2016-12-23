@@ -324,6 +324,7 @@ Function Invoke-OSMonitoring
     [CmdletBinding()]
     Param(
         #[parameter(Mandatory=$true, HelpMessage=”Path to file”)]
+        [string]$EnvironmentName = "Environment",
         [int]$MinutesToScanHistory = 15,
         [string[]]$ServerNames = @(),
         [string[]]$MailToList = @(),
@@ -345,7 +346,7 @@ Function Invoke-OSMonitoring
     $outputValues += Test-DriveSpace -ServerNames $ServerNames
 
     Confirm-SendMonitoringEmail -TestOutputValues $outputValues -SendEmailOnlyOnFailure $SendEmailOnlyOnFailure -SendEmail $SendEmail `
-        -MailToList $MailToList -MailFrom $MailFrom -SMTPAddress $SMTPAddress
+        -EnvironmentName $EnvironmentName -MailToList $MailToList -MailFrom $MailFrom -SMTPAddress $SMTPAddress
 
     return $outputValues
 }

@@ -196,6 +196,7 @@ Function Confirm-SendMonitoringEmail
         $TestOutputValues,        
         $SendEmailOnlyOnFailure,
         $SendEmail,
+        $EnvironmentName,
         $EmailBody,
         $MailToList,
         $MailFrom,
@@ -212,7 +213,7 @@ Function Confirm-SendMonitoringEmail
         {
             $emailBody = ''
             
-            $emailBody += Get-EmailHeader "Environment Monitoring Report"
+            $emailBody += Get-EmailHeader "$EnvironmentName Monitoring Report"
 
             $emailBody += New-MonitoringEmailOutput -SendEmailOnlyOnFailure $SendEmailOnlyOnFailure -TestOutputValues $TestOutputValues
 
@@ -220,7 +221,7 @@ Function Confirm-SendMonitoringEmail
 
             Write-Verbose $EmailBody
  
-            Send-MailMessage -Subject "[PoshMon Monitoring] Environment Monitoring Results" -Body $emailBody -BodyAsHtml -To $MailToList -From $MailFrom -SmtpServer $SMTPAddress
+            Send-MailMessage -Subject "[PoshMon Monitoring] $EnvironmentName Monitoring Results" -Body $emailBody -BodyAsHtml -To $MailToList -From $MailFrom -SmtpServer $SMTPAddress
         }
     }
 }
