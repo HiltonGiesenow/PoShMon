@@ -1,16 +1,4 @@
-﻿<#
-Function Discover-ServersInFarm
-{
-    [cmdletbinding()]
-    param(
-        [string]$InitialServerName
-    )
-
-    $servers = Get-SPServer 
-}
-#>
-
-Function Invoke-SPMonitoring
+﻿Function Invoke-SPMonitoring
 {
     [CmdletBinding()]
     Param(
@@ -29,6 +17,7 @@ Function Invoke-SPMonitoring
         [string]$SMTPAddress
     )
 
+    $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
     $outputValues = @()
 
     $remoteSession = Connect-RemoteSharePointSession -ServerName $PrimaryServerName -ConfigurationName $ConfigurationName
@@ -71,10 +60,12 @@ Function Invoke-SPMonitoring
 
     } finally {
         Disconnect-RemoteSession $remoteSession
+        
+        $stopWatch.Stop()
     }
 
     Confirm-SendMonitoringEmail -TestOutputValues $outputValues -SendEmailOnlyOnFailure $SendEmailOnlyOnFailure -SendEmail $SendEmail `
-        -EnvironmentName $EnvironmentName -MailToList $MailToList -MailFrom $MailFrom -SMTPAddress $SMTPAddress
+        -EnvironmentName $EnvironmentName -MailToList $MailToList -MailFrom $MailFrom -SMTPAddress $SMTPAddress -TotalElapsedTime $stopWatch.Elapsed
 
     return $outputValues
 }
@@ -103,6 +94,8 @@ Function Test-SearchHealth
     param (
         [System.Management.Automation.Runspaces.PSSession]$RemoteSession
     )
+
+    $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
 
     Write-Verbose "Testing Search Health..."
 
@@ -151,11 +144,14 @@ Function Test-SearchHealth
         }
     }
 
+    $stopWatch.Stop()
+
     return @{
         "SectionHeader" = $sectionHeader;
         "NoIssuesFound" = $NoIssuesFound;
         "OutputHeaders" = $outputHeaders;
-        "OutputValues" = $outputValues
+        "OutputValues" = $outputValues;
+        "ElapsedTime" = $stopWatch.Elapsed;
         }
 }
 <#
@@ -169,6 +165,8 @@ Function Test-JobHealth
         [System.Management.Automation.Runspaces.PSSession]$RemoteSession,
         [int]$MinutesToScanHistory = 1440 # one day
     )
+
+    $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
 
     Write-Verbose "Testing Timer Job Health..."
 
@@ -209,11 +207,14 @@ Function Test-JobHealth
         }
     }
 
+    $stopWatch.Stop()
+
     return @{
         "SectionHeader" = $sectionHeader;
         "NoIssuesFound" = $NoIssuesFound;
         "OutputHeaders" = $outputHeaders;
-        "OutputValues" = $outputValues
+        "OutputValues" = $outputValues;
+        "ElapsedTime" = $stopWatch.Elapsed;
         }
 }
 <#
@@ -286,6 +287,8 @@ Function Test-SPServerStatus
         [string]$ConfigurationName = $null
     )
 
+    $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
+
     Write-Verbose "Testing Server Statuses..."
 
     $sectionHeader = "Farm Server Status"
@@ -346,11 +349,14 @@ Function Test-SPServerStatus
         }
     }
 
+    $stopWatch.Stop()
+
     return @{
         "SectionHeader" = $sectionHeader;
         "NoIssuesFound" = $NoIssuesFound;
         "OutputHeaders" = $outputHeaders;
-        "OutputValues" = $outputValues
+        "OutputValues" = $outputValues;
+        "ElapsedTime" = $stopWatch.Elapsed;
         }
 }
 <#
@@ -364,6 +370,8 @@ Function Test-SPWindowsServiceState
         [System.Management.Automation.Runspaces.PSSession]$RemoteSession,
         [string[]]$SpecialWindowsServices
     )
+
+    $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
 
     Write-Verbose "Getting Windows Service State..."
 
@@ -410,11 +418,14 @@ Function Test-SPWindowsServiceState
         $outputValues += $groupedoutputItem
     }
 
+    $stopWatch.Stop()
+
     return @{
         "SectionHeader" = $sectionHeader;
         "NoIssuesFound" = $NoIssuesFound;
         "OutputHeaders" = $outputHeaders;
-        "OutputValues" = $outputValues
+        "OutputValues" = $outputValues;
+        "ElapsedTime" = $stopWatch.Elapsed;
         }
 }
 <#
@@ -427,6 +438,8 @@ Function Test-DatabaseHealth
     param (
         [System.Management.Automation.Runspaces.PSSession]$RemoteSession
     )
+
+    $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
 
     Write-Verbose "Testing Database Health..."
 
@@ -462,11 +475,14 @@ Function Test-DatabaseHealth
         $outputValues += $outputItem
     }
 
+    $stopWatch.Stop()
+
     return @{
         "SectionHeader" = $sectionHeader;
         "NoIssuesFound" = $NoIssuesFound;
         "OutputHeaders" = $outputHeaders;
-        "OutputValues" = $outputValues
+        "OutputValues" = $outputValues;
+        "ElapsedTime" = $stopWatch.Elapsed;
         }
 }
 <#
@@ -479,6 +495,8 @@ Function Test-DistributedCacheStatus
     param (
         [System.Management.Automation.Runspaces.PSSession]$RemoteSession
     )
+
+    $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
 
     Write-Verbose "Testing Distributed Cache Health..."
     $sectionHeader = "Distributed Cache Status"
@@ -519,11 +537,14 @@ Function Test-DistributedCacheStatus
         $outputValues += $outputItem
     }
 
+    $stopWatch.Stop()
+
     return @{
         "SectionHeader" = $sectionHeader;
         "NoIssuesFound" = $NoIssuesFound;
         "OutputHeaders" = $outputHeaders;
-        "OutputValues" = $outputValues
+        "OutputValues" = $outputValues;
+        "ElapsedTime" = $stopWatch.Elapsed;
         }
 }
 

@@ -33,6 +33,8 @@ Function Test-WebSite
         [string[]]$ServerNames = @(),
         [string]$ConfigurationName
     )
+
+    $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
    
     $sectionHeader = "Web Test - " + $SiteUrl
     $NoIssuesFound = $true
@@ -83,11 +85,14 @@ Function Test-WebSite
         $outputValues += $outputItem
     }
 
+    $stopWatch.Stop()
+
     return @{
         "SectionHeader" = $sectionHeader;
         "NoIssuesFound" = $NoIssuesFound;
         "OutputHeaders" = $outputHeaders;
-        "OutputValues" = $outputValues
+        "OutputValues" = $outputValues;
+        "ElapsedTime" = $stopWatch.Elapsed;
         }
 }
 

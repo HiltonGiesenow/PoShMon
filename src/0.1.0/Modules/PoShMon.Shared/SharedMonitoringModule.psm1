@@ -45,7 +45,12 @@ Function Get-EmailOutput
     )
 
     $emailSection = ''
-    $emailSection += '<p><h1>' + $output.SectionHeader + '</h1>'
+
+    $title = $output.SectionHeader
+    if ($output.ContainsKey("ElapsedTime"))
+        { $title += $(" ({0:F2} Seconds)" -f $output["ElapsedTime"].TotalSeconds) }
+
+    $emailSection += "<p><h1>$title</h1>"
     $emailSection += '<table border="1">'
 
     if ($output.OutputValues -ne $null -and $output.OutputValues.Count -gt 0 -and `
@@ -146,9 +151,15 @@ Function Get-EmailFooter
 {
     [CmdletBinding()]
     param(
+        [TimeSpan]$TotalElapsedTime
     )
 
-    $emailSection = '</body>'
+    $emailSection = ''
+
+    if ($TotalElapsedTime -ne $null)
+         { $emailSection += "<p>Total Elapsed Time (Seconds): $("{0:F2}" -f $TotalElapsedTime.TotalSeconds) ($("{0:F2}" -f $TotalElapsedTime.TotalMinutes) Minutes)</p>" }
+
+    $emailSection += '</body>'
 
     return $emailSection;
 }
@@ -200,7 +211,8 @@ Function Confirm-SendMonitoringEmail
         $EmailBody,
         $MailToList,
         $MailFrom,
-        $SMTPAddress
+        $SMTPAddress,
+        [TimeSpan]$TotalElapsedTime
     )
 
     $noIssuesFound = Confirm-NoIssuesFound $TestOutputValues
@@ -217,7 +229,7 @@ Function Confirm-SendMonitoringEmail
 
             $emailBody += New-MonitoringEmailOutput -SendEmailOnlyOnFailure $SendEmailOnlyOnFailure -TestOutputValues $TestOutputValues
 
-            $emailBody += Get-EmailFooter
+            $emailBody += Get-EmailFooter $TotalElapsedTime
 
             Write-Verbose $EmailBody
  

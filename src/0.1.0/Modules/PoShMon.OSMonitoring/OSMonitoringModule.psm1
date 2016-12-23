@@ -34,6 +34,8 @@ Function Test-EventLogs
         [hashtable]$EventIDIgnoreList = @{}
     )
    
+    $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
+   
     $NoIssuesFound = $true
     $sectionHeader = "$SeverityCode Event Log Issues"
     $outputHeaders = @{ 'EventID' = 'Event ID'; 'InstanceCount' = 'Count'; 'Source' = 'Source'; 'User' = 'User'; 'Timestamp' = 'Timestamp'; 'Message' ='Message' }
@@ -99,11 +101,14 @@ Function Test-EventLogs
         }
     }
 
+    $stopWatch.Stop()
+
     return @{
         "SectionHeader" = $sectionHeader;
         "NoIssuesFound" = $NoIssuesFound;
         "OutputHeaders" = $outputHeaders;
-        "OutputValues" = $outputValues
+        "OutputValues" = $outputValues;
+        "ElapsedTime" = $stopWatch.Elapsed
         }
 }
 
@@ -115,6 +120,8 @@ Function Test-DriveSpace
     )
 
     $threshhold = 10000
+
+    $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
 
     $sectionHeader = "Harddrive Space Review"
     $NoIssuesFound = $true
@@ -163,11 +170,14 @@ Function Test-DriveSpace
         $outputValues += $groupedoutputItem
     }
 
+    $stopWatch.Stop()
+
     return @{
         "SectionHeader" = $sectionHeader;
         "NoIssuesFound" = $NoIssuesFound;
         "OutputHeaders" = $outputHeaders;
-        "OutputValues" = $outputValues
+        "OutputValues" = $outputValues;
+        "ElapsedTime" = $stopWatch.Elapsed;
         }
 }
 
@@ -336,6 +346,8 @@ Function Invoke-OSMonitoring
         [string]$SMTPAddress
     )
 
+    $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
+
     $outputValues = @()
 
     # Event Logs
@@ -345,8 +357,10 @@ Function Invoke-OSMonitoring
     # Drive Space
     $outputValues += Test-DriveSpace -ServerNames $ServerNames
 
+    $stopWatch.Stop()
+
     Confirm-SendMonitoringEmail -TestOutputValues $outputValues -SendEmailOnlyOnFailure $SendEmailOnlyOnFailure -SendEmail $SendEmail `
-        -EnvironmentName $EnvironmentName -MailToList $MailToList -MailFrom $MailFrom -SMTPAddress $SMTPAddress
+        -EnvironmentName $EnvironmentName -MailToList $MailToList -MailFrom $MailFrom -SMTPAddress $SMTPAddress -TotalElapsedTime $stopWatch.Elapsed
 
     return $outputValues
 }
