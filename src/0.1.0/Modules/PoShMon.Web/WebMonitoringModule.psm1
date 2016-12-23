@@ -34,6 +34,7 @@ Function Test-WebSite
         [string]$ConfigurationName
     )
    
+    $sectionHeader = "Web Test - " + $SiteUrl
     $NoIssuesFound = $true
     $outputHeaders = @{ 'ServerName' = 'Server'; 'StatusCode' = 'Status Code'; 'Outcome' = 'Outcome' }
     $outputValues = @()
@@ -83,6 +84,7 @@ Function Test-WebSite
     }
 
     return @{
+        "SectionHeader" = $sectionHeader;
         "NoIssuesFound" = $NoIssuesFound;
         "OutputHeaders" = $outputHeaders;
         "OutputValues" = $outputValues

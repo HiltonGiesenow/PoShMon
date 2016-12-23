@@ -97,7 +97,7 @@ Function Invoke-SPMonitoring
             $websiteDetail = $WebsiteDetails[$websiteDetailKey]
             $websiteTestOutput = Test-WebSite -SiteUrl $WebsiteDetailKey -TextToLocate $websiteDetail -ServerNames $ServerNames -ConfigurationName $ConfigurationName
             if ($SendEmailOnlyOnFailure -eq $false -or $websiteTestOutput.NoIssuesFound -eq $false)
-                { $emailBody += Get-EmailOutput -SectionHeader ("Web Test - " + $websiteDetailKey) -output $websiteTestOutput }
+                { $emailBody += Get-EmailOutput -output $websiteTestOutput }
             $NoIssuesFound = $NoIssuesFound -and $websiteTestOutput.NoIssuesFound
             $outputValues += $websiteTestOutput
         }
