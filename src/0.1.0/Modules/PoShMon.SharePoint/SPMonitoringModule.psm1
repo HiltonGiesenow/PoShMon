@@ -28,9 +28,7 @@ Function Invoke-SPMonitoring
         [string]$SMTPAddress
     )
 
-    $emailBody = Get-EmailHeader "SharePoint Environment Monitoring Report"
-    $NoIssuesFound = $true
-    $outputValues = @() 
+    $outputValues = @()
 
     $remoteSession = Connect-RemoteSharePointSession -ServerName $PrimaryServerName -ConfigurationName $ConfigurationName
     
@@ -40,84 +38,42 @@ Function Invoke-SPMonitoring
 
         # Event Logs
         foreach ($eventLogCode in $EventLogCodes)
-        {
-            $eventLogOutput = Test-EventLogs -ServerNames $ServerNames -MinutesToScanHistory $MinutesToScanHistory -SeverityCode $eventLogCode
-            if ($SendEmailOnlyOnFailure -eq $false -or $eventLogOutput.NoIssuesFound -eq $false)
-                { $emailBody += Get-EmailOutput -output $eventLogOutput }
-            $NoIssuesFound = $NoIssuesFound -and $eventLogOutput.NoIssuesFound
-            $outputValues += $eventLogOutput
-        }
+            { $outputValues += Test-EventLogs -ServerNames $ServerNames -MinutesToScanHistory $MinutesToScanHistory -SeverityCode $eventLogCode }
+
         # Drive Space
-        $driveSpaceOutput = Test-DriveSpace -ServerNames $ServerNames
-        if ($SendEmailOnlyOnFailure -eq $false -or $driveSpaceOutput.NoIssuesFound -eq $false)
-            { $emailBody += Get-EmailOutput -Output $driveSpaceOutput }
-        $NoIssuesFound = $NoIssuesFound -and $driveSpaceOutput.NoIssuesFound
-        $outputValues += $driveSpaceOutput
-        
+        $outputValues += Test-DriveSpace -ServerNames $ServerNames
+
         # Server Status
-        $serverHealthOutput = Test-SPServerStatus -ServerNames $ServerNames -ConfigurationName $ConfigurationName
-        if ($SendEmailOnlyOnFailure -eq $false -or $serverHealthOutput.NoIssuesFound -eq $false)
-            { $emailBody += Get-EmailOutput -Output $serverHealthOutput }
-        $NoIssuesFound = $NoIssuesFound -and $serverHealthOutput.NoIssuesFound
-        $outputValues += $serverHealthOutput
+        $outputValues += Test-SPServerStatus -ServerNames $ServerNames -ConfigurationName $ConfigurationName
         
-        #Windows Service State
-        $windowsServiceHealthOutput = Test-SPWindowsServiceState -RemoteSession $remoteSession -SpecialWindowsServices $SpecialWindowsServices
-        if ($SendEmailOnlyOnFailure -eq $false -or $windowsServiceHealthOutput.NoIssuesFound -eq $false)
-            { $emailBody += Get-EmailOutput -Output $windowsServiceHealthOutput }
-        $NoIssuesFound = $NoIssuesFound -and $windowsServiceHealthOutput.NoIssuesFound
-        $outputValues += $windowsServiceHealthOutput
+        # Windows Service State
+        $outputValues += Test-SPWindowsServiceState -RemoteSession $remoteSession -SpecialWindowsServices $SpecialWindowsServices
         
-        $jobHealthOutput = Test-JobHealth -RemoteSession $remoteSession -MinutesToScanHistory $MinutesToScanHistory
-        if ($SendEmailOnlyOnFailure -eq $false -or $jobHealthOutput.NoIssuesFound -eq $false)
-            { $emailBody += Get-EmailOutput -Output $jobHealthOutput }
-        $NoIssuesFound = $NoIssuesFound -and $jobHealthOutput.NoIssuesFound
-        $outputValues += $jobHealthOutput
+        # Failing Timer Jobs
+        $outputValues += Test-JobHealth -RemoteSession $remoteSession -MinutesToScanHistory $MinutesToScanHistory
 
-        $searchHealthOutput = Test-SearchHealth -RemoteSession $remoteSession
-        if ($SendEmailOnlyOnFailure -eq $false -or $searchHealthOutput.NoIssuesFound -eq $false)
-            { $emailBody += Get-EmailOutput -Output $searchHealthOutput } 
-        $NoIssuesFound = $NoIssuesFound -and $searchHealthOutput.NoIssuesFound
-        $outputValues += $searchHealthOutput
+        # Database Health
+        $outputValues += Test-DatabaseHealth -RemoteSession $remoteSession
 
-        $databaseHealthOutput = Test-DatabaseHealth -RemoteSession $remoteSession
-        if ($SendEmailOnlyOnFailure -eq $false -or $databaseHealthOutput.NoIssuesFound -eq $false)
-            { $emailBody += Get-EmailOutput -Output $databaseHealthOutput }
-        $NoIssuesFound = $NoIssuesFound -and $databaseHealthOutput.NoIssuesFound
-        $outputValues += $databaseHealthOutput
+        # Search Health
+        $outputValues += Test-SearchHealth -RemoteSession $remoteSession
 
-        $cacheHealthOutput = Test-DistributedCacheStatus -RemoteSession $remoteSession
-        if ($SendEmailOnlyOnFailure -eq $false -or $cacheHealthOutput.NoIssuesFound -eq $false)
-            { $emailBody += Get-EmailOutput -Output $cacheHealthOutput }
-        $NoIssuesFound = $NoIssuesFound -and $cacheHealthOutput.NoIssuesFound
-        $outputValues += $cacheHealthOutput
+        # Distributed Cache Health
+        $outputValues += Test-DistributedCacheStatus -RemoteSession $remoteSession
 
+        # Web Tests
         foreach ($websiteDetailKey in $WebsiteDetails.Keys)
         {
             $websiteDetail = $WebsiteDetails[$websiteDetailKey]
-            $websiteTestOutput = Test-WebSite -SiteUrl $WebsiteDetailKey -TextToLocate $websiteDetail -ServerNames $ServerNames -ConfigurationName $ConfigurationName
-            if ($SendEmailOnlyOnFailure -eq $false -or $websiteTestOutput.NoIssuesFound -eq $false)
-                { $emailBody += Get-EmailOutput -output $websiteTestOutput }
-            $NoIssuesFound = $NoIssuesFound -and $websiteTestOutput.NoIssuesFound
-            $outputValues += $websiteTestOutput
+            $outputValues += Test-WebSite -SiteUrl $WebsiteDetailKey -TextToLocate $websiteDetail -ServerNames $ServerNames -ConfigurationName $ConfigurationName
         }
+
     } finally {
         Disconnect-RemoteSession $remoteSession
     }
 
-    $emailBody += Get-EmailFooter
-
-    Write-Verbose $emailBody
-
-    if ($NoIssuesFound -and $SendEmailOnlyOnFailure -eq $true)
-    {
-        Write-Verbose "No major issues encountered, skipping email"
-    } else {
-        if ($SendEmail)
-        {
-            Send-MailMessage -Subject "[PoshMon Monitoring] Monitoring Results" -Body $emailBody -BodyAsHtml -To $MailToList -From $MailFrom -SmtpServer $SMTPAddress
-        } 
-    }
+    Confirm-SendMonitoringEmail -TestOutputValues $outputValues -SendEmailOnlyOnFailure $SendEmailOnlyOnFailure -SendEmail $SendEmail `
+        -EmailBody $emailBody -MailToList $MailToList -MailFrom $MailFrom -SMTPAddress $SMTPAddress
 
     return $outputValues
 }

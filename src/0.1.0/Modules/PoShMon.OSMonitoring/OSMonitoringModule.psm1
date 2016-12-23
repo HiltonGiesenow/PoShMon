@@ -335,40 +335,17 @@ Function Invoke-OSMonitoring
         [string]$SMTPAddress
     )
 
-    $emailBody = Get-EmailHeader
-    $NoIssuesFound = $true 
     $outputValues = @()
 
     # Event Logs
     foreach ($eventLogCode in $EventLogCodes)
-    {
-        $eventLogOutput = Test-EventLogs -ServerNames $ServerNames -MinutesToScanHistory $MinutesToScanHistory -SeverityCode $eventLogCode -EventIDIgnoreList $EventIDIgnoreList
-        if ($SendEmailOnlyOnFailure -eq $false -or $eventLogOutput.NoIssuesFound -eq $false)
-            { $emailBody += Get-EmailOutput -output $eventLogOutput }
-        $NoIssuesFound = $NoIssuesFound -and $eventLogOutput.NoIssuesFound
-        $outputValues += $eventLogOutput
-    }
+        { $outputValues += Test-EventLogs -ServerNames $ServerNames -MinutesToScanHistory $MinutesToScanHistory -SeverityCode $eventLogCode }
 
     # Drive Space
-    $driveSpaceOutput = Test-DriveSpace -ServerNames $ServerNames
-    if ($SendEmailOnlyOnFailure -eq $false -or $driveSpaceOutput.NoIssuesFound -eq $false)
-        { $emailBody += Get-EmailOutput -Output $driveSpaceOutput }
-    $NoIssuesFound = $NoIssuesFound -and $driveSpaceOutput.NoIssuesFound
-    $outputValues += $driveSpaceOutput
+    $outputValues += Test-DriveSpace -ServerNames $ServerNames
 
-    $emailBody += Get-EmailFooter
-
-    Write-Verbose $emailBody
-
-    if ($NoIssuesFound -and $SendEmailOnlyOnFailure -eq $true)
-    {
-        Write-Verbose "No major issues encountered, skipping email"
-    } else {
-        if ($SendEmail)
-        {
-            Send-MailMessage -Subject "[PoshMon Monitoring] Monitoring Results" -Body $emailBody -BodyAsHtml -To $MailToList -From $MailFrom -SmtpServer $SMTPAddress
-        } 
-    }
+    Confirm-SendMonitoringEmail -TestOutputValues $outputValues -SendEmailOnlyOnFailure $SendEmailOnlyOnFailure -SendEmail $SendEmail `
+        -MailToList $MailToList -MailFrom $MailFrom -SMTPAddress $SMTPAddress
 
     return $outputValues
 }

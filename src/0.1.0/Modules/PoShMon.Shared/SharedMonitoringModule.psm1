@@ -148,7 +148,79 @@ Function Get-EmailFooter
     param(
     )
 
-        $emailSection = '</body>'
+    $emailSection = '</body>'
 
     return $emailSection;
+}
+
+Function Confirm-NoIssuesFound
+{
+    [CmdletBinding()]
+    param(
+        $TestOutputValues
+    )
+
+    $NoIssuesFound = $true
+
+    foreach ($testOutputValue in $testOutputValues)
+    {
+        $NoIssuesFound = $NoIssuesFound -and $testOutputValue.NoIssuesFound
+    }
+
+    return $NoIssuesFound
+}
+
+Function New-MonitoringEmailOutput
+{
+    [CmdletBinding()]
+    param(
+        $SendEmailOnlyOnFailure,
+        $TestOutputValues
+    )
+
+    $emailSection = ''
+
+    foreach ($testOutputValue in $testOutputValues)
+    {
+        if ($SendEmailOnlyOnFailure -eq $false -or $testOutputValue.NoIssuesFound -eq $false)
+            { $emailSection += Get-EmailOutput -Output $testOutputValue }
+    }
+
+    return $emailSection
+}
+
+Function Confirm-SendMonitoringEmail
+{
+    [CmdletBinding()]
+    param(
+        $TestOutputValues,        
+        $SendEmailOnlyOnFailure,
+        $SendEmail,
+        $EmailBody,
+        $MailToList,
+        $MailFrom,
+        $SMTPAddress
+    )
+
+    $noIssuesFound = Confirm-NoIssuesFound $TestOutputValues
+
+    if ($NoIssuesFound -and $SendEmailOnlyOnFailure -eq $true)
+    {
+        Write-Verbose "No major issues encountered, skipping email"
+    } else {
+        if ($SendEmail)
+        {
+            $emailBody = ''
+            
+            $emailBody += Get-EmailHeader "Environment Monitoring Report"
+
+            $emailBody += New-MonitoringEmailOutput -SendEmailOnlyOnFailure $SendEmailOnlyOnFailure -TestOutputValues $TestOutputValues
+
+            $emailBody += Get-EmailFooter
+
+            Write-Verbose $EmailBody
+ 
+            Send-MailMessage -Subject "[PoshMon Monitoring] Environment Monitoring Results" -Body $emailBody -BodyAsHtml -To $MailToList -From $MailFrom -SmtpServer $SMTPAddress
+        }
+    }
 }
