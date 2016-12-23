@@ -344,7 +344,7 @@ Function Invoke-OSMonitoring
     {
         $eventLogOutput = Test-EventLogs -ServerNames $ServerNames -MinutesToScanHistory $MinutesToScanHistory -SeverityCode $eventLogCode -EventIDIgnoreList $EventIDIgnoreList
         if ($SendEmailOnlyOnFailure -eq $false -or $eventLogOutput.NoIssuesFound -eq $false)
-            { $emailBody += Get-EmailOutputGroup -output $eventLogOutput }
+            { $emailBody += Get-EmailOutput -output $eventLogOutput }
         $NoIssuesFound = $NoIssuesFound -and $eventLogOutput.NoIssuesFound
         $outputValues += $eventLogOutput
     }
@@ -352,7 +352,7 @@ Function Invoke-OSMonitoring
     # Drive Space
     $driveSpaceOutput = Test-DriveSpace -ServerNames $ServerNames
     if ($SendEmailOnlyOnFailure -eq $false -or $driveSpaceOutput.NoIssuesFound -eq $false)
-        { $emailBody += Get-EmailOutputGroup -Output $driveSpaceOutput }
+        { $emailBody += Get-EmailOutput -Output $driveSpaceOutput }
     $NoIssuesFound = $NoIssuesFound -and $driveSpaceOutput.NoIssuesFound
     $outputValues += $driveSpaceOutput
 

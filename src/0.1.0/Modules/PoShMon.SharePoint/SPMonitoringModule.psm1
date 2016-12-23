@@ -43,14 +43,14 @@ Function Invoke-SPMonitoring
         {
             $eventLogOutput = Test-EventLogs -ServerNames $ServerNames -MinutesToScanHistory $MinutesToScanHistory -SeverityCode $eventLogCode
             if ($SendEmailOnlyOnFailure -eq $false -or $eventLogOutput.NoIssuesFound -eq $false)
-                { $emailBody += Get-EmailOutputGroup -output $eventLogOutput }
+                { $emailBody += Get-EmailOutput -output $eventLogOutput }
             $NoIssuesFound = $NoIssuesFound -and $eventLogOutput.NoIssuesFound
             $outputValues += $eventLogOutput
         }
         # Drive Space
         $driveSpaceOutput = Test-DriveSpace -ServerNames $ServerNames
         if ($SendEmailOnlyOnFailure -eq $false -or $driveSpaceOutput.NoIssuesFound -eq $false)
-            { $emailBody += Get-EmailOutputGroup -Output $driveSpaceOutput }
+            { $emailBody += Get-EmailOutput -Output $driveSpaceOutput }
         $NoIssuesFound = $NoIssuesFound -and $driveSpaceOutput.NoIssuesFound
         $outputValues += $driveSpaceOutput
         
@@ -64,7 +64,7 @@ Function Invoke-SPMonitoring
         #Windows Service State
         $windowsServiceHealthOutput = Test-SPWindowsServiceState -RemoteSession $remoteSession -SpecialWindowsServices $SpecialWindowsServices
         if ($SendEmailOnlyOnFailure -eq $false -or $windowsServiceHealthOutput.NoIssuesFound -eq $false)
-            { $emailBody += Get-EmailOutputGroup -Output $windowsServiceHealthOutput }
+            { $emailBody += Get-EmailOutput -Output $windowsServiceHealthOutput }
         $NoIssuesFound = $NoIssuesFound -and $windowsServiceHealthOutput.NoIssuesFound
         $outputValues += $windowsServiceHealthOutput
         

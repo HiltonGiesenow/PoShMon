@@ -44,22 +44,66 @@ Function Get-EmailOutput
         $Output
     )
 
-    $emailBody += '<p><h1>' + $Output.SectionHeader + '</h1>'
-    $emailBody += '<table border="1"><thead><tr>'
+    $emailSection = ''
+    $emailSection += '<p><h1>' + $output.SectionHeader + '</h1>'
+    $emailSection += '<table border="1">'
 
-    foreach ($headerKey in $output.OutputHeaders.Keys)
+    if ($output.OutputValues -ne $null -and $output.OutputValues.Count -gt 0 -and `
+        $output.OutputValues[0].ContainsKey("GroupName")) #grouped output
     {
-        $header = $output.OutputHeaders[$headerKey]
+        foreach ($groupOutputValue in $output.OutputValues)
+        {    
+            $emailSection += '<thead><tr><th align="left" colspan="' + $output.OutputHeaders.Keys.Count + '"><h2>' + $groupOutputValue.GroupName + '</h2></th></tr><tr>'
+
+            $emailSection += (Get-OutputHeadersEmailOutput -outputHeaders $output.OutputHeaders) + '</tr></thead><tbody>'
+
+            $emailSection += (Get-OutputValuesEmailOutput -outputHeaders $output.OutputHeaders -outputValues $groupOutputValue.GroupOutputValues) + '</tbody>'
+        }
+
+    } else { #non-grouped output
+        $emailSection += '<thead><tr>' + (Get-OutputHeadersEmailOutput -outputHeaders $output.OutputHeaders) + '</tr></thead><tbody>'
+
+        $emailSection += (Get-OutputValuesEmailOutput -outputHeaders $output.OutputHeaders -outputValues $output.OutputValues) + '</tbody>'
+    }
+
+    $emailSection += '</table>'
+
+    return $emailSection
+}
+
+Function Get-OutputHeadersEmailOutput
+{
+    [cmdletbinding()]
+    param(
+        $outputHeaders
+    )
+
+    $emailBody = ''
+
+    foreach ($headerKey in $outputHeaders.Keys)
+    {
+        $header = $outputHeaders[$headerKey]
         $emailBody += '<th align="left">' + $header + '</th>'
     }
 
-    $emailBody += '</tr></thead><tbody>'
-    
-    foreach ($outputValue in $output.OutputValues)
-    {
-        $emailBody += '<tr>'
+    return $emailBody
+}
 
-        foreach ($headerKey in $output.OutputHeaders.Keys)
+Function Get-OutputValuesEmailOutput
+{
+    [cmdletbinding()]
+    param(
+        $outputHeaders,
+        $outputValues
+    )
+    
+    $emailSection = ''
+
+    foreach ($outputValue in $outputValues)
+    {
+        $emailSection += '<tr>'
+
+        foreach ($headerKey in $outputHeaders.Keys)
         {
             $fieldValue = $outputValue[$headerKey]
             if ($outputValue['Highlight'] -ne $null -and $outputValue['Highlight'].Contains($headerKey)) {
@@ -73,64 +117,13 @@ Function Get-EmailOutput
             if ([decimal]::TryParse($fieldValue, [ref]$temp))
                 { $align = 'right' }
 
-            $emailBody += '<td valign="top"' + $style + ' align="' + $align +'">' + $fieldValue + '</td>'
+            $emailSection += '<td valign="top"' + $style + ' align="' + $align +'">' + $fieldValue + '</td>'
         }
 
-        $emailBody += '</tr>'
+        $emailSection += '</tr>'
     }
 
-    $emailBody += '</tbody></table>'
-
-    return $emailBody
-}
-
-Function Get-EmailOutputGroup
-{
-    [cmdletbinding()]
-    param(
-        $output
-    )
-
-    $emailBody += '<p><h1>' + $Output.SectionHeader + '</h1>'
-    $emailBody += '<table border="1">'
-    
-    foreach ($groupOutputValue in $output.OutputValues)
-    {
-        $emailBody += '<thead><tr><th align="left" colspan="' + $output.OutputHeaders.Keys.Count + '"><h2>' + $groupOutputValue.GroupName + '</h2></th></tr>'
-
-        $emailBody += "<tr>"
-        foreach ($headerKey in $output.OutputHeaders.Keys)
-        {
-            $header = $output.OutputHeaders[$headerKey]
-            $emailBody += '<th align="left">' + $header + '</th>'
-        }
-
-        $emailBody += '</tr></thead><tbody>'
-    
-        foreach ($groupItemOutputValue in $groupOutputValue.GroupOutputValues)
-        {
-            $emailBody += '<tr>'
-
-            foreach ($headerKey in $output.OutputHeaders.Keys)
-            {
-                $fieldValue = $groupItemOutputValue[$headerKey]
-
-                if ($groupItemOutputValue['Highlight'] -ne $null -and $groupItemOutputValue['Highlight'].Contains($headerKey)) {
-                    $style = ' style="font-weight: bold; color: red"'
-                } else {
-                    $style = ''
-                }
-
-                $emailBody += '<td valign="top"' + $style + '>' + $fieldValue + '</td>'
-            }
-
-            $emailBody += '</tr>'
-        }
-    }
-
-    $emailBody += '</tbody></table>'
-
-    return $emailBody
+    return $emailSection
 }
 
 Function Get-EmailHeader
@@ -140,12 +133,12 @@ Function Get-EmailHeader
         [string]$ReportTitle = "PoShMon Monitoring Report"
     )
 
-    $emailBody = '<head><title>' + $ReportTitle + '</title>
+    $emailSection = '<head><title>' + $ReportTitle + '</title>
 </head>
 <body>
 <h1>' + $ReportTitle + '</h1>'
 
-    return $emailBody;
+    return $emailSection;
 
 }
 
@@ -155,7 +148,7 @@ Function Get-EmailFooter
     param(
     )
 
-        $emailBody = '</body>
-'
-    return $emailBody;
+        $emailSection = '</body>'
+
+    return $emailSection;
 }
