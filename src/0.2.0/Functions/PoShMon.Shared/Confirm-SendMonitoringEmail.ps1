@@ -25,7 +25,7 @@ Function Confirm-SendMonitoringEmail
             
             $emailBody += Get-EmailHeader "$EnvironmentName Monitoring Report"
 
-            $emailBody += New-MonitoringEmailOutput -SendEmailOnlyOnFailure $SendEmailOnlyOnFailure -TestOutputValues $TestOutputValues
+            $emailBody += New-MonitoringEmailOutput -SendMailWhen $SendMailWhen -TestOutputValues $TestOutputValues
 
             $emailBody += Get-EmailFooter $SkippedTests $TotalElapsedTime
 
