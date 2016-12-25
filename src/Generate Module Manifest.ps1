@@ -8,7 +8,7 @@ $NestedModules = @(
     'PoShMon.Web\WebMonitoringModule.psm1'
 )
 
-New-ModuleManifest -Path $manifestPath -ModuleVersion "0.2.0" -Guid '6e6cb274-1bed-4540-b288-95bc638bf679' -Author "Hilton Giesenow" -CompanyName "Experts Inside" -FunctionsToExport "'Invoke-OSMonitoring','Invoke-SPMonitoring'" -Copyright "2016 Hilton Giesenow, All Rights Reserved" -ProjectUri "https://github.com/HiltonGiesenow/PoShMon" -Description "A PowerShell-based server and farm monitoring solution"
+New-ModuleManifest -Path $manifestPath -ModuleVersion "0.2.0" -RootModule "PoShMon.psm1" -Guid '6e6cb274-1bed-4540-b288-95bc638bf679' -Author "Hilton Giesenow" -CompanyName "Experts Inside" -FunctionsToExport 'Invoke-OSMonitoring','Invoke-SPMonitoring' -Copyright "2016 Hilton Giesenow, All Rights Reserved" -ProjectUri "https://github.com/HiltonGiesenow/PoShMon" -Description "A PowerShell-based server and farm monitoring solution"
 
 $t = Test-ModuleManifest -Path $manifestPath
 
