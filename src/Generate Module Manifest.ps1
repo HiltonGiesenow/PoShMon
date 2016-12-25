@@ -1,14 +1,8 @@
-﻿$manifestPath = "C:\Dev\GitHub\PoShMon\src\0.2.0\PoShMon.psd1"
+﻿$version = "0.2.0"
+$manifestPath = "C:\Development\GitHub\PoShMon\PoShMon\src\$version\PoShMon.psd1"
 Remove-Item -Path $manifestPath -ErrorAction SilentlyContinue
 
-$NestedModules = @(
-    'PoShMon.Shared\SharedMonitoringModule.psm1'
-    'PoShMon.OSMonitoring\OSMonitoringModule.psm1'
-    'PoShMon.SharePoint\SPMonitoringModule.psm1'
-    'PoShMon.Web\WebMonitoringModule.psm1'
-)
-
-New-ModuleManifest -Path $manifestPath -ModuleVersion "0.2.0" -RootModule "PoShMon.psm1" -Guid '6e6cb274-1bed-4540-b288-95bc638bf679' -Author "Hilton Giesenow" -CompanyName "Experts Inside" -FunctionsToExport 'Invoke-OSMonitoring','Invoke-SPMonitoring' -Copyright "2016 Hilton Giesenow, All Rights Reserved" -ProjectUri "https://github.com/HiltonGiesenow/PoShMon" -Description "A PowerShell-based server and farm monitoring solution"
+New-ModuleManifest -Path $manifestPath -ModuleVersion $version -RootModule "PoShMon.psm1" -Guid '6e6cb274-1bed-4540-b288-95bc638bf679' -Author "Hilton Giesenow" -CompanyName "Experts Inside" -FunctionsToExport 'Invoke-OSMonitoring','Invoke-SPMonitoring' -Copyright "2016 Hilton Giesenow, All Rights Reserved" -ProjectUri "https://github.com/HiltonGiesenow/PoShMon" -Description "A PowerShell-based server and farm monitoring solution" -Tags 'Monitoring','Server','Farm' -Verbose
 
 $t = Test-ModuleManifest -Path $manifestPath
 
