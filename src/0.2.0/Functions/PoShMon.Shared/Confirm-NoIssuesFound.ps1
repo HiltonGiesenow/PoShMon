@@ -10,6 +10,9 @@ Function Confirm-NoIssuesFound
     foreach ($testOutputValue in $testOutputValues)
     {
         $NoIssuesFound = $NoIssuesFound -and $testOutputValue.NoIssuesFound
+
+        if ($testOutputValue.NoIssuesFound -eq $false)
+            { break; }
     }
 
     return $NoIssuesFound
