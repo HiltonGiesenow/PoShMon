@@ -2,14 +2,14 @@ Function Get-EmailFooter
 {
     [CmdletBinding()]
     param(
-        [string[]]$SkippedTests,
+        [string[]]$SkippedTests = @(),
         [TimeSpan]$TotalElapsedTime
     )
 
     $emailSection = ''
 
     $emailSection += '<p>Skipped Tests: '
-    if ($SkippedTests -ne $null -or $SkippedTests.Count -eq 0)
+    if ($SkippedTests.Count -eq 0)
         { $emailSection += "None</p>" }
     else
         { $emailSection += ($SkippedTests -join ", ") + "</p>" }
