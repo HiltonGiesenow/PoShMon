@@ -10,8 +10,7 @@ Function Invoke-OSMonitoring
         [string[]]$EventLogCodes = 'Critical',
         [hashtable]$EventIDIgnoreList = @{},
         [string[]]$TestsToSkip = @(),
-        [bool]$SendEmail = $true,
-        [bool]$SendEmailOnlyOnFailure = $false,
+        [ValidateSet("All","OnlyOnFailure","None")][string]$SendMailWhen = "All",
         [string]$MailFrom,
         [string]$SMTPAddress
     )
@@ -33,7 +32,7 @@ Function Invoke-OSMonitoring
 
     $stopWatch.Stop()
 
-    Confirm-SendMonitoringEmail -TestOutputValues $outputValues -SkippedTests $TestsToSkip -SendEmailOnlyOnFailure $SendEmailOnlyOnFailure -SendEmail $SendEmail `
+    Confirm-SendMonitoringEmail -TestOutputValues $outputValues -SkippedTests $TestsToSkip -SendMailWhen $SendMailWhen `
         -EnvironmentName $EnvironmentName -MailToList $MailToList -MailFrom $MailFrom -SMTPAddress $SMTPAddress -TotalElapsedTime $stopWatch.Elapsed
 
     return $outputValues

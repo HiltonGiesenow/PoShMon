@@ -12,8 +12,7 @@ Function Invoke-SPMonitoring
         [hashtable]$WebsiteDetails = @{},
         [string[]]$SpecialWindowsServices = $null,
         [string]$ConfigurationName = $null,
-        [bool]$SendEmail = $true,
-        [bool]$SendEmailOnlyOnFailure = $false,
+        [ValidateSet("All","OnlyOnFailure","None")][string]$SendMailWhen = "All",
         [string]$MailFrom,
         [string]$SMTPAddress
     )
@@ -77,7 +76,7 @@ Function Invoke-SPMonitoring
         $stopWatch.Stop()
     }
 
-    Confirm-SendMonitoringEmail -TestOutputValues $outputValues -SkippedTests $TestsToSkip -SendEmailOnlyOnFailure $SendEmailOnlyOnFailure -SendEmail $SendEmail `
+    Confirm-SendMonitoringEmail -TestOutputValues $outputValues -SkippedTests $TestsToSkip -SendMailWhen $SendMailWhen `
         -EnvironmentName $EnvironmentName -MailToList $MailToList -MailFrom $MailFrom -SMTPAddress $SMTPAddress -TotalElapsedTime $stopWatch.Elapsed
 
     return $outputValues

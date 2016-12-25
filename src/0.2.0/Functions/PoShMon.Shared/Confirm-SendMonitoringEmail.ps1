@@ -4,8 +4,7 @@ Function Confirm-SendMonitoringEmail
     param(
         $TestOutputValues,
         $SkippedTests,
-        $SendEmailOnlyOnFailure,
-        $SendEmail,
+        [ValidateSet("All","OnlyOnFailure","None")][string]$SendMailWhen = "All",
         $EnvironmentName,
         $EmailBody,
         $MailToList,
@@ -16,11 +15,11 @@ Function Confirm-SendMonitoringEmail
 
     $noIssuesFound = Confirm-NoIssuesFound $TestOutputValues
 
-    if ($NoIssuesFound -and $SendEmailOnlyOnFailure -eq $true)
+    if ($NoIssuesFound -and $SendMailWhen -eq "OnlyOnFailure")
     {
         Write-Verbose "No major issues encountered, skipping email"
     } else {
-        if ($SendEmail)
+        if ($SendMailWhen -ne "None")
         {
             $emailBody = ''
             
