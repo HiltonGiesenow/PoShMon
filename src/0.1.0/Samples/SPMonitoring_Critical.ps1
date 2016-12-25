@@ -2,8 +2,10 @@
 
 $eventLogCodes = "Critical"
 $WebtestDetails = @{ "http://intranet" = "something on the page"; "http://extranet.company.com" = "Something on the page" }
-Invoke-SPMonitoringCritical -MinutesToScanHistory 15 -PrimaryServerName 'SPAPPSVR01' -MailToList "SharePointTeam@Company.com" -EventLogCodes $eventLogCodes -WebsiteDetails $WebtestDetails -SendEmail $true -SendEmailOnlyOnFailure $true -ConfigurationName SpFarmPosh -MailFrom "Monitoring@company.com" -SMTPAddress "EXCHANGE.COMPANY.COM" -Verbose
+$TestsToSkip = @('SPDatabaseHealth')
 
-Invoke-OSMonitoring -MinutesToScanHistory 15 -ServerNames 'OWASVR01' -MailToList $mailTos -EventLogCodes $eventLogCodes -SendEmail $true -MailFrom "Monitoring@company.com" -SMTPAddress "EXCHANGE.COMPANY.COM" -Verbose
+Invoke-SPMonitoring -EnvironmentName "SharePoint" -MinutesToScanHistory 15 -PrimaryServerName 'SPAPPSVR01' -MailToList "SharePointTeam@Company.com" -EventLogCodes $eventLogCodes -TestsToSkip $TestsToSkip -WebsiteDetails $WebtestDetails -SendEmail $true -SendEmailOnlyOnFailure $true -MailFrom "Monitoring@company.com" -SMTPAddress "EXCHANGE.COMPANY.COM" -Verbose
+
+Invoke-OSMonitoring -EnvironmentName "Office Web Apps" -MinutesToScanHistory 15 -ServerNames 'OWASVR01' -MailToList $mailTos -EventLogCodes $eventLogCodes -TestsToSkip $TestsToSkip -SendEmail $true -SendEmailOnlyOnFailure $true -MailFrom "Monitoring@company.com" -SMTPAddress "EXCHANGE.COMPANY.COM" -Verbose
 
 #Remove-Module PoShMon
