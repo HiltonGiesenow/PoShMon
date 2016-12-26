@@ -31,7 +31,9 @@ Function Confirm-SendMonitoringEmail
 
             Write-Verbose $EmailBody
  
-            Send-MailMessage -Subject "[PoshMon Monitoring] $EnvironmentName Monitoring Results" -Body $emailBody -BodyAsHtml -To $MailToList -From $MailFrom -SmtpServer $SMTPAddress
+            $subject = Get-EmailSubject $TestOutputValues
+
+            Send-MailMessage -Subject $subject -Body $emailBody -BodyAsHtml -To $MailToList -From $MailFrom -SmtpServer $SMTPAddress
         }
     }
 }
