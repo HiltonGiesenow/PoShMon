@@ -2,7 +2,7 @@ Function Invoke-SPMonitoring
 {
     [CmdletBinding()]
     Param(
-        #[parameter(Mandatory=$true, HelpMessage=”Path to file”)]
+        #[parameter(Mandatory=$true, HelpMessage="Path to file"")]
         [string]$EnvironmentName = "SharePoint",        
         [int]$MinutesToScanHistory = 15,
         [string]$PrimaryServerName = 'localhost',
