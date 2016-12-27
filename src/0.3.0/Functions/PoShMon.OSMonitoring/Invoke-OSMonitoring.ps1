@@ -2,7 +2,7 @@ Function Invoke-OSMonitoring
 {
     [CmdletBinding()]
     Param(
-        #[parameter(Mandatory=$true, HelpMessage=”Path to file”)]
+        #[parameter(Mandatory=$true, HelpMessage="something")]
         [string]$EnvironmentName = "Environment",
         [int]$MinutesToScanHistory = 15,
         [string[]]$ServerNames = @(),

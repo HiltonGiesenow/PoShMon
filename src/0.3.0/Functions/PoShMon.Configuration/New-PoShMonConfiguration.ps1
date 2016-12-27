@@ -11,6 +11,7 @@ Function New-PoShMonConfiguration
 
     $newConfiguration = @{
             TypeName = 'PoShMon.Configuration'
+            General = $null
             Notifications = @()
         }
 
@@ -18,27 +19,11 @@ Function New-PoShMonConfiguration
 
     foreach ($configurationItem in $configurationItems)
     {
-        if ($configurationItem.TypeName.StartsWith("PoShMon.ConfigurationItems.NotificationCollection"))
+        if ($configurationItem.TypeName -eq "PoShMon.ConfigurationItems.General")
+            { $newConfiguration.General = $configurationItem }
+        elseif ($configurationItem.TypeName.StartsWith("PoShMon.ConfigurationItems.NotificationCollection"))
             { $newConfiguration.Notifications += $configurationItem }
     }
 
     return $newConfiguration
 }
-
-<#
-Sample:
-
-$options = New-PoShMonConfiguration {
-                Notifications -When All {
-                    Email -ToAddress "hilton@giesenow.com" -FromAddress "bob@jones.com" -SmtpServer "smtp.company.com"
-                }
-                Notifications -When OnlyOnFailure {
-                    Email `
-                        -ToAddress "hilton@giesenow.com" `
-                        -FromAddress "bob@jones.com" `
-                        -SmtpServer "smtp.company.com" `
-                        -Port 27
-                }
-            }
-
-#>
