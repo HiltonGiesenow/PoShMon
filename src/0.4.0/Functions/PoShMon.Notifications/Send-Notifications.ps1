@@ -22,9 +22,9 @@
         }
         elseif ($notificationSink.TypeName -eq 'PoShMon.ConfigurationItems.Notifications.Pushbullet')
         {
-                Send-PoShMonEmail `
+                Send-PushbulletMessage `
                                 -PoShMonConfiguration $PoShMonConfiguration `
-                                -EmailNotificationSink $notificationSink `
+                                -PushbulletNotificationSink $notificationSink `
                                 -SendNotificationsWhen $SendNotificationsWhen `
                                 -TestOutputValues $TestOutputValues `
                                 -TotalElapsedTime $TotalElapsedTime
