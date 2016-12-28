@@ -21,6 +21,10 @@ Function New-PoShMonConfiguration
     {
         if ($configurationItem.TypeName -eq "PoShMon.ConfigurationItems.General")
             { $newConfiguration.General = $configurationItem }
+        if ($configurationItem.TypeName -eq "PoShMon.ConfigurationItems.OperatingSystem")
+            { $newConfiguration.OperatingSystem = $configurationItem }
+        if ($configurationItem.TypeName -eq "PoShMon.ConfigurationItems.WebSite")
+            { $newConfiguration.WebSite = $configurationItem }
         elseif ($configurationItem.TypeName.StartsWith("PoShMon.ConfigurationItems.NotificationCollection"))
             { $newConfiguration.Notifications += $configurationItem }
     }
