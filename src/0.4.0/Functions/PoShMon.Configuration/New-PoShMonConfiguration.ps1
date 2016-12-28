@@ -12,6 +12,7 @@ Function New-PoShMonConfiguration
     $newConfiguration = @{
             TypeName = 'PoShMon.Configuration'
             General = $null
+            WebSite = $null
             Notifications = @()
         }
 
@@ -26,7 +27,8 @@ Function New-PoShMonConfiguration
         if ($configurationItem.TypeName -eq "PoShMon.ConfigurationItems.WebSite")
             { $newConfiguration.WebSite = $configurationItem }
         elseif ($configurationItem.TypeName.StartsWith("PoShMon.ConfigurationItems.NotificationCollection"))
-            { $newConfiguration.Notifications += $configurationItem }
+            { 
+                $newConfiguration.Notifications += $configurationItem }
     }
 
     return $newConfiguration

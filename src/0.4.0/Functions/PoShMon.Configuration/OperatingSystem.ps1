@@ -2,7 +2,6 @@ Function OperatingSystem
 {
     [CmdletBinding()]
     param(
-        [int]$MinutesToScanHistory = 15,
         [string[]]$EventLogCodes = 'Critical',
         [hashtable]$EventIDIgnoreList = @{},
         [string[]]$SpecialWindowsServices = $null
@@ -16,7 +15,6 @@ Function OperatingSystem
 
     return @{
             TypeName = "PoShMon.ConfigurationItems.OperatingSystem"
-            MinutesToScanHistory = $MinutesToScanHistory
             EventLogCodes = $EventLogCodes
             EventIDIgnoreList = $EventIDIgnoreList
             SpecialWindowsServices = $SpecialWindowsServices

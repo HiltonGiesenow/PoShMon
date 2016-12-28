@@ -3,7 +3,7 @@ Function Email
     [CmdletBinding()]
     param(
         [parameter(Mandatory)]
-        [string]$ToAddress,
+        [string[]]$ToAddress,
         [parameter(Mandatory)]
         [string]$FromAddress,
         [parameter(Mandatory)]
