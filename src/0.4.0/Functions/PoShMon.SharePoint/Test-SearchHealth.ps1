@@ -39,6 +39,8 @@ Function Test-SearchHealth
 
                 if ($searchComponentState.State -ne "Active")
                 {
+                    $NoIssuesFound = $false
+
                     $highlight += 'State'
                 }
 
