@@ -19,6 +19,15 @@
                                 -SendNotificationsWhen $SendNotificationsWhen `
                                 -TestOutputValues $TestOutputValues `
                                 -TotalElapsedTime $TotalElapsedTime
+        }
+        elseif ($notificationSink.TypeName -eq 'PoShMon.ConfigurationItems.Notifications.Pushbullet')
+        {
+                Send-PoShMonEmail `
+                                -PoShMonConfiguration $PoShMonConfiguration `
+                                -EmailNotificationSink $notificationSink `
+                                -SendNotificationsWhen $SendNotificationsWhen `
+                                -TestOutputValues $TestOutputValues `
+                                -TotalElapsedTime $TotalElapsedTime
         } else {
             Write-Error "Notitication Sink '$notificationSink.TypeName' type not found"
         }
