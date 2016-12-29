@@ -3,7 +3,7 @@
     [CmdletBinding()]
     Param(
         [hashtable]$PoShMonConfiguration,
-        [hashtable]$NotificationSinks,
+        [object[]]$NotificationSinks,
         [ValidateSet("All","OnlyOnFailure","None")][string]$SendNotificationsWhen,
         [object[]]$TestOutputValues,
         [TimeSpan]$TotalElapsedTime

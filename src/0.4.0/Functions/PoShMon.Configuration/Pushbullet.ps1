@@ -3,14 +3,14 @@ Function Pushbullet
     [CmdletBinding()]
     param(
         [parameter(Mandatory)]
-        [string[]]$AccessToken,
+        [string]$AccessToken,
         [parameter(Mandatory)]
         [string]$DeviceId = $null
     )
 
     return @{
         TypeName = 'PoShMon.ConfigurationItems.Notifications.Pushbullet'
-        ApiKey = $AccessToken
+        AccessToken = $AccessToken
         DeviceId = $DeviceId
     }
 }
