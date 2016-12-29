@@ -14,7 +14,7 @@ Function Get-OutputValuesEmailOutput
 
         foreach ($headerKey in $outputHeaders.Keys)
         {
-            $fieldValue = $outputValue[$headerKey]
+            $fieldValue = $outputValue[$headerKey] #Would need to change to something like $outputValue.psobject.Properties["Message"].Value if this changes to a pscustomobject
             if ($outputValue['Highlight'] -ne $null -and $outputValue['Highlight'].Contains($headerKey)) {
                 $style = ' style="font-weight: bold; color: red"'
             } else {
