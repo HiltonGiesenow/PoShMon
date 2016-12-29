@@ -14,7 +14,7 @@ Function Test-DistributedCacheStatus
     $outputValues = @()
 
     $cacheServers = Invoke-Command -Session $RemoteSession -ScriptBlock {
-                                return Get-SPServiceInstance | ? {($_.service.tostring()) -eq “SPDistributedCacheService Name=AppFabricCachingService”} | select Server, Status
+                                return Get-SPServiceInstance | ? {($_.service.tostring()) -eq "SPDistributedCacheService Name=AppFabricCachingService"} | select Server, Status
                             }
     # Possible extensions:
     <#
