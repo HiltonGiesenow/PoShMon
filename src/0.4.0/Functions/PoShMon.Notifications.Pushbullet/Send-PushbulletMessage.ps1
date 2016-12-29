@@ -14,9 +14,8 @@
     $messageBody = ''
     foreach ($testOutputValue in $testOutputValues)
     {
-        if ($SendMailWhen -eq "All" -or $testOutputValue.NoIssuesFound -eq $false)
         if ($testOutputValue.NoIssuesFound) { $foundValue = "No" } else { $foundValue = "Yes" }
-            { $messageBody += "$($testOutputValue.SectionHeader) : issue(s) found: $foundValue \r\n" }
+        $messageBody += "$($testOutputValue.SectionHeader) : issue(s) found: $foundValue \r\n"
     }
 
     $body = @{
@@ -27,7 +26,7 @@
              }
 
     $pushbulletSendUrl = "https://api.pushbullet.com/v2/pushes"
-    $credential = New-Object System.Management.Automation.PSCredential ($PushbulletNotificationSink.AccessToken, (ConvertTo-SecureString $PushbulletNotificationSink.ApiKey -AsPlainText -Force))
+    $credential = New-Object System.Management.Automation.PSCredential ($PushbulletNotificationSink.AccessToken, (ConvertTo-SecureString $PushbulletNotificationSink.AccessToken -AsPlainText -Force))
 
     $sendMessage = Invoke-WebRequest -Uri $pushbulletSendUrl -Credential $credential -Method Post -Body $body -ErrorAction SilentlyContinue
  }
