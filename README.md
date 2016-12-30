@@ -72,5 +72,7 @@ That's all there is to it! Hopefully PoShMon is of use to you and of course feel
 
 ## A Note on Why I built PoShMon
 Of course there are loads of monitoring systems and tools out there, both paid and free / open source ones. However, there are two main reasons I initially built PoShMon:
+
 1. I wanted to grow my PowerShell knowledge and there didn't seem to be anything purely PowerShell based that could offer what I wanted
+
 2. Many of the tools don't have a lot of product depth. For instance, many Windows monitoring tools can do basic disk / memory / event log monitoring for SharePoint servers but few can actually give me SharePoint-specific metrics, like how healthy the Search service is, what Timer jobs have failed,  or whether any of the servers need to be upgraded (note that many of these tests can be greatly improved). I'm hoping that PoShMon becomes the home for powerful, specialised monitoring of many other products and platforms, like Exchange, SQL Server, CRM and more.
