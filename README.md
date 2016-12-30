@@ -37,7 +37,9 @@ $monitoringOutput = Invoke-OSMonitoring -PoShMonConfiguration $poShMonConfigurat
 Some things to note on the above:
 
 * The actual "monitoring" takes place on the last line with [`Invoke-OSMonitoring`](https://github.com/HiltonGiesenow/PoShMon/blob/master/src/0.4.0/Functions/PoShMon.OSMonitoring/Invoke-OSMonitoring.ps1). The lines above are just setting up your specific configuration.
-* To make the config a little more readable, I've put each parameter on a new line (note the '`' PowerShell line-continuation character). This is not required, or course, so your configuration could be shorter. Here's another example, to monitor a SharePoint farm
+* To make the config a little more readable, I've put each parameter on a new line (note the '`' PowerShell line-continuation character). This is not required, or course, so your configuration could be shorter.
+
+Here's another example, to monitor a SharePoint farm
 
 ```
 $poShMonConfiguration = New-PoShMonConfiguration {
@@ -55,16 +57,17 @@ $poShMonConfiguration = New-PoShMonConfiguration {
 $monitoringOutput = Invoke-SPMonitoring -PoShMonConfiguration $poShMonConfiguration
 ```
 
-* Note the use of 'PrimaryServerName' instead of 'ServerNames' as well as the use of [`Invoke-SPMonitoring`](https://github.com/HiltonGiesenow/PoShMon/blob/master/src/0.4.0/Functions/PoShMon.SharePoint/Invoke-SPMonitoring.ps1) instead of [`Invoke-OSMonitoring`](https://github.com/HiltonGiesenow/PoShMon/blob/master/src/0.4.0/Functions/PoShMon.OSMonitoring/Invoke-OSMonitoring.ps1). "EnvironmentName", which appears in notifications (emails etc.) is also changed to something more suitable.
+* Note the use of `PrimaryServerName` instead of `ServerNames` as well as the use of [`Invoke-SPMonitoring`](https://github.com/HiltonGiesenow/PoShMon/blob/master/src/0.4.0/Functions/PoShMon.SharePoint/Invoke-SPMonitoring.ps1) instead of [`Invoke-OSMonitoring`](https://github.com/HiltonGiesenow/PoShMon/blob/master/src/0.4.0/Functions/PoShMon.OSMonitoring/Invoke-OSMonitoring.ps1). "EnvironmentName", which appears in notifications (emails etc.) is also changed to something more suitable.
 * 'MinutesToScanHistory' is 1440 instead of 15, so this is more of a daily monitoring example. We've also got `Notifications -When All` instead of `Notifications -When OnlyOnFailure` because we want notifications (emails or similar) in all cases for daily monitoring, unlike for Critical monitoring where we only want to be alerted of major issues. This is also why the EventLogCodes have been changed.
 * An important note for monitoring tests where direct access to the servers is required, like in SharePoint where certain commands need to be run remotely: In this case, remote PowerShell sessions are used and, to improve security, PowerShell sessions have been configured to run under appropriate user accounts. You can find out more about the related 'double-hop' issue [here](https://blogs.technet.microsoft.com/ashleymcglone/2016/08/30/powershell-remoting-kerberos-double-hop-solved-securely/) and learn about how to configure remote sessions in this way (instead of using Kerberos or CredSSP) by visiting [this link](https://blogs.msdn.microsoft.com/sergey_babkins_blog/2015/03/18/another-solution-to-multi-hop-powershell-remoting/).
-* storing the output of the monitoring ($monitoringOutput) is not required, of course, but it's helpful if you want to do anything with it, like try automatically correct regular issues in your environment...
+* Storing the output of the monitoring (`$monitoringOutput`) is not required, of course, but it's helpful if you want to do anything with it, like try automatically correct regular issues in your environment...
 
 After that, simply run the script and it will perform an on-demand monitoring of the servers or environments. Of course, you might like to schedule these monitoring tests to run automatically, so see the next section for how to do this.
 
 ## Scheduled Monitoring
 Ad-hoc monitoring can be useful to troubleshoot specific issues, but mostly we want our monitoring to be automated and scheduled. Because PoShMon simply consists of PowerShell scripts, to have then be scheduled we can rely on simple Windows Task Scheduler, and just set the Tasks to run on a reasonable basis. Here are some [example Task Scheduler](https://github.com/HiltonGiesenow/PoShMon/tree/master/src/0.4.0/Samples/Scheduled%20Task%20Definitions) definitions that can be imported. The first runs "Critical" level monitoring, so it runs every 15 minutes, skips some of the longer-running and less essential tests and notifies only on failure, whereas the latter runs the full barrage of tests on a nightly basis and send a detailed breakdown.
 
+## That's It!
 That's all there is to it! Hopefully PoShMon is of use to you and of course feel free to [contribute](https://github.com/HiltonGiesenow/PoShMon/issues) to the project, there's tons more that can be done!
 
 ## A Note on Why I built PoShMon
