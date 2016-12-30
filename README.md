@@ -70,6 +70,8 @@ Ad-hoc monitoring can be useful to troubleshoot specific issues, but mostly we w
 ## That's It!
 That's all there is to it! Hopefully PoShMon is of use to you and of course feel free to [contribute](https://github.com/HiltonGiesenow/PoShMon/issues) to the project, there's tons more that can be done!
 
+---
+
 ## A Note on Why I built PoShMon
 Of course there are loads of monitoring systems and tools out there, both paid and free / open source ones. However, there are two main reasons I initially built PoShMon:
 
