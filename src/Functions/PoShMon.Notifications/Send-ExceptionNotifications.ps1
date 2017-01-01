@@ -3,7 +3,7 @@
     [CmdletBinding()]
     Param(
         [hashtable]$PoShMonConfiguration,
-        [string]$ExceptionMessage
+        [System.Exception]$Exception
     )
 
     if ($PoShMonConfiguration["Notifications"].Count -gt 0)
@@ -20,7 +20,7 @@
                                             -PoShMonConfiguration $PoShMonConfiguration `
                                             -EmailNotificationSink $notificationSink `
                                             -Subject (New-EmailExceptionSubject $PoShMonConfiguration) `
-                                            -Body (New-EmailExceptionBody $ExceptionMessage)
+                                            -Body (New-EmailExceptionBody $Exception)
                     }
                     elseif ($notificationSink.TypeName -eq 'PoShMon.ConfigurationItems.Notifications.Pushbullet')
                     {
@@ -28,7 +28,7 @@
                                             -PoShMonConfiguration $PoShMonConfiguration `
                                             -PushbulletNotificationSink $notificationSink `
                                             -Subject (New-PushbulletExceptionSubject $PoShMonConfiguration) `
-                                            -Body (New-PushbulletExceptionBody $ExceptionMessage)
+                                            -Body (New-PushbulletExceptionBody $Exception)
                     }
                     elseif ($notificationSink.TypeName -eq 'PoShMon.ConfigurationItems.Notifications.O365Teams')
                     {
@@ -36,7 +36,7 @@
                                             -PoShMonConfiguration $PoShMonConfiguration `
                                             -O365TeamsNotificationSink $notificationSink `
                                             -Subject (New-O365TeamsExceptionSubject $PoShMonConfiguration) `
-                                            -Body (New-O365TeamsExceptionBody $ExceptionMessage)
+                                            -Body (New-O365TeamsExceptionBody $Exception)
                     } else {
                         Write-Error "Notitication Sink '$notificationSink.TypeName' type not found"
                     }

@@ -2,12 +2,12 @@ Function New-EmailExceptionBody
 {
     [CmdletBinding()]
     Param(
-        [string]$ExceptionMessage
+        [System.Exception]$Exception
     )
 
     $emailBody = ""
-    $emailBody += "'An exception occurred while trying to monitor the environment.`r`n"
-    $emailBody += "Details: $ExceptionMessage"
+    $emailBody += "An exception occurred while trying to monitor the environment.`r`n"
+    $emailBody += "Details: $($Exception.ToString())"
     
     return $emailBody
 }
