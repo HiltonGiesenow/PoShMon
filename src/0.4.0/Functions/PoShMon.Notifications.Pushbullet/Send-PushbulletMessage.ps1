@@ -15,7 +15,7 @@
     foreach ($testOutputValue in $testOutputValues)
     {
         if ($testOutputValue.NoIssuesFound) { $foundValue = "No" } else { $foundValue = "Yes" }
-        $messageBody += "$($testOutputValue.SectionHeader) : issue(s) found: $foundValue \r\n"
+        $messageBody += "$($testOutputValue.SectionHeader) : issue(s) found - $foundValue `r`n"
     }
 
     $body = @{
