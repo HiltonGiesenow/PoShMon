@@ -1,4 +1,4 @@
-Function Get-EmailOutput
+Function New-TestOutputEmailBody
 {
     [cmdletbinding()]
     param(
@@ -21,15 +21,15 @@ Function Get-EmailOutput
         {    
             $emailSection += '<thead><tr><th align="left" colspan="' + $output.OutputHeaders.Keys.Count + '"><h2>' + $groupOutputValue.GroupName + '</h2></th></tr><tr>'
 
-            $emailSection += (Get-OutputHeadersEmailOutput -outputHeaders $output.OutputHeaders) + '</tr></thead><tbody>'
+            $emailSection += (New-OutputHeadersEmailBody -outputHeaders $output.OutputHeaders) + '</tr></thead><tbody>'
 
-            $emailSection += (Get-OutputValuesEmailOutput -outputHeaders $output.OutputHeaders -outputValues $groupOutputValue.GroupOutputValues) + '</tbody>'
+            $emailSection += (New-OutputValuesEmailBody -outputHeaders $output.OutputHeaders -outputValues $groupOutputValue.GroupOutputValues) + '</tbody>'
         }
 
     } else { #non-grouped output
-        $emailSection += '<thead><tr>' + (Get-OutputHeadersEmailOutput -outputHeaders $output.OutputHeaders) + '</tr></thead><tbody>'
+        $emailSection += '<thead><tr>' + (New-OutputHeadersEmailBody -outputHeaders $output.OutputHeaders) + '</tr></thead><tbody>'
 
-        $emailSection += (Get-OutputValuesEmailOutput -outputHeaders $output.OutputHeaders -outputValues $output.OutputValues) + '</tbody>'
+        $emailSection += (New-OutputValuesEmailBody -outputHeaders $output.OutputHeaders -outputValues $output.OutputValues) + '</tbody>'
     }
 
     $emailSection += '</table>'

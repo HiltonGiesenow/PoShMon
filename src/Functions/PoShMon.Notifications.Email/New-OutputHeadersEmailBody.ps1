@@ -1,4 +1,4 @@
-Function Get-OutputHeadersEmailOutput
+Function New-OutputHeadersEmailBody
 {
     [cmdletbinding()]
     param(

@@ -1,4 +1,4 @@
-Function Get-OutputValuesEmailOutput
+Function New-OutputValuesEmailBody
 {
     [cmdletbinding()]
     param(

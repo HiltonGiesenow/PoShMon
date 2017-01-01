@@ -16,27 +16,24 @@
                 Send-PoShMonEmail `
                                 -PoShMonConfiguration $PoShMonConfiguration `
                                 -EmailNotificationSink $notificationSink `
-                                -SendNotificationsWhen $SendNotificationsWhen `
-                                -TestOutputValues $TestOutputValues `
-                                -TotalElapsedTime $TotalElapsedTime
+                                -Subject (New-EmailSubject $PoShMonConfiguration $TestOutputValues) `
+                                -Body (New-EmailBody $PoShMonConfiguration $SendNotificationsWhen $TestOutputValues $TotalElapsedTime)
         }
         elseif ($notificationSink.TypeName -eq 'PoShMon.ConfigurationItems.Notifications.Pushbullet')
         {
                 Send-PushbulletMessage `
                                 -PoShMonConfiguration $PoShMonConfiguration `
                                 -PushbulletNotificationSink $notificationSink `
-                                -SendNotificationsWhen $SendNotificationsWhen `
-                                -TestOutputValues $TestOutputValues `
-                                -TotalElapsedTime $TotalElapsedTime
+                                -Subject (New-PushbulletMessageSubject $PoShMonConfiguration $TestOutputValues) `
+                                -Body (New-PushbulletMessageBody $PoShMonConfiguration $SendNotificationsWhen $TestOutputValues $TotalElapsedTime)
         }
         elseif ($notificationSink.TypeName -eq 'PoShMon.ConfigurationItems.Notifications.O365Teams')
         {
                 Send-O365TeamsMessage `
                                 -PoShMonConfiguration $PoShMonConfiguration `
-                                -PushbulletNotificationSink $notificationSink `
-                                -SendNotificationsWhen $SendNotificationsWhen `
-                                -TestOutputValues $TestOutputValues `
-                                -TotalElapsedTime $TotalElapsedTime
+                                -O365TeamsNotificationSink $notificationSink `
+                                -Subject (New-O365TeamsMessageSubject $PoShMonConfiguration $TestOutputValues) `
+                                -Body (New-O365TeamsMessageBody $PoShMonConfiguration $SendNotificationsWhen $TestOutputValues $TotalElapsedTime)
          } else {
             Write-Error "Notitication Sink '$notificationSink.TypeName' type not found"
         }

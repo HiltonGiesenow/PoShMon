@@ -1,4 +1,4 @@
-Function Get-EmailFooter
+Function New-EmailFooter
 {
     [CmdletBinding()]
     param(

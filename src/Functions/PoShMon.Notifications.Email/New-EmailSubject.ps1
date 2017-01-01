@@ -1,8 +1,9 @@
-Function Get-PushbulletMessageHeading
+Function New-EmailSubject
 {
     [CmdletBinding()]
     param(
-        $TestOutputValues
+        [hashtable]$PoShMonConfiguration,
+        [object[]]$TestOutputValues
     )
 
     $issueCount = 0

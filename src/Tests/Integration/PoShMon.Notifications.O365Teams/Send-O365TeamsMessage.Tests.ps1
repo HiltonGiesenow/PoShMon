@@ -6,7 +6,7 @@ $sutFilePath = Join-Path $rootPath -ChildPath "Functions\PoShMon.Notifications.O
 
 $o365TeamsConfigPath = [Environment]::GetFolderPath("MyDocuments") + "\o365TeamsConfig.json"
 
-if (Test-Path $o365TeamsConfigPath) # only run this test if there's a config to send pushbullet notifications
+if (Test-Path $o365TeamsConfigPath) # only run this test if there's a config to send notifications
 {
     Describe "Send-O365TeamsMessage" {
         It "Should send an O365 Teams message" {
@@ -77,8 +77,6 @@ if (Test-Path $o365TeamsConfigPath) # only run this test if there's a config to 
             $totalElapsedTime = (Get-Date).Subtract((Get-Date).AddMinutes(-3))
 
             $actual = Send-O365TeamsMessage $poShMonConfiguration $poShMonConfiguration.Notifications.Sinks "All" $testMonitoringOutput $totalElapsedTime -Verbose
-
         }
-
     }
 }

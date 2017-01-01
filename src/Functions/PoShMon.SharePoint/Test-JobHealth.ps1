@@ -59,6 +59,4 @@ Function Test-JobHealth
 }
 <#
     $output = Test-JobHealth -RemoteSession $remoteSession -MinutesToScanHistory 2000 -Verbose
-    Persist-Output $output
-    Get-EmailOutput $output
 #>

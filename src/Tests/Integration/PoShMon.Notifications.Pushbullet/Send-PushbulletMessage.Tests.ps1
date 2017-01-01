@@ -6,7 +6,7 @@ $sutFilePath = Join-Path $rootPath -ChildPath "Functions\PoShMon.Notifications.P
 
 $pushbulletConfigPath = [Environment]::GetFolderPath("MyDocuments") + "\pushbulletconfig.json"
 
-if (Test-Path $pushbulletConfigPath) # only run this test if there's a config to send pushbullet notifications
+if (Test-Path $pushbulletConfigPath) # only run this test if there's a config to send notifications
 {
     Describe "Send-PushbulletMessage" {
         It "Should send a Pushbullet message" {

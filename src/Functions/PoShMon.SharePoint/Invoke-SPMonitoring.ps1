@@ -9,9 +9,9 @@ Function Invoke-SPMonitoring
     $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
     $outputValues = @()
 
-    $remoteSession = Connect-RemoteSharePointSession -ServerName $PoShMonConfiguration.General.PrimaryServerName -ConfigurationName $PoShMonConfiguration.General.ConfigurationName
-    
     try {
+        $remoteSession = Connect-RemoteSharePointSession -ServerName $PoShMonConfiguration.General.PrimaryServerName -ConfigurationName $PoShMonConfiguration.General.ConfigurationName
+    
         # Auto-Discover Servers
         $ServerNames = Invoke-Command -Session $remoteSession -ScriptBlock { Get-SPServer | Where Role -ne "Invalid" | Select Name } | % { $_.Name }
 
@@ -59,15 +59,16 @@ Function Invoke-SPMonitoring
                 $outputValues += Test-WebSite -SiteUrl $WebsiteDetailKey -TextToLocate $websiteDetail -ServerNames $ServerNames -ConfigurationName $PoShMonConfiguration.General.ConfigurationName
             }
         }
+    } catch {
+        Send-ExceptionNotification -PoShMonConfiguration $PoShMonConfiguration -ExceptionMessage $_.Exception.Message
     } finally {
-        Disconnect-RemoteSession $remoteSession
+        if ($remoteSession -ne $null)
+            { Disconnect-RemoteSession $remoteSession -ErrorAction SilentlyContinue }
         
         $stopWatch.Stop()
     }
 
     Process-Notifications -PoShMonConfiguration $PoShMonConfiguration -TestOutputValues $outputValues -TotalElapsedTime $stopWatch.Elapsed
-    #Confirm-SendMonitoringEmail -TestOutputValues $outputValues -SkippedTests $PoShMonConfiguration.General.TestsToSkip -SendMailWhen $SendMailWhen `
-    #    -EnvironmentName $EnvironmentName -MailToList $MailToList -MailFrom $MailFrom -SMTPAddress $SMTPAddress -TotalElapsedTime $stopWatch.Elapsed
 
     return $outputValues
 }
