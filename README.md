@@ -8,6 +8,10 @@ PoShMon is available on the [PowerShell Gallery](https://www.powershellgallery.c
 
 or via [Azure Automation](https://www.powershellgallery.com/packages/PoShMon).
 
+## Prerequisites
+* While PoShMon is indeed "agent-less", it does need to execute remote PowerShell commands against the servers in question. As a result, you need to ensure that these servers have po remoting correctly configured and also that you are running PoShMon under and account that has the correct rights to connect to the server remotely and execute the requisite commands.
+* In addition to ensure general PowerShell remoting is working, you also need to ensure that commands that access other environments further down the line (most commonly SQL) have a means to pass on credentials effectively and securely. Essentially, this relates to the age-old "Double Hop" issue - we're trying to connect remotely to, say, a SharePoint environment and we in turn need access to SQL. This issue is described more fully in a PowerShell context [here](https://blogs.technet.microsoft.com/ashleymcglone/2016/08/30/powershell-remoting-kerberos-double-hop-solved-securely/) and [this link](https://blogs.msdn.microsoft.com/sergey_babkins_blog/2015/03/18/another-solution-to-multi-hop-powershell-remoting/) provides a means for creating more secure connections instead of the usual CredSSP fallback. More on this appears below in the SharePoint example further down.
+
 ## Getting Started
 Once you've installed PoShMon, you can have a look at the [Samples](https://github.com/HiltonGiesenow/PoShMon/tree/master/src/0.4.0/Samples) folder to get an idea how to use it. As an example, to monitor a farm of web servers you can use
 
