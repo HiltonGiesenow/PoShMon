@@ -16,7 +16,7 @@
                 {
                     if ($notificationSink.TypeName -eq 'PoShMon.ConfigurationItems.Notifications.Email')
                     {
-                            Send-PoShMonExceptionEmail `
+                            Send-PoShMonEmail `
                                             -PoShMonConfiguration $PoShMonConfiguration `
                                             -EmailNotificationSink $notificationSink `
                                             -Subject (New-EmailExceptionSubject $PoShMonConfiguration) `
@@ -24,7 +24,7 @@
                     }
                     elseif ($notificationSink.TypeName -eq 'PoShMon.ConfigurationItems.Notifications.Pushbullet')
                     {
-                            Send-PushbulletExceptionMessage `
+                            Send-PushbulletMessage `
                                             -PoShMonConfiguration $PoShMonConfiguration `
                                             -PushbulletNotificationSink $notificationSink `
                                             -Subject (New-PushbulletExceptionSubject $PoShMonConfiguration) `
@@ -32,9 +32,9 @@
                     }
                     elseif ($notificationSink.TypeName -eq 'PoShMon.ConfigurationItems.Notifications.O365Teams')
                     {
-                            Send-O365TeamsExceptionMessage `
+                            Send-O365TeamsMessage `
                                             -PoShMonConfiguration $PoShMonConfiguration `
-                                            -PushbulletNotificationSink $notificationSink `
+                                            -O365TeamsNotificationSink $notificationSink `
                                             -Subject (New-O365TeamsExceptionSubject $PoShMonConfiguration) `
                                             -Body (New-O365TeamsExceptionBody $ExceptionMessage)
                     } else {

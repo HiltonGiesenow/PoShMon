@@ -60,7 +60,7 @@ Function Invoke-SPMonitoring
             }
         }
     } catch {
-        Send-ExceptionNotification -PoShMonConfiguration $PoShMonConfiguration -ExceptionMessage $_.Exception.Message
+        Send-ExceptionNotifications -PoShMonConfiguration $PoShMonConfiguration -ExceptionMessage $_.Exception.Message
     } finally {
         if ($remoteSession -ne $null)
             { Disconnect-RemoteSession $remoteSession -ErrorAction SilentlyContinue }
