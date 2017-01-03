@@ -15,20 +15,15 @@ Function Invoke-OSMonitoring
 
     # Event Logs
     if (!$PoShMonConfiguration.General.TestsToSkip.Contains("EventLogs"))
-    {
-        foreach ($eventLogCode in $PoShMonConfiguration.OperatingSystem.EventLogCodes)
-            { $outputValues += Test-EventLogs -ServerNames $PoShMonConfiguration.General.ServerNames -MinutesToScanHistory $PoShMonConfiguration.General.MinutesToScanHistory -SeverityCode $eventLogCode }
-    }
+        { $outputValues += Test-EventLogs $PoShMonConfiguration }
 
     # Drive Space
     if (!$PoShMonConfiguration.General.TestsToSkip.Contains("DriveSpace"))
-        { $outputValues += Test-DriveSpace -ServerNames $PoShMonConfiguration.General.ServerNames }
+            { $outputValues += Test-DriveSpace $PoShMonConfiguration }
 
     $stopWatch.Stop()
 
     Process-Notifications -PoShMonConfiguration $PoShMonConfiguration -TestOutputValues $outputValues -TotalElapsedTime $stopWatch.Elapsed
-    #Confirm-SendMonitoringEmail -TestOutputValues $outputValues -SkippedTests $PoShMonConfiguration.General.TestsToSkip -SendMailWhen "All" `
-    #    -EnvironmentName $PoShMonConfiguration.General.EnvironmentName -MailToList $MailToList -MailFrom $MailFrom -SMTPAddress $SMTPAddress -TotalElapsedTime $stopWatch.Elapsed
 
     return $outputValues
 }
