@@ -15,8 +15,8 @@ Function Invoke-SPMonitoring
         #$PSBoundParameters.RemoteSession = $remoteSession
 
         # Auto-Discover Servers
-        $ServerNames = Invoke-Command -Session $remoteSession -ScriptBlock { Get-SPServer | Where Role -ne "Invalid" | Select Name } | % { $_.Name }
-        $PoShMonConfiguration.General.ServerNames = $ServerNames
+        $PoShMonConfiguration.General.ServerNames = Invoke-Command -Session $remoteSession -ScriptBlock {
+                                                        Get-SPServer | Where Role -ne "Invalid" | Select -ExpandProperty Name }
 
         # Event Logs
         if (!$PoShMonConfiguration.General.TestsToSkip.Contains("EventLogs"))
