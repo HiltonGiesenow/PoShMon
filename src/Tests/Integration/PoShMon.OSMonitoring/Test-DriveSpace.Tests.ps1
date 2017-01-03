@@ -2,8 +2,6 @@ $rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPa
 $sutFileName = (Split-Path -Leaf $MyInvocation.MyCommand.Path).Replace(".Tests", "")
 $sutFilePath = Join-Path $rootPath -ChildPath "Functions\PoShMon.OSMonitoring\$sutFileName" 
 . $sutFilePath
-$depFilePath = Join-Path $rootPath -ChildPath "Functions\PoShMon.Shared\Format-Gigs.ps1"
-. $depFilePath
 
 class DiskMock {
     [string]$DeviceID
@@ -81,9 +79,6 @@ Describe "Test-DriveSpace" {
                         'Highlight' = ''
                     }
 
-        #Mock -CommandName Format-Gigs -MockWith {
-        #    return '123'
-        #}
 
         Mock -CommandName Get-WmiObject -MockWith {
             return [DiskMock]::new('C:', 3, "", [UInt64]255465615360, [UInt64]10485760, "MyCDrive")

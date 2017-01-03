@@ -11,11 +11,11 @@ Function Test-DatabaseHealth
 
     $sectionHeader = "Database Status"
     $NoIssuesFound = $true
-    $outputHeaders = [ordered]@{ 'DatabaseName' = 'Database Name'; 'Size' = 'Size (MB)'; 'NeedsUpgrade' = 'Needs Upgrade?' }
+    $outputHeaders = [ordered]@{ 'DatabaseName' = 'Database Name'; 'Size' = 'Size (GB)'; 'NeedsUpgrade' = 'Needs Upgrade?' }
     $outputValues = @()
 
     $spDatabases = Invoke-Command -Session $RemoteSession -ScriptBlock {
-                                return Get-SPDatabase
+                                return Get-SPDatabase | Sort DiskSizeRequired -Descending
                             }
 
     foreach ($spDatabase in $spDatabases)
@@ -34,7 +34,7 @@ Function Test-DatabaseHealth
         $outputItem = @{
             'DatabaseName' = $spDatabase.DisplayName;
             'NeedsUpgrade' = &{if($spDatabase.NeedsUpgrade) {"Yes"} else {"No"}};
-            'Size' = ($spDatabase.DiskSizeRequired | Format-Gigs);
+            'Size' = ($spDatabase.DiskSizeRequired/1GB).ToString(".00");
             'Highlight' = $highlight
         }
 

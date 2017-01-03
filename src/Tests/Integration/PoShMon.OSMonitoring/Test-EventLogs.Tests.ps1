@@ -2,8 +2,6 @@ $rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPa
 $sutFileName = (Split-Path -Leaf $MyInvocation.MyCommand.Path).Replace(".Tests", "")
 $sutFilePath = Join-Path $rootPath -ChildPath "Functions\PoShMon.OSMonitoring\$sutFileName" 
 . $sutFilePath
-$depFilePath = Join-Path $rootPath -ChildPath "Functions\PoShMon.Shared\Format-Gigs.ps1"
-. $depFilePath
 $depFilePath = Join-Path $rootPath -ChildPath "Functions\PoShMon.OSMonitoring\Get-GroupedEventLogItemsBySeverity.ps1"
 . $depFilePath
 

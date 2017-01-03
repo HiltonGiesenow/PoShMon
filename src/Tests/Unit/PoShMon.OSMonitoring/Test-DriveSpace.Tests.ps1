@@ -5,8 +5,6 @@ Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1") -Verbose
 $sutFileName = (Split-Path -Leaf $MyInvocation.MyCommand.Path).Replace(".Tests", "")
 $sutFilePath = Join-Path $rootPath -ChildPath "Functions\PoShMon.OSMonitoring\$sutFileName" 
 . $sutFilePath
-$depFilePath = Join-Path $rootPath -ChildPath "Functions\PoShMon.Shared\Format-Gigs.ps1"
-. $depFilePath
 #>
 
 class DiskMock {
