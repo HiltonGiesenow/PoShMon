@@ -4,6 +4,7 @@ Function OperatingSystem
     param(
         [string[]]$EventLogCodes = 'Critical',
         [hashtable]$EventIDIgnoreList = @{},
+        [double]$DriveSpaceThreshold = 10, #This is GB
         [string[]]$SpecialWindowsServices = $null
     )
 
@@ -17,6 +18,7 @@ Function OperatingSystem
             TypeName = "PoShMon.ConfigurationItems.OperatingSystem"
             EventLogCodes = $EventLogCodes
             EventIDIgnoreList = $EventIDIgnoreList
+            DriveSpaceThreshold = $DriveSpaceThreshold
             SpecialWindowsServices = $SpecialWindowsServices
         }
 }

@@ -1,9 +1,13 @@
-$rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPath ('..\..\') -Resolve
+$rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPath ('..\..\..\') -Resolve
+Remove-Module PoShMon
+Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1") -Verbose
+<#$rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPath ('..\..\..\') -Resolve
 $sutFileName = (Split-Path -Leaf $MyInvocation.MyCommand.Path).Replace(".Tests", "")
 $sutFilePath = Join-Path $rootPath -ChildPath "Functions\PoShMon.OSMonitoring\$sutFileName" 
 . $sutFilePath
 $depFilePath = Join-Path $rootPath -ChildPath "Functions\PoShMon.Shared\Format-Gigs.ps1"
 . $depFilePath
+#>
 
 class DiskMock {
     [string]$DeviceID
@@ -24,13 +28,26 @@ class DiskMock {
 }
 
 Describe "Test-DriveSpace" {
+    It "Should throw an exception if no OperatingSystem configuration is set" {
+    
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                    }
+
+        { Test-DriveSpace $poShMonConfiguration } | Should throw
+    }
+
     It "Should return a matching output structure" {
     
         Mock -CommandName Get-WmiObject -MockWith {
-            return [DiskMock]::new('C:', 3, "", [UInt64]255465615360, [UInt64]61145096192, "MyCDrive")
+            return [DiskMock]::new('C:', 3, "", [UInt64]50GB, [UInt64]15GB, "MyCDrive")
         }
 
-        $actual = Test-DriveSpace "localhost"
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                        General -ServerNames 'localhost'
+                        OperatingSystem
+                    }
+
+        $actual = Test-DriveSpace $poShMonConfiguration
 
         $actual.Keys.Count | Should Be 5
         $actual.ContainsKey("NoIssuesFound") | Should Be $true
@@ -45,7 +62,7 @@ Describe "Test-DriveSpace" {
         $headers.ContainsKey("FreeSpace") | Should Be $true
         $valuesGroup1 = $actual.OutputValues[0]
         $valuesGroup1.Keys.Count | Should Be 2
-        $values1 = $valuesGroup1.GroupOutputValues
+        $values1 = $valuesGroup1.GroupOutputValues[0]
         $values1.Keys.Count | Should Be 4
         $values1.ContainsKey("DriveLetter") | Should Be $true
         $values1.ContainsKey("TotalSpace") | Should Be $true
@@ -56,10 +73,15 @@ Describe "Test-DriveSpace" {
     It "Should not warn on space above threshold" {
 
         Mock -CommandName Get-WmiObject -MockWith {
-            return [DiskMock]::new('C:', 3, "", [UInt64]255465615360, [UInt64]61145096192, "MyCDrive")
+            return [DiskMock]::new('C:', 3, "", [UInt64]50GB, [UInt64]11GB, "MyCDrive")
         }
 
-        $actual = Test-DriveSpace "localhost"
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                        General -ServerNames 'localhost'
+                        OperatingSystem
+                    }
+
+        $actual = Test-DriveSpace $poShMonConfiguration
         
         $actual.NoIssuesFound | Should Be $true
 
@@ -74,22 +96,16 @@ Describe "Test-DriveSpace" {
             "OutputValues" = @()
             }
 
-        $expected["OutputValues"] += @{
-                        'DriveLetter' = 'C:';
-                        'TotalSpace' = 243631;
-                        'FreeSpace' = 10;
-                        'Highlight' = ''
-                    }
-
-        #Mock -CommandName Format-Gigs -MockWith {
-        #    return '123'
-        #}
-
         Mock -CommandName Get-WmiObject -MockWith {
-            return [DiskMock]::new('C:', 3, "", [UInt64]255465615360, [UInt64]10485760, "MyCDrive")
+            return [DiskMock]::new('C:', 3, "", [UInt64]50GB, [UInt64]5GB, "MyCDrive")
         }
 
-        $actual = Test-DriveSpace "localhost"
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                        General -ServerNames 'localhost'
+                        OperatingSystem
+                    }
+
+        $actual = Test-DriveSpace $poShMonConfiguration
         
         $actual.NoIssuesFound | Should Be $false
 

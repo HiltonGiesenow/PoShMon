@@ -12,31 +12,31 @@ Function Invoke-SPMonitoring
     try {
         $remoteSession = Connect-RemoteSharePointSession -ServerName $PoShMonConfiguration.General.PrimaryServerName -ConfigurationName $PoShMonConfiguration.General.ConfigurationName
     
+        #$PSBoundParameters.RemoteSession = $remoteSession
+
         # Auto-Discover Servers
         $ServerNames = Invoke-Command -Session $remoteSession -ScriptBlock { Get-SPServer | Where Role -ne "Invalid" | Select Name } | % { $_.Name }
+        $PoShMonConfiguration.General.ServerNames = $ServerNames
 
         # Event Logs
         if (!$PoShMonConfiguration.General.TestsToSkip.Contains("EventLogs"))
-        {
-            foreach ($eventLogCode in $PoShMonConfiguration.OperatingSystem.EventLogCodes)
-                { $outputValues += Test-EventLogs -ServerNames $ServerNames -MinutesToScanHistory $PoShMonConfiguration.General.MinutesToScanHistory-SeverityCode $eventLogCode }
-        }
+            { $outputValues += Test-EventLogs $PoShMonConfiguration }
 
         # Drive Space
         if (!$PoShMonConfiguration.General.TestsToSkip.Contains("DriveSpace"))
-            { $outputValues += Test-DriveSpace -ServerNames $ServerNames }
+            { $outputValues += Test-DriveSpace $PoShMonConfiguration }
 
         # Server Status
         if (!$PoShMonConfiguration.General.TestsToSkip.Contains("SPServerStatus"))
-            { $outputValues += Test-SPServerStatus -ServerNames $ServerNames -ConfigurationName $PoShMonConfiguration.General.ConfigurationName }
+            { $outputValues += Test-SPServerStatus $PoShMonConfiguration }
         
         # Windows Service State
         if (!$PoShMonConfiguration.General.TestsToSkip.Contains("WindowsServiceState"))
-            { $outputValues += Test-SPWindowsServiceState -RemoteSession $remoteSession -SpecialWindowsServices $PoShMonConfiguration.OperatingSystem.SpecialWindowsServices }
+            { $outputValues += Test-SPWindowsServiceState -RemoteSession $remoteSession -PoShMonConfiguration $PoShMonConfiguration }
         
         # Failing Timer Jobs
         if (!$PoShMonConfiguration.General.TestsToSkip.Contains("SPFailingTimerJobs"))
-            { $outputValues += Test-JobHealth -RemoteSession $remoteSession -MinutesToScanHistory $PoShMonConfiguration.General.MinutesToScanHistory }
+            { $outputValues += Test-JobHealth -RemoteSession $remoteSession -PoShMonConfiguration $PoShMonConfiguration }
 
         # Database Health
         if (!$PoShMonConfiguration.General.TestsToSkip.Contains("SPDatabaseHealth"))
@@ -52,13 +52,8 @@ Function Invoke-SPMonitoring
 
         # Web Tests
         if (!$PoShMonConfiguration.General.TestsToSkip.Contains("WebTests"))
-        {
-            foreach ($websiteDetailKey in $PoShMonConfiguration.WebSite.WebsiteDetails.Keys)
-            {
-                $websiteDetail = $PoShMonConfiguration.WebSite.WebsiteDetails[$websiteDetailKey]
-                $outputValues += Test-WebSite -SiteUrl $WebsiteDetailKey -TextToLocate $websiteDetail -ServerNames $ServerNames -ConfigurationName $PoShMonConfiguration.General.ConfigurationName
-            }
-        }
+            { $outputValues += Test-WebSites $PoShMonConfiguration }
+
     } catch {
         Send-ExceptionNotifications -PoShMonConfiguration $PoShMonConfiguration -Exception $_.Exception
     } finally {

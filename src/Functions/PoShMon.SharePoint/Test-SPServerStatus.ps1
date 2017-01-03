@@ -2,8 +2,7 @@ Function Test-SPServerStatus
 {
     [CmdletBinding()]
     param (
-        [string[]]$ServerNames,
-        [string]$ConfigurationName = $null
+        [hashtable]$PoShMonConfiguration
     )
 
     $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
@@ -18,10 +17,10 @@ Function Test-SPServerStatus
     #$farm = Get-SPFarm
     #$farm.BuildVersion
 
-    foreach ($ServerName in $ServerNames) # $farm.Servers
+    foreach ($ServerName in $PoShMonConfiguration.General.ServerNames) # $farm.Servers
     {
         try {
-            $remoteSession = Connect-RemoteSession -ServerName $ServerName -ConfigurationName $ConfigurationName
+            $remoteSession = Connect-RemoteSession -ServerName $ServerName -ConfigurationName $PoShMonConfiguration.General.ConfigurationName
 
             $server = Invoke-Command -Session $remoteSession -ScriptBlock {
                                         Add-PSSnapin Microsoft.SharePoint.PowerShell

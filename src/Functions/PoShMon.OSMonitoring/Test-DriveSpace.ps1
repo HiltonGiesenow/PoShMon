@@ -2,10 +2,10 @@ Function Test-DriveSpace
 {
     [CmdletBinding()]
     param (
-        [string[]]$ServerNames
+        [hashtable]$PoShMonConfiguration
     )
 
-    $threshhold = 10000
+    if ($PoShMonConfiguration.OperatingSystem -eq $null) { throw "'OperatingSystem' configuration not set properly on PoShMonConfiguration parameter." }
 
     $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
 
@@ -16,7 +16,7 @@ Function Test-DriveSpace
 
     Write-Verbose "Getting Server Drive Space..."
 
-    foreach ($serverName in $ServerNames)
+    foreach ($serverName in $PoShMonConfiguration.General.ServerNames)
     {
         Write-Verbose $serverName
 
@@ -26,22 +26,22 @@ Function Test-DriveSpace
 
         foreach ($drive in ($serverDriveSpace | Where DriveType -eq 3))
         {
-            $totalSpace = $drive.Size | Format-Gigs 
-            $freeSpace = $drive.FreeSpace | Format-Gigs 
+            $totalSpace = $drive.Size/1GB
+            $freeSpace = $drive.FreeSpace/1GB
             $highlight = @()
 
-            if ([int]$freeSpace -lt $threshhold)
+            if ($freeSpace -lt $PoShMonConfiguration.OperatingSystem.DriveSpaceThreshold)
             {
                 $NoIssuesFound = $false
                 $highlight += "FreeSpace"
             }
 
-            Write-Verbose ("`t" + $drive.DeviceID + " : " + $totalSpace + " : " + $freeSpace)
+            Write-Verbose ("`t" + $drive.DeviceID + " : " + $totalSpace.ToString(".00") + " : " + $freeSpace.ToString(".00"))
 
             $outputItem = @{
                 'DriveLetter' = $drive.DeviceID;
-                'TotalSpace' = $totalSpace;
-                'FreeSpace' = $freeSpace;
+                'TotalSpace' = $totalSpace.ToString(".00");
+                'FreeSpace' = $freeSpace.ToString(".00");
                 'Highlight' = $highlight
             }
 

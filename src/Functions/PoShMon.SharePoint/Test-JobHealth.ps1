@@ -3,7 +3,7 @@ Function Test-JobHealth
     [CmdletBinding()]
     param (
         [System.Management.Automation.Runspaces.PSSession]$RemoteSession,
-        [int]$MinutesToScanHistory = 1440 # one day
+        [hashtable]$PoShMonConfiguration
     )
 
     $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
@@ -15,7 +15,7 @@ Function Test-JobHealth
     $outputHeaders = @{ 'JobDefinitionTitle' = 'Job Definition Title'; 'EndTime' = 'End Time'; 'ServerName' = 'Server Name'; 'WebApplicationName' = 'Web Application Name'; 'ErrorMessage' ='Error Message' }
     $outputValues = @()
 
-    $startDate = (Get-Date).AddMinutes(-$MinutesToScanHistory) #.ToUniversalTime()
+    $startDate = (Get-Date).AddMinutes(-$PoShMonConfiguration.General.MinutesToScanHistory) #.ToUniversalTime()
 
     $jobHistoryEntries = Invoke-Command -Session $RemoteSession -ScriptBlock {
                                 param($StartDate)

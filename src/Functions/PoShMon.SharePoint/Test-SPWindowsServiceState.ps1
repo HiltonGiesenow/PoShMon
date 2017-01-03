@@ -3,7 +3,7 @@ Function Test-SPWindowsServiceState
     [CmdletBinding()]
     param (
         [System.Management.Automation.Runspaces.PSSession]$RemoteSession,
-        [string[]]$SpecialWindowsServices
+        [hashtable]$PoShMonConfiguration
     )
 
     $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
@@ -22,8 +22,8 @@ Function Test-SPWindowsServiceState
     
     $serversWithServices = @{}
     $defaultServiceList = 'IISADMIN','SPAdminV4','SPTimerV4','SPTraceV4','SPWriterV4'
-    if ($SpecialWindowsServices -ne $null -and $SpecialWindowsServices.Count -gt 0)
-        { $defaultServiceList += $SpecialWindowsServices }
+    if ($PoShMonConfiguration.OperatingSystem.SpecialWindowsServices -ne $null -and $PoShMonConfiguration.OperatingSystem.SpecialWindowsServices.Count -gt 0)
+        { $defaultServiceList += $PoShMonConfiguration.OperatingSystem.SpecialWindowsServices }
 
     foreach ($spServiceInstance in $spServiceInstances)
     {

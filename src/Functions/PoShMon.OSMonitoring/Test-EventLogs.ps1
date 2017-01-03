@@ -2,86 +2,90 @@ Function Test-EventLogs
 {
     [CmdletBinding()]
     param (
-        [string[]]$ServerNames = @(),
-        [int]$MinutesToScanHistory = 1440, # one day
-        [string]$SeverityCode = 'Critical',
-        [hashtable]$EventIDIgnoreList = @{}
+        [hashtable]$PoShMonConfiguration
     )
-   
-    $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
-   
-    $NoIssuesFound = $true
-    $sectionHeader = "$SeverityCode Event Log Issues"
-    $outputHeaders = @{ 'EventID' = 'Event ID'; 'InstanceCount' = 'Count'; 'Source' = 'Source'; 'User' = 'User'; 'Timestamp' = 'Timestamp'; 'Message' ='Message' }
-    $outputValues = @()
 
-    $wmiStartDate = (Get-Date).AddMinutes(-$MinutesToScanHistory) #.ToUniversalTime()
-    $wmidate = new-object -com Wbemscripting.swbemdatetime
-    $wmidate.SetVarDate($wmiStartDate, $true)
-    $wmiStartDateWmi = $wmidate.value
+    $allTestsOutput = @()
 
-    Write-Verbose "Getting $SeverityCode Event Log Issues..."
-
-    foreach ($serverName in $ServerNames)
+    foreach ($SeverityCode in $PoShMonConfiguration.OperatingSystem.EventLogCodes)
     {
-        $itemOutputValues = @()
-        
-        $eventLogEntryGroups = Get-GroupedEventLogItemsBySeverity -ComputerName $serverName -SeverityCode $SeverityCode -WmiStartDate $wmiStartDateWmi
+        $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
+   
+        $NoIssuesFound = $true
+        $sectionHeader = "$SeverityCode Event Log Issues"
+        $outputHeaders = @{ 'EventID' = 'Event ID'; 'InstanceCount' = 'Count'; 'Source' = 'Source'; 'User' = 'User'; 'Timestamp' = 'Timestamp'; 'Message' ='Message' }
+        $outputValues = @()
 
-        Write-Verbose $serverName
+        $wmiStartDate = (Get-Date).AddMinutes(-$PoShMonConfiguration.General.MinutesToScanHistory) #.ToUniversalTime()
+        $wmidate = new-object -com Wbemscripting.swbemdatetime
+        $wmidate.SetVarDate($wmiStartDate, $true)
+        $wmiStartDateWmi = $wmidate.value
 
-        if ($eventLogEntryGroups.Count -gt 0)
+        Write-Verbose "Getting $SeverityCode Event Log Issues..."
+
+        foreach ($serverName in $PoShMonConfiguration.General.ServerNames)
         {
-            foreach ($eventLogEntryGroup in $eventLogEntryGroups)
+            $itemOutputValues = @()
+        
+            $eventLogEntryGroups = Get-GroupedEventLogItemsBySeverity -ComputerName $serverName -SeverityCode $SeverityCode -WmiStartDate $wmiStartDateWmi
+
+            Write-Verbose $serverName
+
+            if ($eventLogEntryGroups.Count -gt 0)
             {
-                $currentEntry = $eventLogEntryGroup.Group[0]
-
-                if ($EventIDIgnoreList.Count -eq 0 -or $EventIDIgnoreList.ContainsKey($currentEntry.EventCode) -eq $false)
+                foreach ($eventLogEntryGroup in $eventLogEntryGroups)
                 {
-                    $NoIssuesFound = $false
+                    $currentEntry = $eventLogEntryGroup.Group[0]
 
-                    Write-Verbose ($currentEntry.EventCode.ToString() + ' (' + $eventLogEntryGroup.Count + ', ' + $currentEntry.SourceName + ', ' + $currentEntry.User + ') : ' + $currentEntry.ConvertToDateTime($currentEntry.TimeGenerated) + ' - ' + $currentEntry.Message)
+                    if ($EventIDIgnoreList.Count -eq 0 -or $EventIDIgnoreList.ContainsKey($currentEntry.EventCode) -eq $false)
+                    {
+                        $NoIssuesFound = $false
+
+                        Write-Verbose ($currentEntry.EventCode.ToString() + ' (' + $eventLogEntryGroup.Count + ', ' + $currentEntry.SourceName + ', ' + $currentEntry.User + ') : ' + $currentEntry.ConvertToDateTime($currentEntry.TimeGenerated) + ' - ' + $currentEntry.Message)
                 
-                    $outputItem = @{
-                                    'EventID' = $currentEntry.EventCode;
-                                    'InstanceCount' = $eventLogEntryGroup.Count;
-                                    'Source' = $currentEntry.SourceName;
-                                    'User' = $currentEntry.User;
-                                    'Timestamp' = $currentEntry.ConvertToDateTime($currentEntry.TimeGenerated);
-                                    'Message' = $currentEntry.Message
+                        $outputItem = @{
+                                        'EventID' = $currentEntry.EventCode;
+                                        'InstanceCount' = $eventLogEntryGroup.Count;
+                                        'Source' = $currentEntry.SourceName;
+                                        'User' = $currentEntry.User;
+                                        'Timestamp' = $currentEntry.ConvertToDateTime($currentEntry.TimeGenerated);
+                                        'Message' = $currentEntry.Message
+                                    }
+
+                        $itemOutputValues += $outputItem
+                    }
+                }
+
+                $groupedoutputItem = @{
+                                    'GroupName' = $serverName
+                                    'GroupOutputValues' = $itemOutputValues
                                 }
 
-                    $itemOutputValues += $outputItem
-                }
+                $outputValues += $groupedoutputItem
             }
 
-            $groupedoutputItem = @{
-                                'GroupName' = $serverName
-                                'GroupOutputValues' = $itemOutputValues
-                            }
+            if ($NoIssuesFound)
+            {
+                Write-Verbose "`tNone"
+                $groupedoutputItem = @{
+                                    'GroupName' = $serverName
+                                    'GroupOutputValues' = @()
+                                }
 
-            $outputValues += $groupedoutputItem
+                $outputValues += $groupedoutputItem
+            }
         }
 
-        if ($NoIssuesFound)
-        {
-            Write-Verbose "`tNone"
-            $groupedoutputItem = @{
-                                'GroupName' = $serverName
-                                'GroupOutputValues' = @()
-                            }
+        $stopWatch.Stop()
 
-            $outputValues += $groupedoutputItem
-        }
+        $allTestsOutput += @{
+            "SectionHeader" = $sectionHeader;
+            "NoIssuesFound" = $NoIssuesFound;
+            "OutputHeaders" = $outputHeaders;
+            "OutputValues" = $outputValues;
+            "ElapsedTime" = $stopWatch.Elapsed
+            }
     }
 
-    $stopWatch.Stop()
-
-    return @{
-        "SectionHeader" = $sectionHeader;
-        "NoIssuesFound" = $NoIssuesFound;
-        "OutputHeaders" = $outputHeaders;
-        "OutputValues" = $outputValues;
-        "ElapsedTime" = $stopWatch.Elapsed
-        }
+    return $allTestsOutput
 }
