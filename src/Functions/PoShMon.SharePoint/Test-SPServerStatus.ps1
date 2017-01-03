@@ -11,7 +11,7 @@ Function Test-SPServerStatus
 
     $sectionHeader = "Farm Server Status"
     $NoIssuesFound = $true
-    $outputHeaders = @{ 'ServerName' = 'Server Name'; 'Role' = 'Role'; 'NeedsUpgrade' = 'Needs Upgrade?'; 'Status' ='Status' }
+    $outputHeaders = [ordered]@{ 'ServerName' = 'Server Name'; 'Role' = 'Role'; 'NeedsUpgrade' = 'Needs Upgrade?'; 'Status' ='Status' }
     $outputValues = @()
 
     #$farm = Get-SPFarm

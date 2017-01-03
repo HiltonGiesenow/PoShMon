@@ -11,7 +11,7 @@ Function Test-DatabaseHealth
 
     $sectionHeader = "Database Status"
     $NoIssuesFound = $true
-    $outputHeaders = @{ 'DatabaseName' = 'Database Name'; 'Size' = 'Size (MB)'; 'NeedsUpgrade' = 'Needs Upgrade?' }
+    $outputHeaders = [ordered]@{ 'DatabaseName' = 'Database Name'; 'Size' = 'Size (MB)'; 'NeedsUpgrade' = 'Needs Upgrade?' }
     $outputValues = @()
 
     $spDatabases = Invoke-Command -Session $RemoteSession -ScriptBlock {

@@ -17,7 +17,7 @@ Function Test-SPWindowsServiceState
     
     $sectionHeader = "Windows Service State"
     $NoIssuesFound = $true
-    $outputHeaders = @{ 'DisplayName' = 'Display Name'; 'Name' = 'Name'; 'Status' = 'Status' }
+    $outputHeaders = [ordered]@{ 'DisplayName' = 'Display Name'; 'Name' = 'Name'; 'Status' = 'Status' }
     $outputValues = @()
     
     $serversWithServices = @{}

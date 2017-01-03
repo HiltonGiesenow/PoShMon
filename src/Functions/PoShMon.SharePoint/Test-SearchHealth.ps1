@@ -11,7 +11,7 @@ Function Test-SearchHealth
 
     $sectionHeader = "Search Status"
     $NoIssuesFound = $true
-    $outputHeaders = @{ 'ComponentName' = 'Component'; 'ServerName' = 'Server Name'; 'State' = 'State' }
+    $outputHeaders = [ordered]@{ 'ComponentName' = 'Component'; 'ServerName' = 'Server Name'; 'State' = 'State' }
     $outputValues = @()
 
     $remoteComponents = Invoke-Command -Session $RemoteSession -ScriptBlock {

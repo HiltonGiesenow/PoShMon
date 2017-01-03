@@ -11,7 +11,7 @@ Function Test-DriveSpace
 
     $sectionHeader = "Harddrive Space Review"
     $NoIssuesFound = $true
-    $outputHeaders = @{ 'DriveLetter' = 'Drive Letter'; 'TotalSpace' = 'Total Space (GB)'; 'FreeSpace' = 'Free Space (GB)' }
+    $outputHeaders = [ordered]@{ 'DriveLetter' = 'Drive Letter'; 'TotalSpace' = 'Total Space (GB)'; 'FreeSpace' = 'Free Space (GB)' }
     $outputValues = @()
 
     Write-Verbose "Getting Server Drive Space..."

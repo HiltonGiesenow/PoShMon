@@ -10,7 +10,7 @@ Function Test-DistributedCacheStatus
     Write-Verbose "Testing Distributed Cache Health..."
     $sectionHeader = "Distributed Cache Status"
     $NoIssuesFound = $true
-    $outputHeaders = @{ 'Server' = 'Server'; 'Status' = 'Status' }
+    $outputHeaders = [ordered]@{ 'Server' = 'Server'; 'Status' = 'Status' }
     $outputValues = @()
 
     $cacheServers = Invoke-Command -Session $RemoteSession -ScriptBlock {
