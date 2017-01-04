@@ -16,7 +16,8 @@
              }
 
     $pushbulletSendUrl = "https://api.pushbullet.com/v2/pushes"
-    $credential = New-Object System.Management.Automation.PSCredential ($PushbulletNotificationSink.AccessToken, (ConvertTo-SecureString $PushbulletNotificationSink.AccessToken -AsPlainText -Force))
 
-    $sendMessage = Invoke-WebRequest -Uri $pushbulletSendUrl -Credential $credential -Method Post -Body $finalMessageBody -ErrorAction SilentlyContinue
+    $headers = @{ 'Access-Token' = $PushbulletNotificationSink.AccessToken }
+
+    $sendMessage = Invoke-WebRequest -Uri $pushbulletSendUrl -Headers $headers -Method Post -Body $finalMessageBody -ErrorAction SilentlyContinue
  }
