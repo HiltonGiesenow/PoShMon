@@ -8,6 +8,7 @@ $description = "PoShMon is an open source PowerShell-based server and farm monit
 $releaseNotes = "
 0.7.0
 * Added monitoring for server memory (free + total)
+* Removed Credential for Pushbullet, using Header directly instead
 
 0.6.2
 * Fixed ordering of output columns (in email etc.)
