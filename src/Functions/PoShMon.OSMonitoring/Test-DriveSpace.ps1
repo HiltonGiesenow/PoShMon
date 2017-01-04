@@ -22,7 +22,7 @@ Function Test-DriveSpace
 
         $itemOutputValues = @()
     
-        $serverDriveSpace = Get-WmiObject win32_logicaldisk -Computername $serverName
+        $serverDriveSpace = Get-WmiObject win32_logicaldisk -Computername $serverName #this could be optimised to go to all servers at the same time..
 
         foreach ($drive in ($serverDriveSpace | Where DriveType -eq 3))
         {

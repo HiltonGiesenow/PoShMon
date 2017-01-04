@@ -25,6 +25,10 @@ Function Invoke-SPMonitoring
         if (!$PoShMonConfiguration.General.TestsToSkip.Contains("EventLogs"))
             { $outputValues += Test-EventLogs $PoShMonConfiguration }
 
+        # Memory Space
+        if (!$PoShMonConfiguration.General.TestsToSkip.Contains("Memory"))
+            { $outputValues += Test-Memory $PoShMonConfiguration }
+
         # Drive Space
         if (!$PoShMonConfiguration.General.TestsToSkip.Contains("DriveSpace"))
             { $outputValues += Test-DriveSpace $PoShMonConfiguration }

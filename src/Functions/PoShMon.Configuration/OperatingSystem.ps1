@@ -5,6 +5,7 @@ Function OperatingSystem
         [string[]]$EventLogCodes = 'Critical',
         [hashtable]$EventIDIgnoreList = @{},
         [double]$DriveSpaceThreshold = 10, #This is GB
+        [double]$FreeMemoryThresholdPercent = 10,
         [string[]]$SpecialWindowsServices = $null
     )
 
@@ -19,6 +20,7 @@ Function OperatingSystem
             EventLogCodes = $EventLogCodes
             EventIDIgnoreList = $EventIDIgnoreList
             DriveSpaceThreshold = $DriveSpaceThreshold
+            FreeMemoryThresholdPercent = $FreeMemoryThresholdPercent
             SpecialWindowsServices = $SpecialWindowsServices
         }
 }

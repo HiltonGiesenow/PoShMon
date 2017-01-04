@@ -6,6 +6,7 @@ Function Get-SPTestNames
 
     $tests = @(
         "EventLogs",
+        "Memory",
         "DriveSpace",
         "SPServerStatus",
         "WindowsServiceState",
