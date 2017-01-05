@@ -8,14 +8,14 @@ $sutFilePath = Join-Path $rootPath -ChildPath "Functions\PoShMon.OSMonitoring\$s
 #>
 
 class ServerMemoryMock {
-    [string]$ServerName
-    [UInt64]$TotalMemory
-    [UInt64]$FreeMemory
+    [string]$PSComputerName
+    [UInt64]$TotalVisibleMemorySize
+    [UInt64]$FreePhysicalMemory
 
-    DiskMock ([string]$NewServerName, [UInt64]$NewTotalMemory, [UInt64]$NewFreeMemory) {
-        $this.ServerName = $NewServerName;
-        $this.TotalMemory = $NewTotalMemory;
-        $this.FreeMemory = $NewFreeMemory;
+    ServerMemoryMock ([string]$NewPSComputerName, [UInt64]$NewTotalVisibleMemorySize, [UInt64]$NewFreePhysicalMemory) {
+        $this.PSComputerName = $NewPSComputerName;
+        $this.TotalVisibleMemorySize = $NewTotalVisibleMemorySize;
+        $this.FreePhysicalMemory = $NewFreePhysicalMemory;
     }
 }
 
@@ -34,7 +34,7 @@ Describe "Test-Memory" {
         }
 
         $poShMonConfiguration = New-PoShMonConfiguration {
-                        General -ServerNames 'localhost'
+                        General -ServerNames 'Server1'
                         OperatingSystem
                     }
 

@@ -23,6 +23,7 @@ Function Test-Memory
         Write-Verbose $serverResult.PSComputerName
 
         $freeMemoryPercent = $serverResult.FreePhysicalMemory / $serverResult.TotalVisibleMemorySize * 100
+        $highlight = @()
 
         if ($freeMemoryPercent -lt $PoShMonConfiguration.OperatingSystem.FreeMemoryThresholdPercent)
         {
