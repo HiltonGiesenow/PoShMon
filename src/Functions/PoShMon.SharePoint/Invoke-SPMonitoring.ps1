@@ -47,15 +47,19 @@ Function Invoke-SPMonitoring
 
         # Database Health
         if (!$PoShMonConfiguration.General.TestsToSkip.Contains("SPDatabaseHealth"))
-            { $outputValues += Test-DatabaseHealth -RemoteSession $remoteSession }
-
-        # Search Health
-        if (!$PoShMonConfiguration.General.TestsToSkip.Contains("SPSearchHealth"))
-            { $outputValues += Test-SearchHealth -RemoteSession $remoteSession }
+            { $outputValues += Test-DatabaseHealth $remoteSession }
 
         # Distributed Cache Health
         if (!$PoShMonConfiguration.General.TestsToSkip.Contains("SPDistributedCacheHealth"))
-            { $outputValues += Test-DistributedCacheStatus -RemoteSession $remoteSession }
+            { $outputValues += Test-DistributedCacheStatus $remoteSession }
+
+        # Search Health
+        if (!$PoShMonConfiguration.General.TestsToSkip.Contains("SPSearchHealth"))
+            { $outputValues += Test-SearchHealth $remoteSession }
+
+        # User Profile Sync Health
+        if (!$PoShMonConfiguration.General.TestsToSkip.Contains("SPUPSSyncHealth"))
+            { $outputValues += Test-UserProfileSync -RemoteSession $remoteSession -PoShMonConfiguration $PoShMonConfiguration }
 
         # Web Tests
         if (!$PoShMonConfiguration.General.TestsToSkip.Contains("WebTests"))

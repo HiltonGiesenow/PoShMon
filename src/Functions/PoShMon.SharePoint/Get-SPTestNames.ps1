@@ -12,8 +12,9 @@ Function Get-SPTestNames
         "WindowsServiceState",
         "SPFailingTimerJobs",
         "SPDatabaseHealth",
-        "SPSearchHealth",
         "SPDistributedCacheHealth",
+        "SPSearchHealth",
+        "SPUPSSyncHealth",
         "WebTests"
     ) #storing them as an array in case it's useful...
 

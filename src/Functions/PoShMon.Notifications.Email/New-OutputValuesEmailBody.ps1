@@ -8,6 +8,8 @@ Function New-OutputValuesEmailBody
     
     $emailSection = ''
 
+    Add-Type -AssemblyName System.Web
+
     foreach ($outputValue in $outputValues)
     {
         $emailSection += '<tr>'
@@ -25,6 +27,8 @@ Function New-OutputValuesEmailBody
             $temp = ''
             if ([decimal]::TryParse($fieldValue, [ref]$temp))
                 { $align = 'right' }
+
+            $fieldValue = [System.Web.HttpUtility]::HtmlEncode($fieldValue)
 
             $emailSection += '<td valign="top"' + $style + ' align="' + $align +'">' + $fieldValue + '</td>'
         }
