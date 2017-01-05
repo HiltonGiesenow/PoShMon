@@ -82,3 +82,42 @@ Of course there are loads of monitoring systems and tools out there, both paid a
 1. I wanted to grow my PowerShell knowledge and there didn't seem to be anything purely PowerShell based that could offer what I wanted
 
 2. Many of the tools don't have a lot of product depth. For instance, many Windows monitoring tools can do basic disk / memory / event log monitoring for SharePoint servers but few can actually give me SharePoint-specific metrics, like how healthy the Search service is, what Timer jobs have failed,  or whether any of the servers need to be upgraded (note that many of these tests can be greatly improved). I'm hoping that PoShMon becomes the home for powerful, specialised monitoring of many other products and platforms, like Exchange, SQL Server, CRM and more.
+
+---
+
+## Release Notes
+
+0.8.0
+* Added User Profile Sync monitoring for SharePoint 2010/2013 FIM service
+* Added CPU monitoring
+* Added html encoding for Email notification
+* Some unit test bug fixes and coverage work
+
+0.7.0
+* Added monitoring for server memory (free + total)
+* Removed Credential for Pushbullet, using Header directly instead
+
+0.6.2
+* Fixed ordering of output columns (in email etc.)
+* Removed hard-coded hard drive space threshold
+* Refactored tests to take in 'PoShMonConfiguration' instead of individual parameters
+* Removed an unnecessary function
+* Sorting database output by size (Desc)
+
+0.6.1
+* Improved global exception handler (try/catch) to handle initial exceptions.
+* Added more tests
+* Refactored internal Notification code
+
+0.6.0
+Adding Office 365 Teams notification output
+
+0.5.1
+Fixing Pushbullet notification output
+
+0.5.0
+Added Pushbullet support and some additional unit tests. Also improved description in module itself. Also see the GitHub project page for basic help tutorial
+
+0.4.0 
+Changed configuration approach 
+minor bug fixes

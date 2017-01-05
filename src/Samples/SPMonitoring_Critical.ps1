@@ -8,7 +8,7 @@ $poShMonConfiguration = New-PoShMonConfiguration {
                     -MinutesToScanHistory 15 `
                     -PrimaryServerName 'SPAPPSVR01' `
                     -ConfigurationName SpFarmPosh `
-                    -TestsToSkip "SPDatabaseHealth"
+                    -TestsToSkip "SPDatabaseHealth","SPUPSSyncHealth"
                 OperatingSystem `
                     -EventLogCodes 'Critical'
                 WebSite `

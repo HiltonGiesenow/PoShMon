@@ -78,12 +78,33 @@ Describe "Test-Memory" {
     It "Should warn on space below threshold" {
         
         Mock -CommandName Get-WmiObject -MockWith {
-            return [ServerMemoryMock]::new('Server1', 8312456, 2837196)
+            return [ServerMemoryMock]::new('TheServer', 8312456, 10000)
+        }
+
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                        General -ServerNames 'TheServer'
+                        OperatingSystem
+                    }
+
+        $actual = Test-Memory $poShMonConfiguration
+        
+        $actual.NoIssuesFound | Should Be $false
+
+        $actual.OutputValues.Highlight.Count | Should Be 1
+        $actual.OutputValues.Highlight | Should Be 'FreeMemory'
+    }
+
+    It "Should use the configuration threshold properly" {
+        
+        $memory = 8312456*0.5
+
+        Mock -CommandName Get-WmiObject -MockWith {
+            return [ServerMemoryMock]::new('Server1', 8312456, $memory)
         }
 
         $poShMonConfiguration = New-PoShMonConfiguration {
                         General -ServerNames 'localhost'
-                        OperatingSystem -FreeMemoryThreshold 99
+                        OperatingSystem -FreeMemoryThreshold 51
                     }
 
         $actual = Test-Memory $poShMonConfiguration

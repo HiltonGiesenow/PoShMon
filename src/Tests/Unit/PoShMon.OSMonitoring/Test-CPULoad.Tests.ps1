@@ -106,4 +106,26 @@ Describe "Test-CPULoad" {
         $actual.OutputValues.Highlight.Count | Should Be 1
         $actual.OutputValues.Highlight | Should Be 'CPULoad'
     }
+    It "Should use the configuration threshold properly" {
+        
+        Mock -CommandName Get-Counter -MockWith {
+            $sample1 = [CounterSampleMock]::new("\\Server1\\processor(_total)\% processor time", 12.345)
+            $sample2 = [CounterSampleMock]::new("\\Server1\\processor(_total)\% processor time", 57.789)
+            $samples = @($sample1, $sample2)
+            $timestamp = Get-Date
+            return [CounterResultsMock]::new($timestamp, $samples)
+        }
+
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                        General -ServerNames 'localhost'
+                        OperatingSystem -CPULoadThresholdPercent 50
+                    }
+
+        $actual = Test-CPULoad $poShMonConfiguration
+        
+        $actual.NoIssuesFound | Should Be $false
+
+        $actual.OutputValues.Highlight.Count | Should Be 1
+        $actual.OutputValues.Highlight | Should Be 'CPULoad'
+    }
 }
