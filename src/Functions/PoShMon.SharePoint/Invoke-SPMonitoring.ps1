@@ -25,6 +25,10 @@ Function Invoke-SPMonitoring
         if (!$PoShMonConfiguration.General.TestsToSkip.Contains("EventLogs"))
             { $outputValues += Test-EventLogs $PoShMonConfiguration }
 
+        # CPU Load
+        if (!$PoShMonConfiguration.General.TestsToSkip.Contains("CPULoad"))
+            { $outputValues += Test-CPULoad $PoShMonConfiguration }
+
         # Memory Space
         if (!$PoShMonConfiguration.General.TestsToSkip.Contains("Memory"))
             { $outputValues += Test-Memory $PoShMonConfiguration }

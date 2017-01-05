@@ -6,7 +6,8 @@ Function Get-OSTestNames
 
     $tests = @(
         "EventLogs",
-        "Memory",
+        "CPULoad",
+        "FreeMemory",
         "DriveSpace"
     ) #storing them as an array in case it's useful...
 
