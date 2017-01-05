@@ -24,7 +24,7 @@ Function Test-UserProfileSync
     
     if ($upsServiceInstance -ne $null)
     {
-        $runStartDate = (Get-Date).AddMinutes(-$PoShMonConfiguration.General.MinutesToScanHistory).ToString("yyyy-MM-dd")
+        $runStartDate = (Get-Date).AddMinutes(-$PoShMonConfiguration.General.MinutesToScanHistory).ToString("yyyy-MM-dd HH:mm:ss")
         $FimRunHistory = get-wmiobject -Namespace "root\MicrosoftIdentityIntegrationServer" -class "MIIS_RunHistory" -ComputerName $upsServiceInstance.Server.DisplayName -Filter "RunStartTime >'$runStartDate'"
         $failedRuns = $FimRunHistory | Where RunStatus -NotIn "success","in-progress"
 
