@@ -12,7 +12,7 @@ Function Test-UserProfileSync
 
     $sectionHeader = "User Profile Sync State"
     $NoIssuesFound = $true
-    $outputHeaders = [ordered]@{ 'ManagementAgent' = 'Management Agent'; 'RunProfile' = 'Run Profile'; 'ErrorDetail' = 'ErrorDetail' }
+    $outputHeaders = [ordered]@{ 'ManagementAgent' = 'Management Agent'; 'RunProfile' = 'Run Profile'; 'RunStartTime' = 'Run Start Time'; 'ErrorDetail' = 'ErrorDetail' }
     $outputValues = @()        
 
 
@@ -56,7 +56,8 @@ Function Test-UserProfileSync
 
                         $outputItem = @{
                             'ManagementAgent' = $maName;
-                            'RunProfile' = $runprofileName ;
+                            'RunProfile' = $runprofileName;
+                            'RunStartTime' = [DateTime]::Parse($failedRun.RunStartTime).ToString("yyyy-MM-dd HH:mm:ss")
                             'ErrorDetail' = $errors.InnerXml;
                         }
 
