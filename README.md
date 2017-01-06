@@ -87,6 +87,9 @@ Of course there are loads of monitoring systems and tools out there, both paid a
 
 ## Release Notes
 
+0.8.1
+* Fixing a bug in the SharePoint UPS sync query for datetime
+
 0.8.0
 * Added User Profile Sync monitoring for SharePoint 2010/2013 FIM service
 * Added CPU monitoring
