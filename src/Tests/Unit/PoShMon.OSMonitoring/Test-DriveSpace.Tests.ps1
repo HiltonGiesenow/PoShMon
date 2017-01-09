@@ -1,5 +1,5 @@
 $rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPath ('..\..\..\') -Resolve
-Remove-Module PoShMon
+Remove-Module PoShMon -ErrorAction SilentlyContinue
 Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1") -Verbose
 <#$rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPath ('..\..\..\') -Resolve
 $sutFileName = (Split-Path -Leaf $MyInvocation.MyCommand.Path).Replace(".Tests", "")
@@ -55,9 +55,6 @@ Describe "Test-DriveSpace" {
         $actual.ContainsKey("ElapsedTime") | Should Be $true
         $headers = $actual.OutputHeaders
         $headers.Keys.Count | Should Be 3
-        $headers.ContainsKey("DriveLetter") | Should Be $true
-        $headers.ContainsKey("TotalSpace") | Should Be $true
-        $headers.ContainsKey("FreeSpace") | Should Be $true
         $valuesGroup1 = $actual.OutputValues[0]
         $valuesGroup1.Keys.Count | Should Be 2
         $values1 = $valuesGroup1.GroupOutputValues[0]

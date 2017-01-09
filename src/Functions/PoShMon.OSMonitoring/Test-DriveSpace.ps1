@@ -9,12 +9,7 @@ Function Test-DriveSpace
 
     $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
 
-    $sectionHeader = "Harddrive Space Review"
-    $NoIssuesFound = $true
-    $outputHeaders = [ordered]@{ 'DriveLetter' = 'Drive Letter'; 'TotalSpace' = 'Total Space (GB)'; 'FreeSpace' = 'Free Space (GB)' }
-    $outputValues = @()
-
-    Write-Verbose "Getting Server Drive Space..."
+    $mainOutput = Get-InitialOutput -SectionHeader "Harddrive Space Review" -OutputHeaders ([ordered]@{ 'DriveLetter' = 'Drive Letter'; 'TotalSpace' = 'Total Space (GB)'; 'FreeSpace' = 'Free Space (GB)' })
 
     foreach ($serverName in $PoShMonConfiguration.General.ServerNames)
     {
@@ -32,7 +27,7 @@ Function Test-DriveSpace
 
             if ($freeSpace -lt $PoShMonConfiguration.OperatingSystem.DriveSpaceThreshold)
             {
-                $NoIssuesFound = $false
+                $mainOutput.NoIssuesFound = $false
                 $highlight += "FreeSpace"
             }
 
@@ -48,21 +43,15 @@ Function Test-DriveSpace
             $itemOutputValues += $outputItem
         }
 
-        $groupedoutputItem = @{
+        $mainOutput.OutputValues += @{
                     'GroupName' = $serverName
                     'GroupOutputValues' = $itemOutputValues
                 }
-
-        $outputValues += $groupedoutputItem
     }
 
     $stopWatch.Stop()
 
-    return @{
-        "SectionHeader" = $sectionHeader;
-        "NoIssuesFound" = $NoIssuesFound;
-        "OutputHeaders" = $outputHeaders;
-        "OutputValues" = $outputValues;
-        "ElapsedTime" = $stopWatch.Elapsed;
-        }
+    $mainOutput.ElapsedTime = $stopWatch.Elapsed
+
+    return $mainOutput
 }

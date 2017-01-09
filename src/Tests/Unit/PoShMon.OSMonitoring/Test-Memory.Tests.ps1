@@ -1,5 +1,5 @@
 $rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPath ('..\..\..\') -Resolve
-Remove-Module PoShMon
+Remove-Module PoShMon -ErrorAction SilentlyContinue
 Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1") -Verbose
 <#$rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPath ('..\..\..\') -Resolve
 $sutFileName = (Split-Path -Leaf $MyInvocation.MyCommand.Path).Replace(".Tests", "")

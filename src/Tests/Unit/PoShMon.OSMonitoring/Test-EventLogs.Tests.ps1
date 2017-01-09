@@ -1,9 +1,6 @@
-$rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPath ('..\..\') -Resolve
-$sutFileName = (Split-Path -Leaf $MyInvocation.MyCommand.Path).Replace(".Tests", "")
-$sutFilePath = Join-Path $rootPath -ChildPath "Functions\PoShMon.OSMonitoring\$sutFileName" 
-. $sutFilePath
-$depFilePath = Join-Path $rootPath -ChildPath "Functions\PoShMon.OSMonitoring\Get-GroupedEventLogItemsBySeverity.ps1"
-. $depFilePath
+$rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPath ('..\..\..\') -Resolve
+Remove-Module PoShMon -ErrorAction SilentlyContinue
+Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1") -Verbose
 
 class EventLogItemMock {
     [int]$EventCode
@@ -35,7 +32,12 @@ Describe "Test-EventLogs" {
             return $eventsCollection
         }
 
-        $actual = Test-EventLogs -ServerNames 'Server1'
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                        General -ServerNames 'localhost'
+                        OperatingSystem
+                    }
+
+        $actual = Test-EventLogs $poShMonConfiguration
 
         $actual.Keys.Count | Should Be 5
         $actual.ContainsKey("NoIssuesFound") | Should Be $true
@@ -45,12 +47,6 @@ Describe "Test-EventLogs" {
         $actual.ContainsKey("ElapsedTime") | Should Be $true
         $headers = $actual.OutputHeaders
         $headers.Keys.Count | Should Be 6
-        $headers.ContainsKey("EventID") | Should Be $true
-        $headers.ContainsKey("InstanceCount") | Should Be $true
-        $headers.ContainsKey("Source") | Should Be $true
-        $headers.ContainsKey("User") | Should Be $true
-        $headers.ContainsKey("Timestamp") | Should Be $true
-        $headers.ContainsKey("Message") | Should Be $true
         $valuesGroup1 = $actual.OutputValues[0]
         $valuesGroup1.Keys.Count | Should Be 2
         $values1 = $valuesGroup1.GroupOutputValues
@@ -72,25 +68,17 @@ Describe "Test-EventLogs" {
             return $eventsCollection
         }
 
-        $actual = Test-EventLogs -ServerNames 'Server1'
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                        General -ServerNames 'Server1'
+                        OperatingSystem
+                    }
+
+        $actual = Test-EventLogs $poShMonConfiguration
         
         $actual.NoIssuesFound | Should Be $false
     }
     It "Should group per server" {
         
-        $expected = @{
-            "NoIssuesFound" = $true;
-            "outputHeaders" = @{ 'EventID' = 'Event ID'; 'InstanceCount' = 'Count'; 'Source' = 'Source'; 'User' = 'User'; 'Timestamp' = 'Timestamp'; 'Message' ='Message' };
-            "OutputValues" = @()
-            }
-
-        $expected["OutputValues"] += @{
-                        'DriveLetter' = 'C:';
-                        'TotalSpace' = 243631;
-                        'FreeSpace' = 58313;
-                        'Highlight' = ''
-                    }
-
         Mock -CommandName Get-WmiObject -MockWith {
             $eventsCollection = @()
 
@@ -102,7 +90,12 @@ Describe "Test-EventLogs" {
             return $eventsCollection
         }
 
-        $actual = Test-EventLogs -ServerNames 'Server1','Server2'
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                        General -ServerNames 'Server1', 'Server2'
+                        OperatingSystem
+                    }
+
+        $actual = Test-EventLogs $poShMonConfiguration
         
         $actual.NoIssuesFound | Should Be $false
 
@@ -111,19 +104,6 @@ Describe "Test-EventLogs" {
         $actual.OutputValues[1].GroupName  | Should Be 'Server2'
     }
     It "Should group on EventID and Message" {
-        
-        $expected = @{
-            "NoIssuesFound" = $true;
-            "outputHeaders" = @{ 'EventID' = 'Event ID'; 'InstanceCount' = 'Count'; 'Source' = 'Source'; 'User' = 'User'; 'Timestamp' = 'Timestamp'; 'Message' ='Message' };
-            "OutputValues" = @()
-            }
-
-        $expected["OutputValues"] += @{
-                        'DriveLetter' = 'C:';
-                        'TotalSpace' = 243631;
-                        'FreeSpace' = 58313;
-                        'Highlight' = ''
-                    }
 
         Mock -CommandName Get-WmiObject -MockWith {
             $eventsCollection = @()
@@ -136,7 +116,12 @@ Describe "Test-EventLogs" {
             return $eventsCollection
         }
 
-        $actual = Test-EventLogs -ServerNames localhost
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                        General -ServerNames 'Server1'
+                        OperatingSystem
+                    }
+
+        $actual = Test-EventLogs $poShMonConfiguration
         
         $actual.NoIssuesFound | Should Be $false
 

@@ -9,12 +9,7 @@ Function Test-Memory
 
     $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
 
-    $sectionHeader = "Memory Review"
-    $NoIssuesFound = $true
-    $outputHeaders = [ordered]@{ 'ServerName' = 'Server Name'; 'TotalMemory' = 'Total Memory (GB)'; 'FreeMemory' = 'Free Memory (GB)'; 'FreeSpacePerc' = 'Free Space (%)' }
-    $outputValues = @()
-
-    Write-Verbose "Getting Memory..."
+    $mainOutput = Get-InitialOutput -SectionHeader "Memory Review" -OutputHeaders ([ordered]@{ 'ServerName' = 'Server Name'; 'TotalMemory' = 'Total Memory (GB)'; 'FreeMemory' = 'Free Memory (GB)'; 'FreeSpacePerc' = 'Free Space (%)' })
 
     $results = Get-WmiObject Win32_OperatingSystem -Computername $PoShMonConfiguration.General.ServerNames
 
@@ -27,7 +22,7 @@ Function Test-Memory
 
         if ($freeMemoryPercent -lt $PoShMonConfiguration.OperatingSystem.FreeMemoryThresholdPercent)
         {
-            $NoIssuesFound = $false
+            $mainOutput.NoIssuesFound = $false
             $highlight += "FreeMemory"
         }
 
@@ -36,7 +31,7 @@ Function Test-Memory
 
         Write-Verbose ("`t" + $totalSpace.ToString(".00") + " : " + $freeSpace.ToString(".00"))
 
-        $outputValues += @{
+        $mainOutput.OutputValues += @{
             'ServerName' = $serverResult.PSComputerName
             'TotalMemory' = $totalSpace.ToString(".00");
             'FreeMemory' = $freeSpace.ToString(".00");
@@ -47,11 +42,7 @@ Function Test-Memory
 
     $stopWatch.Stop()
 
-    return @{
-        "SectionHeader" = $sectionHeader;
-        "NoIssuesFound" = $NoIssuesFound;
-        "OutputHeaders" = $outputHeaders;
-        "OutputValues" = $outputValues;
-        "ElapsedTime" = $stopWatch.Elapsed;
-        }
+    $mainOutput.ElapsedTime = $stopWatch.Elapsed
+
+    return $mainOutput
 }

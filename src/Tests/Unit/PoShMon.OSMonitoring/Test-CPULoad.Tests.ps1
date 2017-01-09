@@ -45,7 +45,7 @@ Describe "Test-CPULoad" {
                         OperatingSystem
                     }
 
-        $actual = Test-CPULoad $poShMonConfiguration
+        $actual = Test-CPULoad $poShMonConfiguration -Verbose
 
         $actual.Keys.Count | Should Be 5
         $actual.ContainsKey("NoIssuesFound") | Should Be $true

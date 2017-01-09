@@ -11,10 +11,7 @@ Function Test-EventLogs
     {
         $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
    
-        $NoIssuesFound = $true
-        $sectionHeader = "$SeverityCode Event Log Issues"
-        $outputHeaders = [ordered]@{ 'EventID' = 'Event ID'; 'InstanceCount' = 'Count'; 'Source' = 'Source'; 'User' = 'User'; 'Timestamp' = 'Timestamp'; 'Message' ='Message' }
-        $outputValues = @()
+        $mainOutput = Get-InitialOutput -SectionHeader "$SeverityCode Event Log Issues" -OutputHeaders ([ordered]@{ 'EventID' = 'Event ID'; 'InstanceCount' = 'Count'; 'Source' = 'Source'; 'User' = 'User'; 'Timestamp' = 'Timestamp'; 'Message' ='Message' })
 
         $wmiStartDate = (Get-Date).AddMinutes(-$PoShMonConfiguration.General.MinutesToScanHistory) #.ToUniversalTime()
         $wmidate = new-object -com Wbemscripting.swbemdatetime
@@ -39,7 +36,7 @@ Function Test-EventLogs
 
                     if ($EventIDIgnoreList.Count -eq 0 -or $EventIDIgnoreList.ContainsKey($currentEntry.EventCode) -eq $false)
                     {
-                        $NoIssuesFound = $false
+                        $mainOutput.NoIssuesFound = $false
 
                         Write-Verbose ($currentEntry.EventCode.ToString() + ' (' + $eventLogEntryGroup.Count + ', ' + $currentEntry.SourceName + ', ' + $currentEntry.User + ') : ' + $currentEntry.ConvertToDateTime($currentEntry.TimeGenerated) + ' - ' + $currentEntry.Message)
                 
@@ -56,35 +53,29 @@ Function Test-EventLogs
                     }
                 }
 
-                $groupedoutputItem = @{
+                $mainOutput.OutputValues += @{
                                     'GroupName' = $serverName
                                     'GroupOutputValues' = $itemOutputValues
                                 }
-
-                $outputValues += $groupedoutputItem
             }
 
-            if ($NoIssuesFound)
+            if ($mainOutput.NoIssuesFound)
             {
                 Write-Verbose "`tNone"
-                $groupedoutputItem = @{
+                $mainOutput.OutputValues += @{
                                     'GroupName' = $serverName
                                     'GroupOutputValues' = @()
                                 }
-
-                $outputValues += $groupedoutputItem
             }
         }
 
         $stopWatch.Stop()
+        
+        $mainOutput.ElapsedTime = $stopWatch.Elapsed
 
-        $allTestsOutput += @{
-            "SectionHeader" = $sectionHeader;
-            "NoIssuesFound" = $NoIssuesFound;
-            "OutputHeaders" = $outputHeaders;
-            "OutputValues" = $outputValues;
-            "ElapsedTime" = $stopWatch.Elapsed
-            }
+        return $mainOutput
+
+        $allTestsOutput += $mainOutput
     }
 
     return $allTestsOutput

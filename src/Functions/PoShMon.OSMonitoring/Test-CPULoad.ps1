@@ -9,12 +9,7 @@ Function Test-CPULoad
 
     $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
 
-    $sectionHeader = "Server CPU Load Review"
-    $NoIssuesFound = $true
-    $outputHeaders = [ordered]@{ 'ServerName' = 'Server Name'; 'CPULoad' = 'CPU Load (%)' }
-    $outputValues = @()
-
-    Write-Verbose "Performing $sectionHeader..."
+    $mainOutput = Get-InitialOutput -SectionHeader "Server CPU Load Review" -OutputHeaders ([ordered]@{ 'ServerName' = 'Server Name'; 'CPULoad' = 'CPU Load (%)' })
 
     $results = Get-Counter "\processor(_total)\% processor time" -Computername $PoShMonConfiguration.General.ServerNames
 
@@ -28,11 +23,11 @@ Function Test-CPULoad
 
         if ($cpuLoad -gt $PoShMonConfiguration.OperatingSystem.CPULoadThresholdPercent)
         {
-            $NoIssuesFound = $false
+            $mainOutput.NoIssuesFound = $false
             $highlight += "CPULoad"
         }
 
-        $outputValues += @{
+        $mainOutput.OutputValues += @{
             'ServerName' = $serverName
             'CPULoad' = ($cpuLoad / 100).ToString("00%")
             'Highlight' = $highlight
@@ -41,12 +36,7 @@ Function Test-CPULoad
 
     $stopWatch.Stop()
 
-    return @{
-        "SectionHeader" = $sectionHeader;
-        "NoIssuesFound" = $NoIssuesFound;
-        "OutputHeaders" = $outputHeaders;
-        "OutputValues" = $outputValues;
-        "ElapsedTime" = $stopWatch.Elapsed;
-        }
+    $mainOutput.ElapsedTime = $stopWatch.Elapsed
 
+    return $mainOutput
 }
