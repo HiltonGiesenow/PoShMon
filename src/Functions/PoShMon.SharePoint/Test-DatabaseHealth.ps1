@@ -7,12 +7,7 @@ Function Test-DatabaseHealth
 
     $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
 
-    Write-Verbose "Testing Database Health..."
-
-    $sectionHeader = "Database Status"
-    $NoIssuesFound = $true
-    $outputHeaders = [ordered]@{ 'DatabaseName' = 'Database Name'; 'Size' = 'Size (GB)'; 'NeedsUpgrade' = 'Needs Upgrade?' }
-    $outputValues = @()
+    $mainOutput = Get-InitialOutput -SectionHeader "Database Status" -OutputHeaders ([ordered]@{ 'DatabaseName' = 'Database Name'; 'Size' = 'Size (GB)'; 'NeedsUpgrade' = 'Needs Upgrade?' })
 
     $spDatabases = Invoke-Command -Session $RemoteSession -ScriptBlock {
                                 return Get-SPDatabase | Sort DiskSizeRequired -Descending
@@ -24,32 +19,26 @@ Function Test-DatabaseHealth
 
         if ($spDatabase.NeedsUpgrade)
         {
-            $NoIssuesFound = $false
+            $mainOutput.NoIssuesFound = $false
 
             Write-Verbose ($spDatabase.DisplayName + " (" + $spDatabase.ApplicationName + ") is listed as Needing Upgrade")
 
             $highlight += 'NeedsUpgrade'
         }
 
-        $outputItem = @{
+        $mainOutput.OutputValues += @{
             'DatabaseName' = $spDatabase.DisplayName;
             'NeedsUpgrade' = &{if($spDatabase.NeedsUpgrade) {"Yes"} else {"No"}};
             'Size' = ($spDatabase.DiskSizeRequired/1GB).ToString(".00");
             'Highlight' = $highlight
         }
-
-        $outputValues += $outputItem
     }
 
     $stopWatch.Stop()
 
-    return @{
-        "SectionHeader" = $sectionHeader;
-        "NoIssuesFound" = $NoIssuesFound;
-        "OutputHeaders" = $outputHeaders;
-        "OutputValues" = $outputValues;
-        "ElapsedTime" = $stopWatch.Elapsed;
-        }
+    $mainOutput.ElapsedTime = $stopWatch.Elapsed
+
+    return $mainOutput
 }
 <#
     $output = Test-DatabaseHealth $remoteSession -Verbose

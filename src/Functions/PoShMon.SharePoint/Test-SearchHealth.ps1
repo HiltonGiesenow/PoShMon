@@ -7,12 +7,7 @@ Function Test-SearchHealth
 
     $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
 
-    Write-Verbose "Testing Search Health..."
-
-    $sectionHeader = "Search Status"
-    $NoIssuesFound = $true
-    $outputHeaders = [ordered]@{ 'ComponentName' = 'Component'; 'ServerName' = 'Server Name'; 'State' = 'State' }
-    $outputValues = @()
+    $mainOutput = Get-InitialOutput -SectionHeader "Search Status" -OutputHeaders ([ordered]@{ 'ComponentName' = 'Component'; 'ServerName' = 'Server Name'; 'State' = 'State' })
 
     $remoteComponents = Invoke-Command -Session $RemoteSession -ScriptBlock {
         $ssa = Get-SPEnterpriseSearchServiceApplication
@@ -39,32 +34,26 @@ Function Test-SearchHealth
 
                 if ($searchComponentState.State -ne "Active")
                 {
-                    $NoIssuesFound = $false
+                    $mainOutput.NoIssuesFound = $false
 
                     $highlight += 'State'
                 }
 
-                $outputItem = @{
+                $mainOutput.OutputValues += @{
                     'ComponentName' = $componentTopologyItem.Name;
                     'ServerName' = $componentTopologyItem.ServerName;
                     'State' = $searchComponentState.State;
                     'Highlight' = $highlight
                 }
-
-                $outputValues += $outputItem
             }
         }
     }
 
     $stopWatch.Stop()
 
-    return @{
-        "SectionHeader" = $sectionHeader;
-        "NoIssuesFound" = $NoIssuesFound;
-        "OutputHeaders" = $outputHeaders;
-        "OutputValues" = $outputValues;
-        "ElapsedTime" = $stopWatch.Elapsed;
-        }
+    $mainOutput.ElapsedTime = $stopWatch.Elapsed
+
+    return $mainOutput
 }
 <#
     $output = Test-SearchHealth $remoteSession

@@ -7,12 +7,7 @@ Function Test-SPServerStatus
 
     $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
 
-    Write-Verbose "Testing Server Statuses..."
-
-    $sectionHeader = "Farm Server Status"
-    $NoIssuesFound = $true
-    $outputHeaders = [ordered]@{ 'ServerName' = 'Server Name'; 'Role' = 'Role'; 'NeedsUpgrade' = 'Needs Upgrade?'; 'Status' ='Status' }
-    $outputValues = @()
+    $mainOutput = Get-InitialOutput -SectionHeader "Farm Server Status" -OutputHeaders ([ordered]@{ 'ServerName' = 'Server Name'; 'Role' = 'Role'; 'NeedsUpgrade' = 'Needs Upgrade?'; 'Status' ='Status' })
 
     #$farm = Get-SPFarm
     #$farm.BuildVersion
@@ -36,7 +31,7 @@ Function Test-SPServerStatus
         {
             $needsUpgradeValue = "Yes"
             $highlight += 'NeedsUpgrade'
-            $NoIssuesFound = $false
+            $mainOutput.NoIssuesFound = $false
             Write-Verbose ($server.DisplayName + " is listed as Needing Upgrade")
         } else {
             $needsUpgradeValue = "No"
@@ -45,37 +40,24 @@ Function Test-SPServerStatus
         if ($server.Status -ne 'Online')
         {
             $highlight += 'Status'
-            $NoIssuesFound = $false
+            $mainOutput.NoIssuesFound = $false
             Write-Verbose ($server.DisplayName + " is not listed as Online")
         }
 
-        $outputItem = @{
+        $mainOutput.OutputValues += @{
             'ServerName' = $server.DisplayName;
             'NeedsUpgrade' = $needsUpgradeValue;
             'Status' = $server.Status.ToString();
             'Role' = $server.Role.ToString();
             'Highlight' = $highlight
         }
-
-        $outputValues += $outputItem
-
-        if ($server.Status -ne "Online")
-        {
-            $NoIssuesFound = $false
-
-            Write-Verbose ($server.DisplayName + " is in status " + $server.Status)
-        }
     }
 
     $stopWatch.Stop()
 
-    return @{
-        "SectionHeader" = $sectionHeader;
-        "NoIssuesFound" = $NoIssuesFound;
-        "OutputHeaders" = $outputHeaders;
-        "OutputValues" = $outputValues;
-        "ElapsedTime" = $stopWatch.Elapsed;
-        }
+    $mainOutput.ElapsedTime = $stopWatch.Elapsed
+
+    return $mainOutput
 }
 <#
     $output = Test-SPServerStatus -Verbose

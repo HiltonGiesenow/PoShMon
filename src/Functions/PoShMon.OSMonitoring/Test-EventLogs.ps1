@@ -73,8 +73,6 @@ Function Test-EventLogs
         
         $mainOutput.ElapsedTime = $stopWatch.Elapsed
 
-        return $mainOutput
-
         $allTestsOutput += $mainOutput
     }
 

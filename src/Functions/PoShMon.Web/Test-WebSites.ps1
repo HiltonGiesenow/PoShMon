@@ -14,10 +14,7 @@ Function Test-WebSites
 
         $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
    
-        $sectionHeader = "Web Test - " + $siteUrl
-        $NoIssuesFound = $true
-        $outputHeaders = @{ 'ServerName' = 'Server'; 'StatusCode' = 'Status Code'; 'Outcome' = 'Outcome' }
-        $outputValues = @()
+        $mainOutput = Get-InitialOutput -SectionHeader "Web Test - " + $siteUrl -OutputHeaders (@{ 'ServerName' = 'Server'; 'StatusCode' = 'Status Code'; 'Outcome' = 'Outcome' })
 
         For ($i = -1; $i -lt $PoShMonConfiguration.General.ServerNames.Count; $i++) {
         
@@ -41,7 +38,7 @@ Function Test-WebSites
 
             if ($webRequest.StatusCode -ne 200)
             {
-                $NoIssuesFound = $false
+                $mainOutput.NoIssuesFound = $false
                 $highlight += 'Outcome'
                 $outcome = $webRequest.StatusDescription
             } else {
@@ -49,30 +46,24 @@ Function Test-WebSites
                     $outcome = "Specified Page Content Found"
                 } else {
                     $highlight += 'Outcome'
-                    $NoIssuesFound = $false
+                    $mainOutput.NoIssuesFound = $false
                     $outcome = "Specified Page Content Not Found"
                 }
             }
 
-            $outputItem = @{
+            $mainOutput.OutputValues += @{
                 'ServerName' = $serverName;
                 'StatusCode' = $webRequest.StatusCode;
                 'Outcome' = $outcome
                 'Highlight' = $highlight
             }
-
-            $outputValues += $outputItem
         }
 
         $stopWatch.Stop()
 
-        $allTestsOutput += @{
-            "SectionHeader" = $sectionHeader;
-            "NoIssuesFound" = $NoIssuesFound;
-            "OutputHeaders" = $outputHeaders;
-            "OutputValues" = $outputValues;
-            "ElapsedTime" = $stopWatch.Elapsed
-            }
+        $mainOutput.ElapsedTime = $stopWatch.Elapsed
+
+        $allTestsOutput += $mainOutput
     }
 
     return $allTestsOutput

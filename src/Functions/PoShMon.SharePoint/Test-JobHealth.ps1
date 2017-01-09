@@ -8,12 +8,7 @@ Function Test-JobHealth
 
     $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
 
-    Write-Verbose "Testing Failing Timer Jobs..."
-
-    $sectionHeader = "Failing Timer Jobs"
-    $NoIssuesFound = $true
-    $outputHeaders = [ordered]@{ 'JobDefinitionTitle' = 'Job Definition Title'; 'EndTime' = 'End Time'; 'ServerName' = 'Server Name'; 'WebApplicationName' = 'Web Application Name'; 'ErrorMessage' ='Error Message' }
-    $outputValues = @()
+    $mainOutput = Get-InitialOutput -SectionHeader "Failing Timer Jobs" -OutputHeaders ([ordered]@{ 'JobDefinitionTitle' = 'Job Definition Title'; 'EndTime' = 'End Time'; 'ServerName' = 'Server Name'; 'WebApplicationName' = 'Web Application Name'; 'ErrorMessage' ='Error Message' })
 
     $startDate = (Get-Date).AddMinutes(-$PoShMonConfiguration.General.MinutesToScanHistory) #.ToUniversalTime()
 
@@ -30,32 +25,27 @@ Function Test-JobHealth
 
     if ($jobHistoryEntries.Count -gt 0)
     {
-        $NoIssuesFound = $false
+        $mainOutput.NoIssuesFound = $false
 
         foreach ($jobHistoryEntry in $jobHistoryEntries)
         {
             Write-Verbose ($jobHistoryEntry.JobDefinitionTitle + " at " + $jobHistoryEntry.EndTime + " on " + $jobHistoryEntry.ServerName + " for " + $jobHistoryEntry.WebApplicationName + " : " + $jobHistoryEntry.ErrorMessage)
-            $outputItem = @{
+            
+            $mainOutput.OutputValues += @{
                 'JobDefinitionTitle' = $jobHistoryEntry.JobDefinitionTitle;
                 'EndTime' = $jobHistoryEntry.EndTime;
                 'ServerName' = $jobHistoryEntry.ServerName;
                 'WebApplicationName' = $jobHistoryEntry.WebApplicationName;
                 'ErrorMessage' = $jobHistoryEntry.ErrorMessage
             }
-
-            $outputValues += $outputItem
         }
     }
 
     $stopWatch.Stop()
 
-    return @{
-        "SectionHeader" = $sectionHeader;
-        "NoIssuesFound" = $NoIssuesFound;
-        "OutputHeaders" = $outputHeaders;
-        "OutputValues" = $outputValues;
-        "ElapsedTime" = $stopWatch.Elapsed;
-        }
+    $mainOutput.ElapsedTime = $stopWatch.Elapsed
+
+    return $mainOutput
 }
 <#
     $output = Test-JobHealth -RemoteSession $remoteSession -MinutesToScanHistory 2000 -Verbose

@@ -7,14 +7,8 @@ Function Test-UserProfileSync
     )
 
     $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
-
-    Write-Verbose "Getting User Profile Sync state..."
-
-    $sectionHeader = "User Profile Sync State"
-    $NoIssuesFound = $true
-    $outputHeaders = [ordered]@{ 'ManagementAgent' = 'Management Agent'; 'RunProfile' = 'Run Profile'; 'RunStartTime' = 'Run Start Time'; 'ErrorDetail' = 'ErrorDetail' }
-    $outputValues = @()        
-
+      
+    $mainOutput = Get-InitialOutput -SectionHeader "User Profile Sync State" -OutputHeaders ([ordered]@{ 'ManagementAgent' = 'Management Agent'; 'RunProfile' = 'Run Profile'; 'RunStartTime' = 'Run Start Time'; 'ErrorDetail' = 'ErrorDetail' })
 
     Write-Verbose "`tGetting SharePoint service list..."
     
@@ -30,7 +24,7 @@ Function Test-UserProfileSync
 
         if ($failedRuns.Count -gt 0)
         {
-            $NoIssuesFound = $false
+            $mainOutput.NoIssuesFound = $false
 
             foreach($failedRun in $failedRuns)
             {
@@ -54,14 +48,12 @@ Function Test-UserProfileSync
                         
                         Write-Host "` Step $stepNumber has status of $stepResult : $($errors.InnerXml)"
 
-                        $outputItem = @{
+                        $mainOutput.OutputValues += @{
                             'ManagementAgent' = $maName;
                             'RunProfile' = $runprofileName;
                             'RunStartTime' = [DateTime]::Parse($failedRun.RunStartTime).ToString("yyyy-MM-dd HH:mm:ss")
                             'ErrorDetail' = $errors.InnerXml;
                         }
-
-                        $outputValues += $outputItem
                     }
                 }
             }
@@ -70,11 +62,7 @@ Function Test-UserProfileSync
 
     $stopWatch.Stop()
 
-    return @{
-        "SectionHeader" = $sectionHeader;
-        "NoIssuesFound" = $NoIssuesFound;
-        "OutputHeaders" = $outputHeaders;
-        "OutputValues" = $outputValues;
-        "ElapsedTime" = $stopWatch.Elapsed;
-        }
+    $mainOutput.ElapsedTime = $stopWatch.Elapsed
+
+    return $mainOutput
 }

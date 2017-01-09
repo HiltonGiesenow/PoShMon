@@ -8,18 +8,13 @@ Function Test-SPWindowsServiceState
 
     $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
 
-    Write-Verbose "Getting Windows Service State..."
+    $mainOutput = Get-InitialOutput -SectionHeader "Windows Service State" -OutputHeaders ([ordered]@{ 'DisplayName' = 'Display Name'; 'Name' = 'Name'; 'Status' = 'Status' })
 
     Write-Verbose "`tGetting SharePoint service list..."
     $spServiceInstances = Invoke-Command -Session $remoteSession -ScriptBlock {
                             Get-SPServiceInstance | Where Service -like '* Name=*' | Select Server, Service, Status | Sort Server
                         }
-    
-    $sectionHeader = "Windows Service State"
-    $NoIssuesFound = $true
-    $outputHeaders = [ordered]@{ 'DisplayName' = 'Display Name'; 'Name' = 'Name'; 'Status' = 'Status' }
-    $outputValues = @()
-    
+
     $serversWithServices = @{}
     $defaultServiceList = 'IISADMIN','SPAdminV4','SPTimerV4','SPTraceV4','SPWriterV4'
     if ($PoShMonConfiguration.OperatingSystem.SpecialWindowsServices -ne $null -and $PoShMonConfiguration.OperatingSystem.SpecialWindowsServices.Count -gt 0)
@@ -48,20 +43,16 @@ Function Test-SPWindowsServiceState
         $serverWithServices = $serversWithServices[$serverWithServicesKey]
         $groupedoutputItem = Test-ServiceStatePartial -ServerName $serverWithServicesKey -Services $serverWithServices
 
-        $NoIssuesFound = $NoIssuesFound -and $groupedoutputItem.NoIssuesFound
+        $mainOutput.NoIssuesFound = $mainOutput.NoIssuesFound -and $groupedoutputItem.NoIssuesFound
 
-        $outputValues += $groupedoutputItem
+        $mainOutput.OutputValues += $groupedoutputItem
     }
 
     $stopWatch.Stop()
 
-    return @{
-        "SectionHeader" = $sectionHeader;
-        "NoIssuesFound" = $NoIssuesFound;
-        "OutputHeaders" = $outputHeaders;
-        "OutputValues" = $outputValues;
-        "ElapsedTime" = $stopWatch.Elapsed;
-        }
+    $mainOutput.ElapsedTime = $stopWatch.Elapsed
+
+    return $mainOutput
 }
 <#
     $output = Test-SPWindowsServiceState -RemoteSession $remoteSession -SpecialWindowsServices $SpecialWindowsServices
