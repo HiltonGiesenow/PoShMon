@@ -14,7 +14,7 @@ Function Test-WebSites
 
         $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
    
-        $mainOutput = Get-InitialOutput -SectionHeader "Web Test - " + $siteUrl -OutputHeaders (@{ 'ServerName' = 'Server'; 'StatusCode' = 'Status Code'; 'Outcome' = 'Outcome' })
+        $mainOutput = Get-InitialOutput -SectionHeader "Web Test - $siteUrl" -OutputHeaders ([ordered]@{ 'ServerName' = 'Server'; 'StatusCode' = 'Status Code'; 'Outcome' = 'Outcome' })
 
         For ($i = -1; $i -lt $PoShMonConfiguration.General.ServerNames.Count; $i++) {
         

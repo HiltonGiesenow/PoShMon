@@ -6,7 +6,7 @@ Function Get-InitialOutput
         [System.Collections.Specialized.OrderedDictionary]$OutputHeaders
     )
 
-    Write-Verbose "Initiating '$($mainOutput.SectionHeader)'..."
+    Write-Verbose "Initiating '$SectionHeader' Test..."
 
     return @{
         "SectionHeader" = $sectionHeader;
