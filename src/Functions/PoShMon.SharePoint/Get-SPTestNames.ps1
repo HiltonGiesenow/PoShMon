@@ -5,6 +5,7 @@ Function Get-SPTestNames
     )
 
     $tests = @(
+        "FarmHealth",
         "EventLogs",
         "CPULoad",
         "FreeMemory",

@@ -21,6 +21,10 @@ Function Invoke-SPMonitoring
         $PoShMonConfiguration.General.ServerNames = Invoke-Command -Session $remoteSession -ScriptBlock {
                                                         Get-SPServer | Where Role -ne "Invalid" | Select -ExpandProperty Name }
 
+        # Farm Health
+        if (!$PoShMonConfiguration.General.TestsToSkip.Contains("FarmHealth"))
+            { $outputValues += Test-FarmHealth $remoteSession }
+
         # Event Logs
         if (!$PoShMonConfiguration.General.TestsToSkip.Contains("EventLogs"))
             { $outputValues += Test-EventLogs $PoShMonConfiguration }
