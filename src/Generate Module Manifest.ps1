@@ -44,11 +44,10 @@ Adding Office 365 Teams notification output
 Fixing Pushbullet notification output
 
 0.5.0
-Added Pushbullet support and some additional unit tests. Also improved description in module itself. Also see the GitHub project page for basic help tutorial
-
-0.4.0 
-Changed configuration approach 
-minor bug fixes"
+* Added Pushbullet support and some additional unit tests
+* Improved description in module itself
+* Added basic help tutorial to readme on GitHub project page 
+"
 
 New-ModuleManifest -Path $manifestPath -ModuleVersion $version -RootModule "PoShMon.psm1" -Guid '6e6cb274-1bed-4540-b288-95bc638bf679' -Author "Hilton Giesenow" -CompanyName "Experts Inside" -FunctionsToExport '*' -Copyright "2016 Hilton Giesenow, All Rights Reserved" -ProjectUri "https://github.com/HiltonGiesenow/PoShMon" -LicenseUri "https://github.com/HiltonGiesenow/PoShMon/blob/master/LICENSE" -Description $description -Tags 'Monitoring','Server','Farm','SharePoint' -ReleaseNotes $releaseNotes -Verbose
 
