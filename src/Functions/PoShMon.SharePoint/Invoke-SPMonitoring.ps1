@@ -22,8 +22,8 @@ Function Invoke-SPMonitoring
                                                         Get-SPServer | Where Role -ne "Invalid" | Select -ExpandProperty Name }
 
         # Farm Health
-        if (!$PoShMonConfiguration.General.TestsToSkip.Contains("FarmHealth"))
-            { $outputValues += Test-FarmHealth $remoteSession }
+        #if (!$PoShMonConfiguration.General.TestsToSkip.Contains("FarmHealth"))
+        #    { $outputValues += Test-FarmHealth $remoteSession }
 
         # Event Logs
         if (!$PoShMonConfiguration.General.TestsToSkip.Contains("EventLogs"))
