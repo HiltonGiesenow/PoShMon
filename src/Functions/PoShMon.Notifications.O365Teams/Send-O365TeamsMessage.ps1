@@ -5,7 +5,8 @@
         [hashtable]$PoShMonConfiguration,
         [hashtable]$O365TeamsNotificationSink,
         [string]$Subject,
-        [string]$Body
+        [string]$Body,
+        [bool]$Critical
     )
 
     $combinedMessageBody = $subject + $body

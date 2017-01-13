@@ -20,7 +20,8 @@
                                             -PoShMonConfiguration $PoShMonConfiguration `
                                             -EmailNotificationSink $notificationSink `
                                             -Subject (New-EmailExceptionSubject $PoShMonConfiguration) `
-                                            -Body (New-EmailExceptionBody $Exception)
+                                            -Body (New-EmailExceptionBody $Exception) `
+                                            -Critical $true
                     }
                     elseif ($notificationSink.TypeName -eq 'PoShMon.ConfigurationItems.Notifications.Pushbullet')
                     {
@@ -28,7 +29,8 @@
                                             -PoShMonConfiguration $PoShMonConfiguration `
                                             -PushbulletNotificationSink $notificationSink `
                                             -Subject (New-PushbulletExceptionSubject $PoShMonConfiguration) `
-                                            -Body (New-PushbulletExceptionBody $Exception)
+                                            -Body (New-PushbulletExceptionBody $Exception) `
+                                            -Critical $true
                     }
                     elseif ($notificationSink.TypeName -eq 'PoShMon.ConfigurationItems.Notifications.O365Teams')
                     {
@@ -36,7 +38,8 @@
                                             -PoShMonConfiguration $PoShMonConfiguration `
                                             -O365TeamsNotificationSink $notificationSink `
                                             -Subject (New-O365TeamsExceptionSubject $PoShMonConfiguration) `
-                                            -Body (New-O365TeamsExceptionBody $Exception)
+                                            -Body (New-O365TeamsExceptionBody $Exception) `
+                                            -Critical $true
                     } else {
                         Write-Error "Notitication Sink '$notificationSink.TypeName' type not found"
                     }

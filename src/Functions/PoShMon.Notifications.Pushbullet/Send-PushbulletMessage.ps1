@@ -5,7 +5,8 @@
         [hashtable]$PoShMonConfiguration,
         [hashtable]$PushbulletNotificationSink,
         [string]$Subject,
-        [string]$Body
+        [string]$Body,
+        [bool]$Critical
     )
 
     $finalMessageBody = @{
