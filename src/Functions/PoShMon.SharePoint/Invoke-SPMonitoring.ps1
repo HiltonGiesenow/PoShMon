@@ -63,7 +63,7 @@ Function Invoke-SPMonitoring
 
         # Search Health
         if (!$PoShMonConfiguration.General.TestsToSkip.Contains("SPSearchHealth"))
-            { $outputValues += Test-SearchHealth $remoteSession }
+            { $outputValues += Test-SearchHealth $PoShMonConfiguration }
 
         # User Profile Sync Health
         if (!$PoShMonConfiguration.General.TestsToSkip.Contains("SPUPSSyncHealth"))

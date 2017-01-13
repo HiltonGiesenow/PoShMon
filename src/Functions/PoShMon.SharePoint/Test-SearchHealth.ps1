@@ -2,14 +2,15 @@ Function Test-SearchHealth
 {
     [CmdletBinding()]
     param (
-        [System.Management.Automation.Runspaces.PSSession]$RemoteSession
+        #[System.Management.Automation.Runspaces.PSSession]$RemoteSession
+        [hashtable]$PoShMonConfiguration
     )
 
     $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
 
     $mainOutput = Get-InitialOutput -SectionHeader "Search Status" -OutputHeaders ([ordered]@{ 'ComponentName' = 'Component'; 'ServerName' = 'Server Name'; 'State' = 'State' })
 
-    $remoteComponents = Invoke-Command -Session $RemoteSession -ScriptBlock {
+    $remoteComponents = Invoke-RemoteCommand -PoShMonConfiguration $PoShMonConfiguration -scriptBlock {
         $ssa = Get-SPEnterpriseSearchServiceApplication
 
         $searchComponentStates = Get-SPEnterpriseSearchStatus -SearchApplication $ssa -Detailed #| Where State -ne "Active"

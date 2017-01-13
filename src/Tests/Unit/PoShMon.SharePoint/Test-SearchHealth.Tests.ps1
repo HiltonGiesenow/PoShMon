@@ -2,16 +2,24 @@ $rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPa
 Remove-Module PoShMon -ErrorAction SilentlyContinue
 Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 
-<#
-failing for now
+class SPFarmMock {
+    [string]$Name
+    [string]$BuildVersion
+    [string]$Status
+    [bool]$NeedsUpgrade
+
+    SPFarmMock ([string]$NewName, [string]$NewBuildVersion, [string]$NewStatus, [bool]$NewNeedsUpgrade) {
+        $this.Name = $NewName;
+        $this.BuildVersion = $NewBuildVersion;
+        $this.Status = $NewStatus;
+        $this.NeedsUpgrade = $NewNeedsUpgrade;
+    }
+}
+
 Describe "Test-SearchHealth" {
     It "Should " {
-
-        Mock -CommandName Connect-PSSession -MockWith {
-            return
-        }
     
-        Mock -CommandName Invoke-Command -MockWith {
+        Mock -CommandName Invoke-RemoteCommand -ModuleName PoShMon -MockWith {
             return
         }
 
@@ -20,8 +28,7 @@ Describe "Test-SearchHealth" {
                 OperatingSystem
             }
 
-        $actual = Test-SearchHealth 
+        $actual = Test-SearchHealth $poShMonConfiguration
     }
 
 }
-#>
