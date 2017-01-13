@@ -87,6 +87,12 @@ Of course there are loads of monitoring systems and tools out there, both paid a
 
 ## Release Notes
 
+0.8.2
+* Added date to UserProfileSync output
+* Added a function to initialise output for all Test methods
+* Added PoShMon version to email output
+* Added Farm Health Test (SharePoint) - not active
+
 0.8.1
 * Fixing a bug in the SharePoint UPS sync query for datetime
 
@@ -113,14 +119,12 @@ Of course there are loads of monitoring systems and tools out there, both paid a
 * Refactored internal Notification code
 
 0.6.0
-Adding Office 365 Teams notification output
+* Adding Office 365 Teams notification output
 
 0.5.1
-Fixing Pushbullet notification output
+* Fixing Pushbullet notification output
 
 0.5.0
-Added Pushbullet support and some additional unit tests. Also improved description in module itself. Also see the GitHub project page for basic help tutorial
-
-0.4.0 
-Changed configuration approach 
-minor bug fixes
+* Added Pushbullet support and some additional unit tests
+* Improved description in module itself
+* Added basic help tutorial to readme on GitHub project page 
