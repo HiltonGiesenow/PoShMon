@@ -9,7 +9,7 @@ Function Test-Memory
 
     $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
 
-    $mainOutput = Get-InitialOutput -SectionHeader "Memory Review" -OutputHeaders ([ordered]@{ 'ServerName' = 'Server Name'; 'TotalMemory' = 'Total Memory (GB)'; 'FreeMemory' = 'Free Memory (GB)'; 'FreeSpacePerc' = 'Free Space (%)' })
+    $mainOutput = Get-InitialOutput -SectionHeader "Memory Review" -OutputHeaders ([ordered]@{ 'ServerName' = 'Server Name'; 'TotalMemory' = 'Total Memory (GB)'; 'FreeMemory' = 'Free Memory (GB)'; 'FreeMemoryPerc' = 'Free Memory (%)' })
 
     $results = Get-WmiObject Win32_OperatingSystem -Computername $PoShMonConfiguration.General.ServerNames
 
@@ -35,7 +35,7 @@ Function Test-Memory
             'ServerName' = $serverResult.PSComputerName
             'TotalMemory' = $totalSpace.ToString(".00");
             'FreeMemory' = $freeSpace.ToString(".00");
-            'FreeSpacePerc' = $freeMemoryPercent.ToString("0") + "%";
+            'FreeMemoryPerc' = $freeMemoryPercent.ToString("0") + "%";
             'Highlight' = $highlight
         }
     }

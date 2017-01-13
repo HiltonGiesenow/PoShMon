@@ -53,7 +53,7 @@ Describe "Test-Memory" {
         $values1.ContainsKey("ServerName") | Should Be $true
         $values1.ContainsKey("TotalMemory") | Should Be $true
         $values1.ContainsKey("FreeMemory") | Should Be $true
-        $values1.ContainsKey("FreeSpacePerc") | Should Be $true
+        $values1.ContainsKey("FreeMemoryPerc") | Should Be $true
         $values1.ContainsKey("Highlight") | Should Be $true
     }
 
