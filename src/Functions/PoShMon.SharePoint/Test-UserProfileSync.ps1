@@ -2,7 +2,7 @@ Function Test-UserProfileSync
 {
     [CmdletBinding()]
     param (
-        [System.Management.Automation.Runspaces.PSSession]$RemoteSession,
+        #[System.Management.Automation.Runspaces.PSSession]$RemoteSession,
         [hashtable]$PoShMonConfiguration
     )
 
@@ -12,7 +12,7 @@ Function Test-UserProfileSync
 
     Write-Verbose "`tGetting SharePoint service list..."
     
-    $upsServiceInstance = Invoke-Command -Session $remoteSession -ScriptBlock {
+    $upsServiceInstance = Invoke-RemoteCommand -PoShMonConfiguration $PoShMonConfiguration -ScriptBlock {
                             return Get-SPServiceInstance | Where { $_.TypeName -eq 'User Profile Synchronization Service' -and $_.Status -eq "Online" } | Select Server
                         }
     

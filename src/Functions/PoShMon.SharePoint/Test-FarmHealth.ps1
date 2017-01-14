@@ -2,14 +2,15 @@ Function Test-FarmHealth
 {
     [CmdletBinding()]
     param (
-        [System.Management.Automation.Runspaces.PSSession]$RemoteSession
+        #[System.Management.Automation.Runspaces.PSSession]$RemoteSession
+        [hashtable]$PoShMonConfiguration
     )
 
     $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
 
     $mainOutput = Get-InitialOutput -SectionHeader "Farm Overview" -OutputHeaders ([ordered]@{ 'ConfigDB' = 'Config DB Name'; 'BuildVersion' = 'Build Version'; 'Status' = 'Status'; 'NeedsUpgrade' = 'Needs Upgrade?' })
 
-    $farm = Invoke-Command -Session $RemoteSession -ScriptBlock {
+    $farm = Invoke-RemoteCommand -PoShMonConfiguration $PoShMonConfiguration -ScriptBlock {
         return Get-SPFarm | Select Name, BuildVersion, Status, NeedsUpgrade
     }
 

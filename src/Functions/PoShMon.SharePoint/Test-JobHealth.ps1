@@ -2,7 +2,7 @@ Function Test-JobHealth
 {
     [CmdletBinding()]
     param (
-        [System.Management.Automation.Runspaces.PSSession]$RemoteSession,
+        #[System.Management.Automation.Runspaces.PSSession]$RemoteSession,
         [hashtable]$PoShMonConfiguration
     )
 
@@ -12,7 +12,7 @@ Function Test-JobHealth
 
     $startDate = (Get-Date).AddMinutes(-$PoShMonConfiguration.General.MinutesToScanHistory) #.ToUniversalTime()
 
-    $jobHistoryEntries = Invoke-Command -Session $RemoteSession -ScriptBlock {
+    $jobHistoryEntries = Invoke-RemoteCommand -PoShMonConfiguration $PoShMonConfiguration -ScriptBlock {
                                 param($StartDate)
 
                                 $farm = Get-SPFarm

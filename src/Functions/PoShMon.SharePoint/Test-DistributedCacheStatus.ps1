@@ -2,14 +2,15 @@ Function Test-DistributedCacheStatus
 {
     [CmdletBinding()]
     param (
-        [System.Management.Automation.Runspaces.PSSession]$RemoteSession
+        #[System.Management.Automation.Runspaces.PSSession]$RemoteSession
+        [hashtable]$PoShMonConfiguration
     )
 
     $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
 
     $mainOutput = Get-InitialOutput -SectionHeader "Distributed Cache Status" -OutputHeaders ([ordered]@{ 'Server' = 'Server'; 'Status' = 'Status' })
 
-    $cacheServers = Invoke-Command -Session $RemoteSession -ScriptBlock {
+    $cacheServers = Invoke-RemoteCommand -PoShMonConfiguration $PoShMonConfiguration -ScriptBlock {
                                 return Get-SPServiceInstance | ? {($_.service.tostring()) -eq "SPDistributedCacheService Name=AppFabricCachingService"} | select Server, Status
                             }
     # Possible extensions:

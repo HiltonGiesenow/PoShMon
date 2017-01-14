@@ -2,14 +2,15 @@ Function Connect-RemoteSession
 {
     [cmdletbinding()]
     param(
-        [parameter(Mandatory=$true)][string]$ServerName,
-        [string]$ConfigurationName = $null
+        #[parameter(Mandatory=$true)][string]$ServerName,
+        #[string]$ConfigurationName = $null
+        [hashtable]$PoShMonConfiguration
     )
 
-    if ($ConfigurationName -ne $null)
-        { $remoteSession = New-PSSession -ComputerName $ServerName -ConfigurationName $ConfigurationName }
+    if ($PoShMonConfiguration.General.ConfigurationName -ne $null)
+        { $remoteSession = New-PSSession -ComputerName $PoShMonConfiguration.General.PrimaryServerName -Name $PoShMonConfiguration.General.RemoteSessionName -ConfigurationName $PoShMonConfiguration.General.ConfigurationName }
     else
-        { $remoteSession = New-PSSession -ComputerName $ServerName }
+        { $remoteSession = New-PSSession -ComputerName $PoShMonConfiguration.General.PrimaryServerName -Name $PoShMonConfiguration.General.RemoteSessionName }
 
     return $remoteSession
 }

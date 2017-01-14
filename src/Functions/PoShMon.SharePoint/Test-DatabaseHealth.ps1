@@ -2,16 +2,17 @@ Function Test-DatabaseHealth
 {
     [CmdletBinding()]
     param (
-        [System.Management.Automation.Runspaces.PSSession]$RemoteSession
+        #[System.Management.Automation.Runspaces.PSSession]$RemoteSession
+        [hashtable]$PoShMonConfiguration
     )
 
     $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
 
     $mainOutput = Get-InitialOutput -SectionHeader "Database Status" -OutputHeaders ([ordered]@{ 'DatabaseName' = 'Database Name'; 'Size' = 'Size (GB)'; 'NeedsUpgrade' = 'Needs Upgrade?' })
 
-    $spDatabases = Invoke-Command -Session $RemoteSession -ScriptBlock {
-                                return Get-SPDatabase | Sort DiskSizeRequired -Descending
-                            }
+    $spDatabases = Invoke-RemoteCommand -PoShMonConfiguration $PoShMonConfiguration -ScriptBlock {
+                        return Get-SPDatabase | Sort DiskSizeRequired -Descending
+                    }
 
     foreach ($spDatabase in $spDatabases)
     {

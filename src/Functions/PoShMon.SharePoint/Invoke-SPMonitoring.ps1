@@ -13,13 +13,15 @@ Function Invoke-SPMonitoring
     $outputValues = @()
 
     try {
-        $remoteSession = Connect-RemoteSharePointSession -ServerName $PoShMonConfiguration.General.PrimaryServerName -ConfigurationName $PoShMonConfiguration.General.ConfigurationName
+        $remoteSession = Connect-RemoteSharePointSession $PoShMonConfiguration
     
         #$PSBoundParameters.RemoteSession = $remoteSession
 
         # Auto-Discover Servers
         $PoShMonConfiguration.General.ServerNames = Invoke-Command -Session $remoteSession -ScriptBlock {
                                                         Get-SPServer | Where Role -ne "Invalid" | Select -ExpandProperty Name }
+
+        Disconnect-PSSession $remoteSession
 
         # Farm Health
         #if (!$PoShMonConfiguration.General.TestsToSkip.Contains("FarmHealth"))
@@ -76,9 +78,11 @@ Function Invoke-SPMonitoring
     } catch {
         Send-ExceptionNotifications -PoShMonConfiguration $PoShMonConfiguration -Exception $_.Exception
     } finally {
-        if ($remoteSession -ne $null)
-            { Disconnect-RemoteSession $remoteSession -ErrorAction SilentlyContinue }
-        
+        #if ($remoteSession -ne $null)
+        #    { Disconnect-RemoteSession $remoteSession -ErrorAction SilentlyContinue }
+        Get-PSSession -ComputerName $PoShMonConfiguration.General.PrimaryServerName -Name $PoShMonConfiguration.General.RemoteSessionName -ConfigurationName $PoShMonConfiguration.General.ConfigurationName `
+            | Remove-PSSession
+
         $stopWatch.Stop()
     }
 

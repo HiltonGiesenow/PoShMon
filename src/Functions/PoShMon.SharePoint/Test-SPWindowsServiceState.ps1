@@ -11,7 +11,7 @@ Function Test-SPWindowsServiceState
     $mainOutput = Get-InitialOutput -SectionHeader "Windows Service State" -OutputHeaders ([ordered]@{ 'DisplayName' = 'Display Name'; 'Name' = 'Name'; 'Status' = 'Status' })
 
     Write-Verbose "`tGetting SharePoint service list..."
-    $spServiceInstances = Invoke-Command -Session $remoteSession -ScriptBlock {
+    $spServiceInstances = Invoke-RemoteCommand -PoShMonConfiguration $PoShMonConfiguration -ScriptBlock {
                             Get-SPServiceInstance | Where Service -like '* Name=*' | Select Server, Service, Status | Sort Server
                         }
 

@@ -25,6 +25,8 @@ Function General
         { throw "You cannot specify both PrimaryServerName and ServerNames. If you are monitoring a 'farm' product, like SharePoint, specify PrimaryServerName on which to run the main monitoring operations." `
             + "Alternatively, if you are instead wanting to monitor a set of standalone servers, supply ServerNames and do not supply a value for the PrimaryServerName parameter." }
 
+    $remoteSessionName = "PoShMonSession"
+
     return @{
             TypeName = "PoShMon.ConfigurationItems.General"
             EnvironmentName = $EnvironmentName
@@ -33,5 +35,6 @@ Function General
             PrimaryServerName = $PrimaryServerName
             ServerNames = $ServerNames
             ConfigurationName = $ConfigurationName
+            RemoteSessionName = $remoteSessionName
         }
 }

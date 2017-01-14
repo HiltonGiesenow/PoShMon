@@ -10,7 +10,7 @@ Function Invoke-RemoteWebRequest
     Write-Verbose "Connecting to $ServerName..."
 
     try {
-        $remoteSession = Connect-RemoteSession -ServerName $ServerName -ConfigurationName $ConfigurationName
+        $remoteSession = New-PSSession -ComputerName $ServerName -ConfigurationName $ConfigurationName
 
         $webResponse = Invoke-Command -Session $remoteSession -ScriptBlock {
                                     param($SiteUrl)

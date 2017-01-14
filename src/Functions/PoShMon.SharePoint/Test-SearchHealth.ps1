@@ -10,7 +10,7 @@ Function Test-SearchHealth
 
     $mainOutput = Get-InitialOutput -SectionHeader "Search Status" -OutputHeaders ([ordered]@{ 'ComponentName' = 'Component'; 'ServerName' = 'Server Name'; 'State' = 'State' })
 
-    $remoteComponents = Invoke-RemoteCommand -PoShMonConfiguration $PoShMonConfiguration -scriptBlock {
+    $remoteComponents = Invoke-RemoteCommand -PoShMonConfiguration $PoShMonConfiguration -ScriptBlock {
         $ssa = Get-SPEnterpriseSearchServiceApplication
 
         $searchComponentStates = Get-SPEnterpriseSearchStatus -SearchApplication $ssa -Detailed #| Where State -ne "Active"
