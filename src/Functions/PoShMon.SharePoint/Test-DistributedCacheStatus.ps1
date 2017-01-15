@@ -29,7 +29,7 @@ Function Test-DistributedCacheStatus
         {
             $mainOutput.NoIssuesFound = $false
 
-            Write-Verbose ($cacheServer.Server.DisplayName + " is listed as " + $cacheServer.Status)
+            Write-Verbose ($cacheServer.Server.DisplayName + " is listed as " + $cacheServer.Status.Value)
 
             $highlight += 'Status'
         }

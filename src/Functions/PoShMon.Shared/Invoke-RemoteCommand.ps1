@@ -9,7 +9,7 @@
 
     try
     {
-        $remoteSession = Connect-PSSession -Name "PoShMonSession"
+        $remoteSession = Connect-PSSession -ComputerName $PoShMonConfiguration.General.PrimaryServerName -Name $PoShMonConfiguration.General.RemoteSessionName -ConfigurationName $PoShMonConfiguration.General.ConfigurationName
 
         return Invoke-Command -Session $RemoteSession -ScriptBlock $scriptBlock -ArgumentList $ArgumentList
 

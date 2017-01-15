@@ -2,31 +2,31 @@ $rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPa
 Remove-Module PoShMon -ErrorAction SilentlyContinue
 Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 
-class SPSearchItemsMock {
-    [object[]]$SearchComponentStates
-    [object[]]$ComponentTopology
+class SPDistributedCacheMock {
+    [object]$Server
+    [object]$Status
 
-    SPSearchItemsMock ([object[]]$NewSearchComponentStates, [object[]]$NewComponentTopology) {
-        $this.SearchComponentStates = $NewSearchComponentStates;
-        $this.ComponentTopology = $NewComponentTopology;
+    SPDistributedCacheMock ([string]$NewServerDisplayName, [string]$NewStatusValue) {
+        $this.Server = [pscustomobject]@{DisplayName=$NewServerDisplayName};
+        $this.Status = [pscustomobject]@{Value=$NewStatusValue};
     }
 }
 
-Describe "Test-DatabaseHealth" {
+Describe "Test-DistributedCacheStatus" {
     It "Should return a matching output structure" {
     
         Mock -CommandName Invoke-RemoteCommand -ModuleName PoShMon -MockWith {
             return @(
-                [SPDatabaseMock]::new('Database1', 'Application1', $false, [UInt64]50GB)
+                [SPDistributedCacheMock]::new('Server1', 'Online')
             )
         }
 
         $poShMonConfiguration = New-PoShMonConfiguration {
-            }
+            }   
 
-        $actual = Test-DatabaseHealth $poShMonConfiguration
+        $actual = Test-DistributedCacheStatus $poShMonConfiguration
 
-        $headerKeyCount = 3
+        $headerKeyCount = 2
 
         $actual.Keys.Count | Should Be 5
         $actual.ContainsKey("NoIssuesFound") | Should Be $true
@@ -38,24 +38,22 @@ Describe "Test-DatabaseHealth" {
         $headers.Keys.Count | Should Be $headerKeyCount
         $values1 = $actual.OutputValues[0]
         $values1.Keys.Count | Should Be ($headerKeyCount+1)
-        $values1.ContainsKey("DatabaseName") | Should Be $true
-        $values1.ContainsKey("NeedsUpgrade") | Should Be $true
-        $values1.ContainsKey("Size") | Should Be $true
+        $values1.ContainsKey("Server") | Should Be $true
+        $values1.ContainsKey("Status") | Should Be $true
         $values1.ContainsKey("Highlight") | Should Be $true
     }
 
-    It "Should not warn on databases that are all fine" {
+    It "Should not warn on all server are online" {
 
         Mock -CommandName Invoke-RemoteCommand -ModuleName PoShMon -Verifiable -MockWith {
             return @(
-                [SPDatabaseMock]::new('Database1', 'Application1', $false, [UInt64]50GB),
-                [SPDatabaseMock]::new('Database2', 'Application1', $false, [UInt64]4GB)
+                [SPDistributedCacheMock]::new('Server1', 'Online')
             )
         }
 
         $poShMonConfiguration = New-PoShMonConfiguration {}
 
-        $actual = Test-DatabaseHealth $poShMonConfiguration
+        $actual = Test-DistributedCacheStatus $poShMonConfiguration
         
         Assert-VerifiableMocks
 
@@ -64,18 +62,18 @@ Describe "Test-DatabaseHealth" {
         $actual.OutputValues.Highlight.Count | Should Be 0
     }
 
-    It "Should warn on databases that are need upgrade" {
+    It "Should warn on servers being offline" {
 
         Mock -CommandName Invoke-RemoteCommand -ModuleName PoShMon -Verifiable -MockWith {
             return @(
-                [SPDatabaseMock]::new('Database1', 'Application1', $false, [UInt64]50GB),
-                [SPDatabaseMock]::new('Database2', 'Application1', $true, [UInt64]4GB)
+                [SPDistributedCacheMock]::new('Server1', 'Online'),
+                [SPDistributedCacheMock]::new('Server2', 'Offline')
             )
         }
 
         $poShMonConfiguration = New-PoShMonConfiguration {}
 
-        $actual = Test-DatabaseHealth $poShMonConfiguration
+        $actual = Test-DistributedCacheStatus $poShMonConfiguration
         
         Assert-VerifiableMocks
 
@@ -83,7 +81,7 @@ Describe "Test-DatabaseHealth" {
 
         $actual.OutputValues[0].Highlight.Count | Should Be 0
         $actual.OutputValues[1].Highlight.Count | Should Be 1
-        $actual.OutputValues[1].Highlight[0] | Should Be 'NeedsUpgrade'
+        $actual.OutputValues[1].Highlight[0] | Should Be 'Status'
     }
 
 }
