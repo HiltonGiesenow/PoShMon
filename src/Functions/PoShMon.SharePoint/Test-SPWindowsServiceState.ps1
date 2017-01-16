@@ -2,7 +2,7 @@ Function Test-SPWindowsServiceState
 {
     [CmdletBinding()]
     param (
-        [System.Management.Automation.Runspaces.PSSession]$RemoteSession,
+        #[System.Management.Automation.Runspaces.PSSession]$RemoteSession,
         [hashtable]$PoShMonConfiguration
     )
 

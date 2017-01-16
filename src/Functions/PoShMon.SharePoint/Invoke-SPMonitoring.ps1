@@ -49,19 +49,19 @@ Function Invoke-SPMonitoring
         
         # Windows Service State
         if (!$PoShMonConfiguration.General.TestsToSkip.Contains("WindowsServiceState"))
-            { $outputValues += Test-SPWindowsServiceState -RemoteSession $remoteSession -PoShMonConfiguration $PoShMonConfiguration }
+            { $outputValues += Test-SPWindowsServiceState $PoShMonConfiguration }
         
         # Failing Timer Jobs
         if (!$PoShMonConfiguration.General.TestsToSkip.Contains("SPFailingTimerJobs"))
-            { $outputValues += Test-JobHealth -RemoteSession $remoteSession -PoShMonConfiguration $PoShMonConfiguration }
+            { $outputValues += Test-JobHealth $PoShMonConfiguration }
 
         # Database Health
         if (!$PoShMonConfiguration.General.TestsToSkip.Contains("SPDatabaseHealth"))
-            { $outputValues += Test-DatabaseHealth $remoteSession }
+            { $outputValues += Test-DatabaseHealth $PoShMonConfiguration }
 
         # Distributed Cache Health
         if (!$PoShMonConfiguration.General.TestsToSkip.Contains("SPDistributedCacheHealth"))
-            { $outputValues += Test-DistributedCacheStatus $remoteSession }
+            { $outputValues += Test-DistributedCacheStatus $PoShMonConfiguration }
 
         # Search Health
         if (!$PoShMonConfiguration.General.TestsToSkip.Contains("SPSearchHealth"))
@@ -69,7 +69,7 @@ Function Invoke-SPMonitoring
 
         # User Profile Sync Health
         if (!$PoShMonConfiguration.General.TestsToSkip.Contains("SPUPSSyncHealth"))
-            { $outputValues += Test-UserProfileSync -RemoteSession $remoteSession -PoShMonConfiguration $PoShMonConfiguration }
+            { $outputValues += Test-UserProfileSync $PoShMonConfiguration }
 
         # Web Tests
         if (!$PoShMonConfiguration.General.TestsToSkip.Contains("WebTests"))
