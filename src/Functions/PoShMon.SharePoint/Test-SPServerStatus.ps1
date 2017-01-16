@@ -14,16 +14,7 @@ Function Test-SPServerStatus
 
     foreach ($ServerName in $PoShMonConfiguration.General.ServerNames) # $farm.Servers
     {
-        try {
-            $remoteSession = New-PSSession -ComputerName $ServerName -ConfigurationName $PoShMonConfiguration.General.ConfigurationName
-
-            $server = Invoke-Command -Session $remoteSession -ScriptBlock {
-                                        Add-PSSnapin Microsoft.SharePoint.PowerShell
-                                        Get-SPServer | Where Address -eq $env:COMPUTERNAME
-                                    }
-        } finally {
-            Disconnect-RemoteSession $remoteSession
-        }
+        $server = Get-SPServerForRemoteServer -PoShMonConfiguration $PoShMonConfiguration -ServerName $ServerName
 
         $highlight = @()
 
