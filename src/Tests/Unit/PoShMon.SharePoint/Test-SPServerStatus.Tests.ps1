@@ -20,7 +20,7 @@ Describe "Test-SPServerStatus" {
     It "Should return a matching output structure" {
 
         Mock -CommandName Get-SPServerForRemoteServer -ModuleName PoShMon -MockWith {
-            return [SPServerMock]::new('Server1', 'Online', $false, 'Application')
+            return [SPServerMock]::new($ServerName, 'Online', $false, 'Application')
         }
 
         $poShMonConfiguration = New-PoShMonConfiguration {
@@ -48,65 +48,89 @@ Describe "Test-SPServerStatus" {
         $values1.ContainsKey("Highlight") | Should Be $true
     }
 
-    It "Should return an output for each component" {
+    It "Should return an output for each Server" {
     
-        Mock -CommandName Invoke-RemoteCommand -ModuleName PoShMon -MockWith {
-            $searchItemsMock = [SearchItemsMock]::new()
-            
-            $searchItemsMock.AddComponentWithState("Component1", "Server1", "Active")
-            $searchItemsMock.AddComponentWithState("Component2", "Server1", "Active")
-            $searchItemsMock.AddComponentWithState("Component3", "Server2", "Active")
-
-            return $searchItemsMock
+        Mock -CommandName Get-SPServerForRemoteServer -ModuleName PoShMon -MockWith {
+            return [SPServerMock]::new($ServerName, 'Online', $false, 'Application')
         }
 
-        $poShMonConfiguration = New-PoShMonConfiguration {}   
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                                    General -ServerNames 'Server1','Server2'
+                                }   
 
         $actual = Test-SPServerStatus $poShMonConfiguration
 
-        $actual.OutputValues.Count | Should Be 3
+        $actual.OutputValues.Count | Should Be 2
     }
 
-    It "Should not warn on all Active components" {
+    It "Should not warn on any component needing upgrade" {
     
-        Mock -CommandName Invoke-RemoteCommand -ModuleName PoShMon -MockWith {
-            $searchItemsMock = [SearchItemsMock]::new()
-            
-            $searchItemsMock.AddComponentWithState("Component1", "Server1", "Active")
-            $searchItemsMock.AddComponentWithState("Component2", "Server1", "Active")
+        Mock -CommandName Get-SPServerForRemoteServer -ModuleName PoShMon -MockWith {
 
-            return $searchItemsMock
+            $needsUpgrade = if ($ServerName -eq 'Server1') { $false } else { $true }
+            
+            return [SPServerMock]::new($ServerName, 'Online', $needsUpgrade, 'Application')
         }
 
-        $poShMonConfiguration = New-PoShMonConfiguration {}   
-
-        $actual = Test-SPServerStatus $poShMonConfiguration
-
-        $actual.NoIssuesFound | Should Be $true
-
-        $actual.OutputValues.Highlight.Count | Should Be 0
-    }
-
-    It "Should warn on at least one InActive components" {
-    
-        Mock -CommandName Invoke-RemoteCommand -ModuleName PoShMon -MockWith {
-            $searchItemsMock = [SearchItemsMock]::new()
-            
-            $searchItemsMock.AddComponentWithState("Component1", "Server1", "Active")
-            $searchItemsMock.AddComponentWithState("Component2", "Server1", "InActive")
-
-            return $searchItemsMock
-        }
-
-        $poShMonConfiguration = New-PoShMonConfiguration {}   
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                                    General -ServerNames 'Server1','Server2'
+                                }
 
         $actual = Test-SPServerStatus $poShMonConfiguration
 
         $actual.NoIssuesFound | Should Be $false
 
         $actual.OutputValues.Highlight.Count | Should Be 1
+        $actual.OutputValues[0].Highlight.Count | Should Be 0
         $actual.OutputValues[1].Highlight.Count | Should Be 1
-        $actual.OutputValues[1].Highlight[0] | Should Be 'State'
+        $actual.OutputValues[1].Highlight[0] | Should Be 'NeedsUpgrade'
+    }
 
+   It "Should not warn on any component not being Online" {
+    
+        Mock -CommandName Get-SPServerForRemoteServer -ModuleName PoShMon -MockWith {
+
+            $status = if ($ServerName -eq 'Server1') { 'Online' } else { 'Something Else' }
+            
+            return [SPServerMock]::new($ServerName, $status, $false, 'TheRole')
+        }
+
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                                    General -ServerNames 'Server1','Server2'
+                                }
+
+        $actual = Test-SPServerStatus $poShMonConfiguration
+
+        $actual.NoIssuesFound | Should Be $false
+
+        $actual.OutputValues.Highlight.Count | Should Be 1
+        $actual.OutputValues[0].Highlight.Count | Should Be 0
+        $actual.OutputValues[1].Highlight.Count | Should Be 1
+        $actual.OutputValues[1].Highlight[0] | Should Be 'Status'
+    }
+
+   It "Should not warn on any component not being Online and needing upgrade" {
+    
+        Mock -CommandName Get-SPServerForRemoteServer -ModuleName PoShMon -MockWith {
+
+            $status = if ($ServerName -eq 'Server1') { 'Online' } else { 'Something Else' }
+            $needsUpgrade = if ($ServerName -eq 'Server1') { $false } else { $true }
+            
+            return [SPServerMock]::new($ServerName, $status, $needsUpgrade, 'TheRole')
+        }
+
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                                    General -ServerNames 'Server1','Server2'
+                                }
+
+        $actual = Test-SPServerStatus $poShMonConfiguration
+
+        $actual.NoIssuesFound | Should Be $false
+
+        $actual.OutputValues.Highlight.Count | Should Be 2
+        $actual.OutputValues[0].Highlight.Count | Should Be 0
+        $actual.OutputValues[1].Highlight.Count | Should Be 2
+        $actual.OutputValues[1].Highlight[0] | Should Be 'NeedsUpgrade'
+        $actual.OutputValues[1].Highlight[1] | Should Be 'Status'
     }
 }
