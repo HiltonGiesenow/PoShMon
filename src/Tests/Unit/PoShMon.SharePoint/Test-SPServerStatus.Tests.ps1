@@ -2,13 +2,13 @@ $rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPa
 Remove-Module PoShMon -ErrorAction SilentlyContinue
 Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 
-class ServerMock {
+class SPServerMock {
     [string]$DisplayName
     [string]$Status
     [bool]$NeedsUpgrade
     [string]$Role
 
-    SearchItemsMock ([string]$NewDisplayName, [string]$NewStatus, [bool]$NewNeedsUpgrade, [string]$NewRole) {
+    SPServerMock ([string]$NewDisplayName, [string]$NewStatus, [bool]$NewNeedsUpgrade, [string]$NewRole) {
         $this.DisplayName = $NewDisplayName
         $this.Status = $NewStatus
         $this.NeedsUpgrade = $NewNeedsUpgrade
@@ -18,17 +18,9 @@ class ServerMock {
 
 Describe "Test-SPServerStatus" {
     It "Should return a matching output structure" {
-    
-        Mock -CommandName New-PSSession -MockWith {
-            return $null
-        }
 
-        Mock -CommandName Invoke-Command -MockWith {
-            return [ServerMock]::new('Server1', 'Online', $false, 'Application')
-        }
-
-        Mock -CommandName Disconnect-RemoteSession -ModuleName PoShMon -MockWith {
-            return 
+        Mock -CommandName Get-SPServerForRemoteServer -ModuleName PoShMon -MockWith {
+            return [SPServerMock]::new('Server1', 'Online', $false, 'Application')
         }
 
         $poShMonConfiguration = New-PoShMonConfiguration {
@@ -49,9 +41,10 @@ Describe "Test-SPServerStatus" {
         $headers.Keys.Count | Should Be $headerKeyCount
         $values1 = $actual.OutputValues[0]
         $values1.Keys.Count | Should Be ($headerKeyCount + 1)
-        $values1.ContainsKey("ComponentName") | Should Be $true
         $values1.ContainsKey("ServerName") | Should Be $true
-        $values1.ContainsKey("State") | Should Be $true
+        $values1.ContainsKey("Role") | Should Be $true
+        $values1.ContainsKey("NeedsUpgrade") | Should Be $true
+        $values1.ContainsKey("Status") | Should Be $true
         $values1.ContainsKey("Highlight") | Should Be $true
     }
 
