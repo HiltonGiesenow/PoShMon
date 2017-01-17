@@ -36,5 +36,5 @@ Function Test-FarmHealth
     return (Complete-TimedOutput $mainOutput)
 }
 <#
-    $output = Test-SearchHealth $remoteSession
+    $output = Test-SPSearchHealth $remoteSession
 #>

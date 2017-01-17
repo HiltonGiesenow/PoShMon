@@ -43,5 +43,5 @@ Function Test-SPDistributedCacheHealth
 }
 
 <#
-    $output = Test-DistributedCacheStatus $remoteSession -Verbose
+    $output = Test-SPDistributedCacheHealth $remoteSession -Verbose
 #>

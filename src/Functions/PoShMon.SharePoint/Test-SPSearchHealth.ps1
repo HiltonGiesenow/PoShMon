@@ -51,5 +51,5 @@ Function Test-SPSearchHealth
     return (Complete-TimedOutput $mainOutput)
 }
 <#
-    $output = Test-SearchHealth $remoteSession
+    $output = Test-SPSearchHealth $remoteSession
 #>

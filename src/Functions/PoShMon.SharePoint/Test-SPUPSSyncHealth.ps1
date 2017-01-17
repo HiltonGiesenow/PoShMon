@@ -44,7 +44,7 @@ Function Test-SPUPSSyncHealth
 
                         if ($connectionErrors -ne "") { $errors = $connectionErrors } else { $errors = $syncErrors }
                         
-                        Write-Host "` Step $stepNumber has status of $stepResult : $($errors.InnerXml)"
+                        Write-Verbose "` Step $stepNumber has status of $stepResult : $($errors.InnerXml)"
 
                         $mainOutput.OutputValues += @{
                             'ManagementAgent' = $maName;

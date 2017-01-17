@@ -18,7 +18,7 @@ class SPJobHealthMock {
     }
 }
 
-Describe "Test-JobHealth" {
+Describe "Test-SPJobHealth" {
     It "Should return a matching output structure" {
     
         Mock -CommandName Invoke-RemoteCommand -ModuleName PoShMon -MockWith {
@@ -30,7 +30,7 @@ Describe "Test-JobHealth" {
         $poShMonConfiguration = New-PoShMonConfiguration {
             }   
 
-        $actual = Test-JobHealth $poShMonConfiguration
+        $actual = Test-SPJobHealth $poShMonConfiguration
 
         $headerKeyCount = 5
 
@@ -61,7 +61,7 @@ Describe "Test-JobHealth" {
 
         $poShMonConfiguration = New-PoShMonConfiguration {}
 
-        $actual = Test-JobHealth $poShMonConfiguration
+        $actual = Test-SPJobHealth $poShMonConfiguration
         
         Assert-VerifiableMocks
 
@@ -78,7 +78,7 @@ Describe "Test-JobHealth" {
 
         $poShMonConfiguration = New-PoShMonConfiguration {}
 
-        $actual = Test-JobHealth $poShMonConfiguration
+        $actual = Test-SPJobHealth $poShMonConfiguration
         
         Assert-VerifiableMocks
 
@@ -98,7 +98,7 @@ Describe "Test-JobHealth" {
 
         $poShMonConfiguration = New-PoShMonConfiguration {}
 
-        $actual = Test-JobHealth $poShMonConfiguration
+        $actual = Test-SPJobHealth $poShMonConfiguration
         
         Assert-VerifiableMocks
 

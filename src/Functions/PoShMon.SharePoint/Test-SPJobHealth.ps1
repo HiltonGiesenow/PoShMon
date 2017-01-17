@@ -43,5 +43,5 @@ Function Test-SPJobHealth
     return (Complete-TimedOutput $mainOutput)
 }
 <#
-    $output = Test-JobHealth -RemoteSession $remoteSession -MinutesToScanHistory 2000 -Verbose
+    $output = Test-SPJobHealth -RemoteSession $remoteSession -MinutesToScanHistory 2000 -Verbose
 #>
