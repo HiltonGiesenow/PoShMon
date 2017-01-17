@@ -86,6 +86,13 @@ Of course there are loads of monitoring systems and tools out there, both paid a
 ---
 
 ## Release Notes
+0.8.3
+* Reduced duplication in Test code for Stopwatch
+* Fixed naming for 'Free Percent' column in Memory Test
+* For 'Critical' (i.e. NotifyOnFailure) runs, set Email Priority to High if failure occurs
+* For Exception notifications,  set Email Priority to High
+* Convert all Tests that used a PSSession parameter to using PoShMonConfiguration - improves testability
+* Added Unit Tests for every main Test-* function
 
 0.8.2
 * Added date to UserProfileSync output
@@ -120,11 +127,3 @@ Of course there are loads of monitoring systems and tools out there, both paid a
 
 0.6.0
 * Adding Office 365 Teams notification output
-
-0.5.1
-* Fixing Pushbullet notification output
-
-0.5.0
-* Added Pushbullet support and some additional unit tests
-* Improved description in module itself
-* Added basic help tutorial to readme on GitHub project page 
