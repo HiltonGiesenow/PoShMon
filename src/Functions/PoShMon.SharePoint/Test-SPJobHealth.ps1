@@ -1,4 +1,4 @@
-Function Test-JobHealth
+Function Test-SPJobHealth
 {
     [CmdletBinding()]
     param (

@@ -1,4 +1,4 @@
-Function Test-SearchHealth
+Function Test-SPSearchHealth
 {
     [CmdletBinding()]
     param (

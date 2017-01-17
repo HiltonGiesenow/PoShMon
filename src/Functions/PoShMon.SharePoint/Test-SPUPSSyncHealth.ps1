@@ -1,4 +1,4 @@
-Function Test-UserProfileSync
+Function Test-SPUPSSyncHealth
 {
     [CmdletBinding()]
     param (

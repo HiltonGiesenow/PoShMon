@@ -1,4 +1,4 @@
-Function Test-DistributedCacheStatus
+Function Test-SPDistributedCacheHealth
 {
     [CmdletBinding()]
     param (

@@ -1,4 +1,4 @@
-Function Test-DatabaseHealth
+Function Test-SPDatabaseHealth
 {
     [CmdletBinding()]
     param (
