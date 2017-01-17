@@ -1,4 +1,6 @@
-$scriptFiles  = @( Get-ChildItem -Path $PSScriptRoot\*\*.ps1 -ErrorAction SilentlyContinue )
+$path = (Split-Path -Parent $MyInvocation.MyCommand.Path)
+
+$scriptFiles = @( Get-ChildItem -Path "$path\*\*.ps1" -Recurse -ErrorAction SilentlyContinue )
 
 $testResultSettings = @{ }
 

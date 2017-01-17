@@ -7,9 +7,7 @@ Function Test-CPULoad
 
     if ($PoShMonConfiguration.OperatingSystem -eq $null) { throw "'OperatingSystem' configuration not set properly on PoShMonConfiguration parameter." }
 
-    $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
-
-    $mainOutput = Get-InitialOutput -SectionHeader "Server CPU Load Review" -OutputHeaders ([ordered]@{ 'ServerName' = 'Server Name'; 'CPULoad' = 'CPU Load (%)' })
+    $mainOutput = Get-InitialOutputWithTimer -SectionHeader "Server CPU Load Review" -OutputHeaders ([ordered]@{ 'ServerName' = 'Server Name'; 'CPULoad' = 'CPU Load (%)' })
 
     $results = Get-Counter "\processor(_total)\% processor time" -Computername $PoShMonConfiguration.General.ServerNames
 
@@ -34,9 +32,5 @@ Function Test-CPULoad
         }
     }
 
-    $stopWatch.Stop()
-
-    $mainOutput.ElapsedTime = $stopWatch.Elapsed
-
-    return $mainOutput
+    return (Complete-TimedOutput $mainOutput)
 }

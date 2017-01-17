@@ -9,8 +9,6 @@ Function Invoke-OSMonitoring
     if ($PoShMonConfiguration.TypeName -ne 'PoShMon.Configuration')
         { throw "PoShMonConfiguration is not of the correct type - please use New-PoShMonConfiguration to create it" }
 
-    $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
-
     $outputValues = @()
 
     # Event Logs

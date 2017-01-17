@@ -6,9 +6,7 @@ Function Test-DatabaseHealth
         [hashtable]$PoShMonConfiguration
     )
 
-    $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
-
-    $mainOutput = Get-InitialOutput -SectionHeader "Database Status" -OutputHeaders ([ordered]@{ 'DatabaseName' = 'Database Name'; 'Size' = 'Size (GB)'; 'NeedsUpgrade' = 'Needs Upgrade?' })
+    $mainOutput = Get-InitialOutputWithTimer -SectionHeader "Database Status" -OutputHeaders ([ordered]@{ 'DatabaseName' = 'Database Name'; 'Size' = 'Size (GB)'; 'NeedsUpgrade' = 'Needs Upgrade?' })
 
     $spDatabases = Invoke-RemoteCommand -PoShMonConfiguration $PoShMonConfiguration -ScriptBlock {
                         return Get-SPDatabase | Sort DiskSizeRequired -Descending
@@ -35,11 +33,7 @@ Function Test-DatabaseHealth
         }
     }
 
-    $stopWatch.Stop()
-
-    $mainOutput.ElapsedTime = $stopWatch.Elapsed
-
-    return $mainOutput
+    return (Complete-TimedOutput $mainOutput)
 }
 <#
     $output = Test-DatabaseHealth $remoteSession -Verbose

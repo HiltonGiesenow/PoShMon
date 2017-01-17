@@ -2,13 +2,17 @@ $rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPa
 Remove-Module PoShMon -ErrorAction SilentlyContinue
 Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 
-class SPSearchItemsMock {
-    [object[]]$SearchComponentStates
-    [object[]]$ComponentTopology
-
-    SPSearchItemsMock ([object[]]$NewSearchComponentStates, [object[]]$NewComponentTopology) {
-        $this.SearchComponentStates = $NewSearchComponentStates;
-        $this.ComponentTopology = $NewComponentTopology;
+class SPDatabaseMock {
+     [string]$DisplayName
+     [string]$ApplicationName
+     [bool]$NeedsUpgrade
+     [UInt64]$DiskSizeRequired
+ 
+     SPDatabaseMock ([string]$NewDisplayName, [string]$NewApplicationName, [bool]$NewNeedsUpgrade, [UInt64]$NewDiskSizeRequired) {
+         $this.DisplayName = $NewDisplayName;
+         $this.ApplicationName = $NewApplicationName;
+         $this.NeedsUpgrade = $NewNeedsUpgrade;
+         $this.DiskSizeRequired = $NewDiskSizeRequired;
     }
 }
 

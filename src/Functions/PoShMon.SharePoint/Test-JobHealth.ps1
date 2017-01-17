@@ -6,9 +6,8 @@ Function Test-JobHealth
         [hashtable]$PoShMonConfiguration
     )
 
-    $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
 
-    $mainOutput = Get-InitialOutput -SectionHeader "Failing Timer Jobs" -OutputHeaders ([ordered]@{ 'JobDefinitionTitle' = 'Job Definition Title'; 'EndTime' = 'End Time'; 'ServerName' = 'Server Name'; 'WebApplicationName' = 'Web Application Name'; 'ErrorMessage' ='Error Message' })
+    $mainOutput = Get-InitialOutputWithTimer -SectionHeader "Failing Timer Jobs" -OutputHeaders ([ordered]@{ 'JobDefinitionTitle' = 'Job Definition Title'; 'EndTime' = 'End Time'; 'ServerName' = 'Server Name'; 'WebApplicationName' = 'Web Application Name'; 'ErrorMessage' ='Error Message' })
 
     $startDate = (Get-Date).AddMinutes(-$PoShMonConfiguration.General.MinutesToScanHistory) #.ToUniversalTime()
 
@@ -41,11 +40,7 @@ Function Test-JobHealth
         }
     }
 
-    $stopWatch.Stop()
-
-    $mainOutput.ElapsedTime = $stopWatch.Elapsed
-
-    return $mainOutput
+    return (Complete-TimedOutput $mainOutput)
 }
 <#
     $output = Test-JobHealth -RemoteSession $remoteSession -MinutesToScanHistory 2000 -Verbose

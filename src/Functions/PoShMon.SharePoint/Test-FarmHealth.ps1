@@ -6,9 +6,7 @@ Function Test-FarmHealth
         [hashtable]$PoShMonConfiguration
     )
 
-    $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
-
-    $mainOutput = Get-InitialOutput -SectionHeader "Farm Overview" -OutputHeaders ([ordered]@{ 'ConfigDB' = 'Config DB Name'; 'BuildVersion' = 'Build Version'; 'Status' = 'Status'; 'NeedsUpgrade' = 'Needs Upgrade?' })
+    $mainOutput = Get-InitialOutputWithTimer -SectionHeader "Farm Overview" -OutputHeaders ([ordered]@{ 'ConfigDB' = 'Config DB Name'; 'BuildVersion' = 'Build Version'; 'Status' = 'Status'; 'NeedsUpgrade' = 'Needs Upgrade?' })
 
     $farm = Invoke-RemoteCommand -PoShMonConfiguration $PoShMonConfiguration -ScriptBlock {
         return Get-SPFarm | Select Name, BuildVersion, Status, NeedsUpgrade
@@ -35,11 +33,7 @@ Function Test-FarmHealth
         'Highlight' = $highlight
     }
 
-    $stopWatch.Stop()
-
-    $mainOutput.ElapsedTime = $stopWatch.Elapsed
-
-    return $mainOutput
+    return (Complete-TimedOutput $mainOutput)
 }
 <#
     $output = Test-SearchHealth $remoteSession

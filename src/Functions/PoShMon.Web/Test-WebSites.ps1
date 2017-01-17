@@ -11,10 +11,8 @@ Function Test-WebSites
     {
         $siteUrl = $websiteDetailKey
         $textToLocate = $PoShMonConfiguration.WebSite.WebsiteDetails[$websiteDetailKey]
-
-        $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
    
-        $mainOutput = Get-InitialOutput -SectionHeader "Web Test - $siteUrl" -OutputHeaders ([ordered]@{ 'ServerName' = 'Server'; 'StatusCode' = 'Status Code'; 'Outcome' = 'Outcome' })
+        $mainOutput = Get-InitialOutputWithTimer -SectionHeader "Web Test - $siteUrl" -OutputHeaders ([ordered]@{ 'ServerName' = 'Server'; 'StatusCode' = 'Status Code'; 'Outcome' = 'Outcome' })
 
         For ($i = -1; $i -lt $PoShMonConfiguration.General.ServerNames.Count; $i++) {
         
@@ -59,11 +57,7 @@ Function Test-WebSites
             }
         }
 
-        $stopWatch.Stop()
-
-        $mainOutput.ElapsedTime = $stopWatch.Elapsed
-
-        $allTestsOutput += $mainOutput
+        $allTestsOutput += (Complete-TimedOutput $mainOutput)
     }
 
     return $allTestsOutput

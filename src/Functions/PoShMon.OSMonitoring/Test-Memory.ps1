@@ -7,9 +7,7 @@ Function Test-Memory
 
     if ($PoShMonConfiguration.OperatingSystem -eq $null) { throw "'OperatingSystem' configuration not set properly on PoShMonConfiguration parameter." }
 
-    $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
-
-    $mainOutput = Get-InitialOutput -SectionHeader "Memory Review" -OutputHeaders ([ordered]@{ 'ServerName' = 'Server Name'; 'TotalMemory' = 'Total Memory (GB)'; 'FreeMemory' = 'Free Memory (GB)'; 'FreeMemoryPerc' = 'Free Memory (%)' })
+    $mainOutput = Get-InitialOutputWithTimer -SectionHeader "Memory Review" -OutputHeaders ([ordered]@{ 'ServerName' = 'Server Name'; 'TotalMemory' = 'Total Memory (GB)'; 'FreeMemory' = 'Free Memory (GB)'; 'FreeMemoryPerc' = 'Free Memory (%)' })
 
     $results = Get-WmiObject Win32_OperatingSystem -Computername $PoShMonConfiguration.General.ServerNames
 
@@ -40,9 +38,5 @@ Function Test-Memory
         }
     }
 
-    $stopWatch.Stop()
-
-    $mainOutput.ElapsedTime = $stopWatch.Elapsed
-
-    return $mainOutput
+    return (Complete-TimedOutput $mainOutput)
 }

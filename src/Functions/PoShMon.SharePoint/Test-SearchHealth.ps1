@@ -6,9 +6,7 @@ Function Test-SearchHealth
         [hashtable]$PoShMonConfiguration
     )
 
-    $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
-
-    $mainOutput = Get-InitialOutput -SectionHeader "Search Status" -OutputHeaders ([ordered]@{ 'ComponentName' = 'Component'; 'ServerName' = 'Server Name'; 'State' = 'State' })
+    $mainOutput = Get-InitialOutputWithTimer -SectionHeader "Search Status" -OutputHeaders ([ordered]@{ 'ComponentName' = 'Component'; 'ServerName' = 'Server Name'; 'State' = 'State' })
 
     $remoteComponents = Invoke-RemoteCommand -PoShMonConfiguration $PoShMonConfiguration -ScriptBlock {
         $ssa = Get-SPEnterpriseSearchServiceApplication
@@ -50,11 +48,7 @@ Function Test-SearchHealth
         }
     }
 
-    $stopWatch.Stop()
-
-    $mainOutput.ElapsedTime = $stopWatch.Elapsed
-
-    return $mainOutput
+    return (Complete-TimedOutput $mainOutput)
 }
 <#
     $output = Test-SearchHealth $remoteSession

@@ -5,9 +5,7 @@ Function Test-SPServerStatus
         [hashtable]$PoShMonConfiguration
     )
 
-    $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
-
-    $mainOutput = Get-InitialOutput -SectionHeader "Farm Server Status" -OutputHeaders ([ordered]@{ 'ServerName' = 'Server Name'; 'Role' = 'Role'; 'NeedsUpgrade' = 'Needs Upgrade?'; 'Status' ='Status' })
+    $mainOutput = Get-InitialOutputWithTimer -SectionHeader "Farm Server Status" -OutputHeaders ([ordered]@{ 'ServerName' = 'Server Name'; 'Role' = 'Role'; 'NeedsUpgrade' = 'Needs Upgrade?'; 'Status' ='Status' })
 
     #$farm = Get-SPFarm
     #$farm.BuildVersion
@@ -44,11 +42,7 @@ Function Test-SPServerStatus
         }
     }
 
-    $stopWatch.Stop()
-
-    $mainOutput.ElapsedTime = $stopWatch.Elapsed
-
-    return $mainOutput
+    return (Complete-TimedOutput $mainOutput)
 }
 <#
     $output = Test-SPServerStatus -Verbose

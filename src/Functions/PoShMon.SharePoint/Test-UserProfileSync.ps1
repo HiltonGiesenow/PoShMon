@@ -5,10 +5,8 @@ Function Test-UserProfileSync
         #[System.Management.Automation.Runspaces.PSSession]$RemoteSession,
         [hashtable]$PoShMonConfiguration
     )
-
-    $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
-      
-    $mainOutput = Get-InitialOutput -SectionHeader "User Profile Sync State" -OutputHeaders ([ordered]@{ 'ManagementAgent' = 'Management Agent'; 'RunProfile' = 'Run Profile'; 'RunStartTime' = 'Run Start Time'; 'ErrorDetail' = 'ErrorDetail' })
+     
+    $mainOutput = Get-InitialOutputWithTimer -SectionHeader "User Profile Sync State" -OutputHeaders ([ordered]@{ 'ManagementAgent' = 'Management Agent'; 'RunProfile' = 'Run Profile'; 'RunStartTime' = 'Run Start Time'; 'ErrorDetail' = 'ErrorDetail' })
 
     Write-Verbose "`tGetting SharePoint service list..."
     
@@ -60,9 +58,5 @@ Function Test-UserProfileSync
         }
     }
 
-    $stopWatch.Stop()
-
-    $mainOutput.ElapsedTime = $stopWatch.Elapsed
-
-    return $mainOutput
+    return (Complete-TimedOutput $mainOutput)
 }

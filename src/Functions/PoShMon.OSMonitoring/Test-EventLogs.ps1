@@ -8,10 +8,8 @@ Function Test-EventLogs
     $allTestsOutput = @()
 
     foreach ($SeverityCode in $PoShMonConfiguration.OperatingSystem.EventLogCodes)
-    {
-        $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
-   
-        $mainOutput = Get-InitialOutput -SectionHeader "$SeverityCode Event Log Issues" -OutputHeaders ([ordered]@{ 'EventID' = 'Event ID'; 'InstanceCount' = 'Count'; 'Source' = 'Source'; 'User' = 'User'; 'Timestamp' = 'Timestamp'; 'Message' ='Message' })
+    {   
+        $mainOutput = Get-InitialOutputWithTimer -SectionHeader "$SeverityCode Event Log Issues" -OutputHeaders ([ordered]@{ 'EventID' = 'Event ID'; 'InstanceCount' = 'Count'; 'Source' = 'Source'; 'User' = 'User'; 'Timestamp' = 'Timestamp'; 'Message' ='Message' })
 
         $wmiStartDate = (Get-Date).AddMinutes(-$PoShMonConfiguration.General.MinutesToScanHistory) #.ToUniversalTime()
         $wmidate = new-object -com Wbemscripting.swbemdatetime
@@ -69,11 +67,7 @@ Function Test-EventLogs
             }
         }
 
-        $stopWatch.Stop()
-        
-        $mainOutput.ElapsedTime = $stopWatch.Elapsed
-
-        $allTestsOutput += $mainOutput
+        $allTestsOutput += (Complete-TimedOutput $mainOutput)
     }
 
     return $allTestsOutput

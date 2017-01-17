@@ -7,9 +7,7 @@ Function Test-DriveSpace
 
     if ($PoShMonConfiguration.OperatingSystem -eq $null) { throw "'OperatingSystem' configuration not set properly on PoShMonConfiguration parameter." }
 
-    $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
-
-    $mainOutput = Get-InitialOutput -SectionHeader "Harddrive Space Review" -OutputHeaders ([ordered]@{ 'DriveLetter' = 'Drive Letter'; 'TotalSpace' = 'Total Space (GB)'; 'FreeSpace' = 'Free Space (GB)' })
+    $mainOutput = Get-InitialOutputWithTimer -SectionHeader "Harddrive Space Review" -OutputHeaders ([ordered]@{ 'DriveLetter' = 'Drive Letter'; 'TotalSpace' = 'Total Space (GB)'; 'FreeSpace' = 'Free Space (GB)' })
 
     foreach ($serverName in $PoShMonConfiguration.General.ServerNames)
     {
@@ -49,9 +47,5 @@ Function Test-DriveSpace
                 }
     }
 
-    $stopWatch.Stop()
-
-    $mainOutput.ElapsedTime = $stopWatch.Elapsed
-
-    return $mainOutput
+    return (Complete-TimedOutput $mainOutput)
 }
