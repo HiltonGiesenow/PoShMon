@@ -1,13 +1,11 @@
 $rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPath ('..\..\..\') -Resolve
-Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1") -Verbose
-$sutFileName = (Split-Path -Leaf $MyInvocation.MyCommand.Path).Replace(".Tests", "")
-$sutFilePath = Join-Path $rootPath -ChildPath "Functions\PoShMon.OSMonitoring\$sutFileName" 
-. $sutFilePath
+Remove-Module PoShMon -ErrorAction SilentlyContinue
+Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 
 Describe "Process-Notifications" {
     It "Should return a the correct html for given test output" {
 
-        $poShMonConfiguration = @{
+        <#$poShMonConfiguration = @{
                                     TypeName = 'PoShMon.Configuration'
                                     General = @{
                                                 TypeName = "PoShMon.ConfigurationItems.General"
@@ -25,7 +23,18 @@ Describe "Process-Notifications" {
                                             When = "All"
                                         }
                                     )
-                                }
+                                }#>
+
+        Mock -CommandName Send-MailMessage -Verifiable -MockWith {
+            return
+        }
+
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                                    General -EnvironmentName "SharePoint" -TestsToSkip 'SkippedTest1','SkippedTest2'
+                                    Notifications -When All {
+                                        Email -ToAddress "testTo@email.com" -FromAddress "testFrom@email.com" -SmtpServer "EXCHANGE.COMPANY.COM"
+                                    }
+                                }   
 
         $testMonitoringOutput = @(
             @{
