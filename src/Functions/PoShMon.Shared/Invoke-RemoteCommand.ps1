@@ -17,6 +17,7 @@
         throw $_.Exception
     } finally {
         if ($remoteSession -ne $null)
-            { Disconnect-RemoteSession $remoteSession -ErrorAction SilentlyContinue }
+            { Disconnect-PSSession $remoteSession -ErrorAction SilentlyContinue }
+            #{ Disconnect-RemoteSession $remoteSession -ErrorAction SilentlyContinue }
     }
 }
