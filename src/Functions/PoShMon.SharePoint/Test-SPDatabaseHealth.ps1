@@ -36,5 +36,5 @@ Function Test-SPDatabaseHealth
     return (Complete-TimedOutput $mainOutput)
 }
 <#
-    $output = Test-DatabaseHealth $remoteSession -Verbose
+    $output = Test-SPDatabaseHealth $remoteSession -Verbose
 #>
