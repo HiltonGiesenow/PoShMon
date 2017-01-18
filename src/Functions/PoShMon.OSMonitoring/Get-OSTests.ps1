@@ -7,7 +7,7 @@ Function Get-OSTests
     $tests = [string[]]@(
         "EventLogs",
         "CPULoad",
-        "FreeMemory",
+        "Memory",
         "DriveSpace"
     )
 
