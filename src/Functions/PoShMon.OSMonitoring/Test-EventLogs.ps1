@@ -11,12 +11,10 @@ Function Test-EventLogs
     {   
         $mainOutput = Get-InitialOutputWithTimer -SectionHeader "$SeverityCode Event Log Issues" -OutputHeaders ([ordered]@{ 'EventID' = 'Event ID'; 'InstanceCount' = 'Count'; 'Source' = 'Source'; 'User' = 'User'; 'Timestamp' = 'Timestamp'; 'Message' ='Message' })
 
-        $wmiStartDate = (Get-Date).AddMinutes(-$PoShMonConfiguration.General.MinutesToScanHistory) #.ToUniversalTime()
+        $wmiStartDate = (Get-Date).AddMinutes(-$PoShMonConfiguration.General.MinutesToScanHistory)
         $wmidate = new-object -com Wbemscripting.swbemdatetime
         $wmidate.SetVarDate($wmiStartDate, $true)
         $wmiStartDateWmi = $wmidate.value
-
-        Write-Verbose "Getting $SeverityCode Event Log Issues..."
 
         foreach ($serverName in $PoShMonConfiguration.General.ServerNames)
         {
