@@ -2,17 +2,26 @@ Function Invoke-Tests
 {
     [CmdletBinding()]
     Param(
-        #[Parameter(Position=0, Mandatory=$true, ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)]
-        [System.Collections.ArrayList]$TestsToRun,
+        [Parameter(Position=0, Mandatory=$true, ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)]
+        [string[]]$TestToRuns,
         [hashtable]$PoShMonConfiguration
     )
 
-    $outputValues = @()
-
-    foreach ($test in $testsToRun)
+    Begin
     {
-        $outputValues += & ("Test-" + $test) $PoShMonConfiguration
+        $outputValues = @()
     }
 
-    return $outputValues
+    Process
+    {
+        foreach ($test in $TestToRuns)
+        {
+            $outputValues += & ("Test-" + $test) $PoShMonConfiguration
+        }
+    }
+    
+    End
+    {
+        return $outputValues
+    }
 }

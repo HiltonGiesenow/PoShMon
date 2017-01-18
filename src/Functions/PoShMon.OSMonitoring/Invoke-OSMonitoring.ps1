@@ -6,17 +6,7 @@ Function Invoke-OSMonitoring
         [hashtable]$PoShMonConfiguration
     )
 
-    if ($PoShMonConfiguration.TypeName -ne 'PoShMon.Configuration')
-        { throw "PoShMonConfiguration is not of the correct type - please use New-PoShMonConfiguration to create it" }
-
-    $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
-
-    $testsToRun = Get-FinalTestsToRun -AllTests (Get-OSTests) -PoShMonConfiguration $PoShMonConfiguration
-    $outputValues = Invoke-Tests $testsToRun -PoShMonConfiguration $PoShMonConfiguration
-
-    $stopWatch.Stop()
-
-    Process-Notifications -PoShMonConfiguration $PoShMonConfiguration -TestOutputValues $outputValues -TotalElapsedTime $stopWatch.Elapsed
+    $outputValues = Invoke-MonitoringCore -PoShMonConfiguration $PoShMonConfiguration -TestList (Get-OSTests)
 
     return $outputValues
 }

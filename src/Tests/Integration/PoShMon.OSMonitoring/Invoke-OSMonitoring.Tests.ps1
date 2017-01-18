@@ -7,21 +7,17 @@ Describe "Invoke-SPMonitoring" {
 
         $poShMonConfiguration = New-PoShMonConfiguration {
                         General `
-                            -EnvironmentName 'SharePoint' `
+                            -EnvironmentName 'OS Base Test' `
                             -MinutesToScanHistory 60 `
-                            -PrimaryServerName 'AppServer01' `
+                            -ServerNames 'Server01','Server02' `
                             -ConfigurationName SpFarmPosh `
-                            -TestsToSkip 'SPServerStatus','SPFailingTimerJobs','SPDatabaseHealth','SPSearchHealth','SPDistributedCacheHealth','WebTests'
+                            -TestsToSkip 'FreeMemory'
                         Notifications -When All {
                             Email -ToAddress "hilton@giesenow.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
                             Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
                             O365Teams -TeamsWebHookUrl "http://teams.office.com/theapi"
                         }               
                     }
-
-        Mock -CommandName Get-ServersInSPFarm -ModuleName PoShMon -Verifiable -MockWith {
-            return "Server1","Server2","Server3"
-        }
 
         Mock -CommandName Invoke-Tests -ModuleName PoShMon -Verifiable -MockWith {
             Begin
@@ -60,11 +56,7 @@ Describe "Invoke-SPMonitoring" {
             return
         }
 
-        Mock -CommandName Get-PSSession -Verifiable -MockWith {
-            return $null
-        }
-
-        $actual = Invoke-SPMonitoring $poShMonConfiguration -Verbose
+        $actual = Invoke-OSMonitoring $poShMonConfiguration -Verbose
 
         Assert-VerifiableMocks
     }

@@ -1,4 +1,4 @@
-Function Test-EventLogs
+<# Function Test-EventLogs2
 {
     [CmdletBinding()]
     param (
@@ -74,3 +74,4 @@ Function Test-EventLogs
 
     return $allTestsOutput
 }
+#>
