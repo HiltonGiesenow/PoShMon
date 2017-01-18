@@ -4,7 +4,7 @@
     Param(
     )
 
-    $tests = @(
+    $tests = [string[]]@(
         #"FarmHealth",
         "EventLogs",
         "CPULoad",

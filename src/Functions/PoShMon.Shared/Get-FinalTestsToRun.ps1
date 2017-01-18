@@ -2,6 +2,7 @@
 {
     [CmdletBinding()]
     Param(
+        #[Parameter(Position=0, Mandatory=$true, ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)]
         [string[]]$AllTests,
         [hashtable]$PoShMonConfiguration
     )

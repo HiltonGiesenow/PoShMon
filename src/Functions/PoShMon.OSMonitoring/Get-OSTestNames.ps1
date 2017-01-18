@@ -4,12 +4,7 @@ Function Get-OSTestNames
     Param(
     )
 
-    $tests = @(
-        "EventLogs",
-        "CPULoad",
-        "FreeMemory",
-        "DriveSpace"
-    ) #storing them as an array in case it's useful...
+    $tests = Get-OSTests
 
     return "'" + [system.String]::Join("','", $tests) + "'" #formatted easily for use in TestsToSkip
 }

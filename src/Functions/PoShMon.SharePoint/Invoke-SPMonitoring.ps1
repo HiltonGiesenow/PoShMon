@@ -10,19 +10,15 @@ Function Invoke-SPMonitoring
         { throw "PoShMonConfiguration is not of the correct type - please use New-PoShMonConfiguration to create it" }
 
     $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
-    $outputValues = @()
+    
 
     try {
         # Auto-Discover Servers
         $PoShMonConfiguration.General.ServerNames = Get-ServersInSPFarm $PoShMonConfiguration
 
         $testsToRun = Get-FinalTestsToRun -AllTests (Get-SPTests) -PoShMonConfiguration $PoShMonConfiguration
+        $outputValues = Invoke-Tests $testsToRun -PoShMonConfiguration $PoShMonConfiguration
 
-        foreach ($test in $testsToRun)
-        {
-            $outputValues += & ("Test-" + $test) $PoShMonConfiguration
-        }
-        
     } catch {
         Send-ExceptionNotifications -PoShMonConfiguration $PoShMonConfiguration -Exception $_.Exception
     } finally {
