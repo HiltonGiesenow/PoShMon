@@ -120,10 +120,4 @@ Of course there are loads of monitoring systems and tools out there, both paid a
 * Removed an unnecessary function
 * Sorting database output by size (Desc)
 
-0.6.1
-* Improved global exception handler (try/catch) to handle initial exceptions.
-* Added more tests
-* Refactored internal Notification code
-
-0.6.0
-* Adding Office 365 Teams notification output
+See [here](https://github.com/HiltonGiesenow/PoShMon/wiki/Changelog) for full Changelog
