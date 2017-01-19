@@ -14,7 +14,11 @@ Function New-TestOutputEmailBody
     $emailSection += "<p><h1>$title</h1>"
     $emailSection += '<table border="1">'
 
-    if ($output.OutputValues -ne $null -and $output.OutputValues.Count -gt 0 -and `
+    if ($output.ContainsKey("Exception"))
+    {
+        $emailSection += "<tbody><tr><td>An Exception Occurred</td></tr><tr><td>$($output.Exception.ToString())</td></tr></tbody"
+    }
+    elseif ($output.OutputValues -ne $null -and $output.OutputValues.Count -gt 0 -and `
         $output.OutputValues[0].ContainsKey("GroupName")) #grouped output
     {
         foreach ($groupOutputValue in $output.OutputValues)

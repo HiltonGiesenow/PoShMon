@@ -16,7 +16,15 @@ Function Invoke-Tests
     {
         foreach ($test in $TestToRuns)
         {
-            $outputValues += & ("Test-" + $test) $PoShMonConfiguration
+            try {
+                $outputValues += & ("Test-" + $test) $PoShMonConfiguration
+            } catch {
+                $outputValues += @{
+                    "SectionHeader" = $test;
+                    "NoIssuesFound" = $false;
+                    "Exception" = $_.Exception
+                }
+            }
         }
     }
     

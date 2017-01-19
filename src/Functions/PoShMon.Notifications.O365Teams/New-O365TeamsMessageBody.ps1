@@ -13,6 +13,8 @@ Function New-O365TeamsMessageBody
     foreach ($testOutputValue in $testOutputValues)
     {
         if ($testOutputValue.NoIssuesFound) { $foundValue = "No" } else { $foundValue = "Yes" }
+        if ($testOutputValue.ContainsKey("Exception"))
+            { $foundValue += " (Exception occurred)" }
         $messageBody += "$($testOutputValue.SectionHeader) : issue(s) found - $foundValue `r`n"
     }
 
