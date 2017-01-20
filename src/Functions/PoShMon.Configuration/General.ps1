@@ -10,7 +10,9 @@ Function General
         [string]$PrimaryServerName,
         [parameter(HelpMessage="For monitoring standalone servers, specify the names of the servers to monitor.")]
         [string[]]$ServerNames = @(),
-        [string]$ConfigurationName = $null
+        [parameter(HelpMessage="A ConfiguratioName for PowerShell to create remote sessions using pre-existing configurations")]
+        [string]$ConfigurationName = $null,
+        [bool]$SkipVersionUpdateCheck = $false        
     )
 
     if ($Script:PoShMon.ConfigurationItems.General -eq $null)
@@ -36,5 +38,6 @@ Function General
             ServerNames = $ServerNames
             ConfigurationName = $ConfigurationName
             RemoteSessionName = $remoteSessionName
+            SkipVersionUpdateCheck = $SkipVersionUpdateCheck
         }
 }
