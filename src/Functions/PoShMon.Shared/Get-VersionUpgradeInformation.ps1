@@ -22,7 +22,7 @@ Function Get-VersionUpgradeInformation
             }           
         }
         catch {
-            return "Version information not available"
+            return "Version Update information not available (check Internet access for RunAs account)"
         }
     }
 }
