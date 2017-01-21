@@ -17,7 +17,7 @@ Function New-EmailFooter
     if ($TotalElapsedTime -ne $null)
          { $emailSection += "<p>Total Elapsed Time (Seconds): $("{0:F2}" -f $TotalElapsedTime.TotalSeconds) ($("{0:F2}" -f $TotalElapsedTime.TotalMinutes) Minutes)</p>" }
 
-    $emailSection += "<p>PoShMon Version: $((Get-Module PoShMon).Version.ToString() - $(Get-VersionUpgradeInformation))</p>"
+    $emailSection += "<p>PoShMon Version: $((Get-Module PoShMon).Version.ToString()) - $(Get-VersionUpgradeInformation)</p>"
 
     $emailSection += '</body>'
 
