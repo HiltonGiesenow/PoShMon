@@ -1,6 +1,14 @@
 # PoShMon
 PoShMon is an open source PowerShell-based server and farm monitoring solution. It's an "agent-less" monitoring tool, which means there's nothing that needs to be installed on any of the environments you want to monitor - you can simply run the script from a regular workstation and have it monitor a single server or group of servers. PoShMon is also able to monitor "farm"-based products like SharePoint, in which multiple servers work together to provide a single platform. In this case, instead of a list of servers, you need only to supply PoShMon with details of a "primary" server against which you want to monitor the platform and it will use, in this case, SharePoint's API to determine the remaining servers. For details on why I built PoShMon, see the bottom of this page.
 
+## Key Features
+Some of the key features / benefits of PoShMon are:
+* Agent-less Monitoring - nothing needs to be installed on the remote servers
+* Core operating system and web-site monitoring
+* Specialized SharePoint monitoring
+* Supports frequent/critical as well as comprehensive daily monitoring
+* Email, Pushbullet and Office 365 Teams notifications
+
 ## Installation Instructions
 PoShMon is available on the [PowerShell Gallery](https://www.powershellgallery.com/packages/PoShMon) so you can either download it from this GitHub page or even install it directly from the gallery onto your local workstation using
 
@@ -9,8 +17,8 @@ PoShMon is available on the [PowerShell Gallery](https://www.powershellgallery.c
 or via [Azure Automation](https://www.powershellgallery.com/packages/PoShMon).
 
 ## Prerequisites
-1 While PoShMon is indeed "agent-less", it **does need to execute remote PowerShell commands** against the servers in question. As a result, you need to ensure that these servers have PowerShell remoting correctly configured and also that you are running PoShMon under an account that has the correct rights to connect to the server remotely and execute the requisite commands.
-2 In addition to ensure general PowerShell remoting is working, you also need to ensure that commands that access other environments further down the line (most commonly SQL) have a **means to pass on credentials effectively and securely**. Essentially, this relates to the age-old "Double Hop" issue - we're trying to connect remotely to, say, a SharePoint environment and we in turn need access to SQL. This issue is described more fully in a PowerShell context [here](https://blogs.technet.microsoft.com/ashleymcglone/2016/08/30/powershell-remoting-kerberos-double-hop-solved-securely/) and [this link](https://blogs.msdn.microsoft.com/sergey_babkins_blog/2015/03/18/another-solution-to-multi-hop-powershell-remoting/) provides a means for creating more secure connections instead of the usual CredSSP fallback. More on this appears below in the SharePoint example further down. You can test with SharePoint, for example, by creating a session from a remote machine (say your workstation) and executing `Get-SPFarm` - if that works successfully, you're probably good to go with PoShMon.
+1. While PoShMon is indeed "agent-less", it **does need to execute remote PowerShell commands** against the servers in question. As a result, you need to ensure that PowerShell remoting is correctly configured and also that you are running PoShMon under an account that has the correct rights to connect to the server remotely and execute the requisite commands.
+2. In addition to ensuring PowerShell remoting itself is working correctly, you also need to ensure that commands that access other environments further down the line (most commonly SQL Server) have a **means to pass on credentials** effectively and securely. Essentially, this relates to the age-old "Double Hop" issue - we're trying to connect remotely to, say, a SharePoint environment and we in turn need access to SQL Server. This issue is described more fully in a PowerShell context [here](https://blogs.technet.microsoft.com/ashleymcglone/2016/08/30/powershell-remoting-kerberos-double-hop-solved-securely/) and [this link](https://blogs.msdn.microsoft.com/sergey_babkins_blog/2015/03/18/another-solution-to-multi-hop-powershell-remoting/) provides a means for creating more secure connections instead of using CredSSP. More on this appears below in the SharePoint example further down. You can test with SharePoint, for example, by creating a session from a remote machine (say your workstation) and executing `Get-SPFarm` - if that works successfully, you're probably good to go with PoShMon.
 
 ## Getting Started
 Once you've installed PoShMon, you can have a look at the [Samples](https://github.com/HiltonGiesenow/PoShMon/tree/master/src/0.4.0/Samples) folder to get an idea how to use it. As an example, to monitor a farm of web servers you can use
