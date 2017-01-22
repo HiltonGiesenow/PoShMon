@@ -1,5 +1,5 @@
 # PoShMon
-PoShMon is an open source PowerShell-based server and farm monitoring solution. It's an "agent-less" monitoring tool, which means there's nothing that needs to be installed on any of the environments you want to monitor - you can simply run the script from a regular workstation and have it monitor a single server or group of servers, using PowerShell remoting. PoShMon is also able to monitor "farm"-based products like SharePoint, in which multiple servers work together to provide a single platform. For details on why I built PoShMon, see the bottom of this page.
+PoShMon is an open source PowerShell-based server and farm monitoring solution. It's an "agent-less" monitoring tool, which means there's nothing that needs to be installed on any of the environments you want to monitor - you can simply run or schedule the script from a regular workstation and have it monitor a single server or group of servers, using PowerShell remoting. PoShMon is also able to monitor "farm"-based products like SharePoint, in which multiple servers work together to provide a single platform. For details on why I built PoShMon, see the bottom of this page.
 
 ## Key Features
 Some of the key features / benefits of PoShMon are:
@@ -8,13 +8,12 @@ Some of the key features / benefits of PoShMon are:
 * Specialized SharePoint monitoring
 * Supports frequent/critical as well as comprehensive daily monitoring
 * Email, Pushbullet (mobile) and Office 365 Teams ("Chat-ops") notifications
+* Provides a framework for a ['self-healing'](https://github.com/HiltonGiesenow/PoShMon/wiki/Creating-a-Self-Healing-System-Using-PoShMon) system
 
 ## Installation Instructions
 PoShMon is available on the [PowerShell Gallery](https://www.powershellgallery.com/packages/PoShMon) so you can either download it from this GitHub page or even install it directly from the gallery onto your local workstation using
 
 `PS> Install-Module -Name PoShMon`
-
-or via [Azure Automation](https://www.powershellgallery.com/packages/PoShMon).
 
 ## Prerequisites
 1. While PoShMon is indeed "agent-less", it **does need to execute remote PowerShell commands** against the servers in question. As a result, you need to ensure that PowerShell remoting is correctly configured and also that you are running PoShMon under an account that has the correct rights to connect to the server remotely and execute the requisite commands.
