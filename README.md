@@ -7,7 +7,7 @@ Some of the key features / benefits of PoShMon are:
 * Core operating system and web-site monitoring
 * Specialized SharePoint monitoring
 * Supports frequent/critical as well as comprehensive daily monitoring
-* Email, Pushbullet and Office 365 Teams notifications
+* Email, Pushbullet (mobile) and Office 365 Teams ("Chat-ops") notifications
 
 ## Installation Instructions
 PoShMon is available on the [PowerShell Gallery](https://www.powershellgallery.com/packages/PoShMon) so you can either download it from this GitHub page or even install it directly from the gallery onto your local workstation using
