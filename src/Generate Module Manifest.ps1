@@ -1,4 +1,4 @@
-﻿$version = "0.9.0"
+﻿$version = "0.9.1"
 $manifestPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPath "\PoShMon.psd1"
 
 Remove-Item -Path $manifestPath -ErrorAction SilentlyContinue
@@ -17,6 +17,10 @@ Some of the key features / benefits of PoShMon are:
 For more information, documentation etc. visit https://github.com/HiltonGiesenow/PoShMon as well as the Samples folder within the module itself."
 
 $releaseNotes = "
+0.9.1
+* Fixed a bug crossing hour and day boundaries for Server Time test
+* Fixed a bug with Services on server testing in non-SharePoint environments
+
 0.9.0
 * Added a Server Time test for servers drifting apart
 * Add an 'update' notification for new versions of PoShMon
