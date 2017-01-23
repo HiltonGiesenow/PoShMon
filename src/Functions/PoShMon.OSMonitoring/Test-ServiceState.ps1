@@ -2,9 +2,7 @@ Function Test-ServiceState
 {
     [CmdletBinding()]
     param (
-        [string[]]$ServerNames,
-        [string[]]$Services,
-        [string]$ServiceState = "Running"
+        [hashtable]$PoShMonConfiguration
     )
 
     if ($PoShMonConfiguration.OperatingSystem -eq $null) { throw "'OperatingSystem' configuration not set properly on PoShMonConfiguration parameter." }
