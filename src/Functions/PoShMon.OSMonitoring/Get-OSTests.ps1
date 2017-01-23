@@ -9,7 +9,8 @@ Function Get-OSTests
         "CPULoad",
         "Memory",
         "DriveSpace",
-        "ComputerTime"
+        "ComputerTime",
+        "ServiceState"
     )
 
     return $tests

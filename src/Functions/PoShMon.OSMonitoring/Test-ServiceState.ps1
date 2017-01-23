@@ -7,74 +7,19 @@ Function Test-ServiceState
         [string]$ServiceState = "Running"
     )
 
-    $sectionHeader = "Windows Service State"
-    $NoIssuesFound = $true
-    $outputHeaders = @{ 'DisplayName' = 'Display Name'; 'Name' = 'Name'; 'Status' = 'Status' }
-    $outputValues = @()
+    if ($PoShMonConfiguration.OperatingSystem -eq $null) { throw "'OperatingSystem' configuration not set properly on PoShMonConfiguration parameter." }
+    if ($PoShMonConfiguration.OperatingSystem.WindowsServices.Count -eq 0) { throw "'WindowsServices' configuration not set properly on PoShMonConfiguration.OperatingSystem parameter." }
 
-    Write-Verbose "Getting Windows Service State..."
+    $mainOutput = Get-InitialOutputWithTimer -SectionHeader "Windows Service State" -OutputHeaders ([ordered]@{ 'DisplayName' = 'Display Name'; 'Name' = 'Name'; 'Status' = 'Status' })
 
-    $servicesFound = Get-Service -ComputerName $ServerNames
-
-    foreach ($serverName in $ServerNames) # should we be reporting by server name or by service?
+    foreach ($serverName in $PoShMonConfiguration.General.ServerNames)
     {
-        Write-Verbose "`t Checking $serverName..."
-        
-        $serviceFoundOnServer = $servicesFound | Where MachineName -eq $serverName
+        $groupedoutputItem = Test-ServiceStatePartial -ServerName $serverName -Services $PoShMonConfiguration.OperatingSystem.WindowsServices
 
-        foreach ($service in $Services)
-        {
-            Write-Verbose "`t`t Checking '$service'..."
+        $mainOutput.NoIssuesFound = $mainOutput.NoIssuesFound -and $groupedoutputItem.NoIssuesFound
 
-            $itemOutputValues = @()
-
-            $serviceFound = $serviceFoundOnServer | Where Name -eq $service
-
-            if ($serviceFound -eq $null)
-            {
-                $NoIssuesFound = $false
-                $highlight += "Status"
-
-                Write-Host "Service '$service' on $serverName Not Found!" -ForegroundColor Red
-
-                $outputItem = @{
-                    'DisplayName' = $service;
-                    'Name' = "[Not Found]";
-                    'State' = "[Not Found]";
-                }
-            } else {
-                if ($ServiceState -ne $serviceFound.Status)
-                {
-                    $NoIssuesFound = $false
-                    $highlight += "Status"
-
-                    Write-Host "$service' on $serverName state incorrect - expected $ServiceState" -ForegroundColor Red
-                } else {
-                    Write-Verbose "`t`t'$service' found and in correct state"
-                }
-
-                $outputItem = @{
-                    'DisplayName' = $service;
-                    'Name' = $serviceFound.Name;
-                    'State' = $serviceFound.State;
-                }
-            }
-
-            $itemOutputValues += $outputItem
-        }
-
-        $groupedoutputItem = @{
-                'GroupName' = $serverName
-                'GroupOutputValues' = $itemOutputValues
-            }
-
-        $outputValues += $groupedoutputItem
+        $mainOutput.OutputValues += $groupedoutputItem
     }
 
-    return @{
-        "SectionHeader" = $sectionHeader;
-        "NoIssuesFound" = $NoIssuesFound;
-        "OutputHeaders" = $outputHeaders;
-        "OutputValues" = $outputValues
-        }
+    return (Complete-TimedOutput $mainOutput)
 }

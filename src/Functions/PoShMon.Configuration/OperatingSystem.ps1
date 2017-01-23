@@ -7,7 +7,7 @@ Function OperatingSystem
         [double]$CPULoadThresholdPercent = 90,
         [double]$FreeMemoryThresholdPercent = 10,
         [double]$DriveSpaceThreshold = 10, #This is GB
-        [string[]]$SpecialWindowsServices = $null,
+        [string[]]$WindowsServices = $null,
         [int]$AllowedMinutesVarianceBetweenServerTimes = 5
     )
 
@@ -24,7 +24,7 @@ Function OperatingSystem
             CPULoadThresholdPercent = $CPULoadThresholdPercent
             FreeMemoryThresholdPercent = $FreeMemoryThresholdPercent
             DriveSpaceThreshold = $DriveSpaceThreshold
-            SpecialWindowsServices = $SpecialWindowsServices
+            WindowsServices = $WindowsServices
             AllowedMinutesVarianceBetweenServerTimes = $AllowedMinutesVarianceBetweenServerTimes
         }
 }

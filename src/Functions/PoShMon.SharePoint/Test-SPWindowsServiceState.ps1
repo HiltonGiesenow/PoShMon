@@ -15,8 +15,8 @@ Function Test-SPWindowsServiceState
 
     $serversWithServices = @{}
     $defaultServiceList = 'IISADMIN','SPAdminV4','SPTimerV4','SPTraceV4','SPWriterV4'
-    if ($PoShMonConfiguration.OperatingSystem.SpecialWindowsServices -ne $null -and $PoShMonConfiguration.OperatingSystem.SpecialWindowsServices.Count -gt 0)
-        { $defaultServiceList += $PoShMonConfiguration.OperatingSystem.SpecialWindowsServices }
+    if ($PoShMonConfiguration.OperatingSystem.WindowsServices -ne $null -and $PoShMonConfiguration.OperatingSystem.WindowsServices.Count -gt 0)
+        { $defaultServiceList += $PoShMonConfiguration.OperatingSystem.WindowsServices }
 
     foreach ($spServiceInstance in $spServiceInstances)
     {
@@ -49,5 +49,5 @@ Function Test-SPWindowsServiceState
     return (Complete-TimedOutput $mainOutput)
 }
 <#
-    $output = Test-SPWindowsServiceState -RemoteSession $remoteSession -SpecialWindowsServices $SpecialWindowsServices
+    $output = Test-SPWindowsServiceState -RemoteSession $remoteSession -WindowsServices $WindowsServices
 #>
