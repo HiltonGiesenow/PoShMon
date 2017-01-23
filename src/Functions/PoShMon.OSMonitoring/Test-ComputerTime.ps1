@@ -9,22 +9,32 @@ Function Test-ComputerTime
 
     $mainOutput = Get-InitialOutputWithTimer -SectionHeader "Server Clock Review" -OutputHeaders ([ordered]@{ 'ServerName' = 'Server Name'; 'CurrentTime' = 'Current Time' })
 
-    $results = Get-WmiObject win32_localtime -Computername $PoShMonConfiguration.General.ServerNames
-
-    # this is rough, poor measure - it ONLY checks absolute minutes across the servers (and ignores time zones etc.) but it's good enough for what I need now...
-    $minutes = [int[]]$Results.Minute
-    if ($minutes.Count -eq 1) { $minutes += (Get-Date).Minute } # if it's just a single server being tested, compare it against the local machine that PoShMon is running on
-    $minutesMeasure = $minutes | Measure-Object -Sum
-    $difference = [Math]::Abs(($minutes[0] * $minutes.Count) - $minutesMeasure.Sum)
+    $results = Get-WmiObject Win32_OperatingSystem -Computername $PoShMonConfiguration.General.ServerNames | `
+                    ForEach {
+                        return [pscustomobject]@{
+                            "PSComputerName" = $_.PSComputerName
+                            "DateTime" = $_.ConvertToDateTime($_.LocalDateTime)
+                        }
+                    } | Sort "DateTime" -Descending
+    
+    # this is a poor measure - it ignores timezones - but it's good enough for what I need now...
+    $difference = [timespan]::new(0)
+    
+    if ($results.Count -gt 1)
+    {
+        for ($i=0;$i -lt $results.count - 1;$i++)
+            { $difference += $results[$i].DateTime.Subtract($results[$i + 1].DateTime) }
+    } else { # if it's just a single server being tested, compare it against the local machine that PoShMon is running on
+        $difference += (Get-Date).Subtract($results[0].DateTime)
+    } 
 
     foreach ($serverResult in $results)
     {
-        $time = Get-Date -Year $serverResult.Year -Month $serverResult.Month -Day $serverResult.Day -Hour $serverResult.Hour -Minute $serverResult.Minute -Second $serverResult.Second
-        Write-Verbose ($serverResult.PSComputerName + ": " + $time.ToShortTimeString())
+        Write-Verbose ($serverResult.PSComputerName + ": " + $serverResult.DateTime.ToShortTimeString())
 
         $highlight = @()
         
-        if ($difference -ge $PoShMonConfiguration.OperatingSystem.AllowedMinutesVarianceBetweenServerTimes)
+        if ($difference.Minutes -ge $PoShMonConfiguration.OperatingSystem.AllowedMinutesVarianceBetweenServerTimes)
         {
             $mainOutput.NoIssuesFound = $false
             $highlight += "CurrentTime"
@@ -32,7 +42,7 @@ Function Test-ComputerTime
 
         $mainOutput.OutputValues += @{
             'ServerName' = $serverResult.PSComputerName
-            'CurrentTime' = $time.ToString()
+            'CurrentTime' = $serverResult.DateTime.ToString()
             'Highlight' = $highlight
         }
     }
