@@ -8,7 +8,8 @@ Function Get-OSTests
         "EventLogs",
         "CPULoad",
         "Memory",
-        "DriveSpace"
+        "DriveSpace",
+        "ComputerTime"
     )
 
     return $tests

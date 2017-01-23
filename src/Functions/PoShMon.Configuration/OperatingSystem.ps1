@@ -7,7 +7,8 @@ Function OperatingSystem
         [double]$CPULoadThresholdPercent = 90,
         [double]$FreeMemoryThresholdPercent = 10,
         [double]$DriveSpaceThreshold = 10, #This is GB
-        [string[]]$SpecialWindowsServices = $null
+        [string[]]$SpecialWindowsServices = $null,
+        [int]$AllowedMinutesVarianceBetweenServerTimes = 5
     )
 
     if ($Script:PoShMon.ConfigurationItems.OperatingSystem -eq $null)
@@ -24,5 +25,6 @@ Function OperatingSystem
             FreeMemoryThresholdPercent = $FreeMemoryThresholdPercent
             DriveSpaceThreshold = $DriveSpaceThreshold
             SpecialWindowsServices = $SpecialWindowsServices
+            AllowedMinutesVarianceBetweenServerTimes = $AllowedMinutesVarianceBetweenServerTimes
         }
 }

@@ -10,6 +10,7 @@
         "CPULoad",
         "Memory",
         "DriveSpace",
+        "ComputerTime",        
         "SPServerStatus",
         "SPWindowsServiceState",
         "SPJobHealth",
