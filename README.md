@@ -94,6 +94,14 @@ Of course there are loads of monitoring systems and tools out there, both paid a
 ---
 
 ## Release Notes
+0.9.0
+* Added a Server Time test for servers drifting apart
+* Add an 'update' notification for new versions of PoShMon
+* Add an 'Update' command to make updating PoShMon easier
+* Add Try..Catch error handling to each Test method
+* Switched to dynamically invoking test methods by name
+* Created a shared 'Core' monitoring function
+
 0.8.3
 * Reduced duplication in Test code for Stopwatch
 * Fixed naming for 'Free Percent' column in Memory Test
@@ -120,12 +128,5 @@ Of course there are loads of monitoring systems and tools out there, both paid a
 0.7.0
 * Added monitoring for server memory (free + total)
 * Removed Credential for Pushbullet, using Header directly instead
-
-0.6.2
-* Fixed ordering of output columns (in email etc.)
-* Removed hard-coded hard drive space threshold
-* Refactored tests to take in 'PoShMonConfiguration' instead of individual parameters
-* Removed an unnecessary function
-* Sorting database output by size (Desc)
 
 See [here](https://github.com/HiltonGiesenow/PoShMon/wiki/Changelog) for full Changelog
