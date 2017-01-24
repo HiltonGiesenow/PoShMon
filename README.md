@@ -94,6 +94,10 @@ Of course there are loads of monitoring systems and tools out there, both paid a
 ---
 
 ## Release Notes
+0.9.2
+* Fixed bug in email output
+* Fixed bug with not terminating Remote sessions correctly
+
 0.9.1
 * Fixed a bug crossing hour and day boundaries for Server Time test
 * Fixed a bug with Services on server testing in non-SharePoint environments
