@@ -16,7 +16,7 @@ $poShMonConfiguration = New-PoShMonConfiguration {
                     -ServerNames 'svr1','svr2'
                 OperatingSystem `
                     -EventLogCodes 'Critical' `
-                    -SpecialWindowsServices 'Foo'
+                    -WindowsServices 'Foo'
                 WebSite `
                     -WebsiteDetails @{ 
                                         "http://mgportal" = "Read our terms"
