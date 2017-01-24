@@ -50,7 +50,7 @@ Describe "Invoke-SPMonitoring" {
             }
         }
 
-        Mock -CommandName Process-Notifications -ModuleName PoShMon -Verifiable -MockWith {
+        Mock -CommandName Initialize-Notifications -ModuleName PoShMon -Verifiable -MockWith {
             Write-Verbose "Final Output Received:"
             $TestOutputValues | % { Write-Verbose "`t$($_.SectionHeader)" }
             return

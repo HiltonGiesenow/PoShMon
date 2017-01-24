@@ -1,4 +1,4 @@
-Function Process-Notifications
+Function Initialize-Notifications
 {
     [CmdletBinding()]
     Param(

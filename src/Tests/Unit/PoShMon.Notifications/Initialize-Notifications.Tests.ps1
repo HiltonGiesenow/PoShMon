@@ -2,7 +2,7 @@ $rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPa
 Remove-Module PoShMon -ErrorAction SilentlyContinue
 Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 
-Describe "Process-Notifications" {
+Describe "Initialize-Notifications" {
     It "Should return a the correct html for given test output" {
 
         <#$poShMonConfiguration = @{
@@ -87,7 +87,7 @@ Describe "Process-Notifications" {
 
         $totalElapsedTime = (Get-Date).Subtract((Get-Date).AddMinutes(-5))
 
-        $actual = Process-Notifications $poShMonConfiguration $testMonitoringOutput $totalElapsedTime -Verbose
+        $actual = Initialize-Notifications $poShMonConfiguration $testMonitoringOutput $totalElapsedTime -Verbose
 
     }
 }

@@ -54,7 +54,7 @@ Describe "Invoke-MonitoringCore" {
             }
         }
 
-        Mock -CommandName Process-Notifications -ModuleName PoShMon -Verifiable -MockWith {
+        Mock -CommandName Initialize-Notifications -ModuleName PoShMon -Verifiable -MockWith {
             Write-Verbose "Final Output Received:"
             $TestOutputValues | % { Write-Verbose "`t$($_.SectionHeader)" }
             return
@@ -89,7 +89,7 @@ Describe "Invoke-MonitoringCore" {
             throw "Fake Exception"
         }
 
-        Mock -CommandName Process-Notifications -ModuleName PoShMon -Verifiable -MockWith {
+        Mock -CommandName Initialize-Notifications -ModuleName PoShMon -Verifiable -MockWith {
             Write-Verbose "Final Output Received:"
             $TestOutputValues | % { Write-Verbose "`t$($_.SectionHeader)" }
             return
@@ -121,7 +121,7 @@ Describe "Invoke-MonitoringCore (New Scope)" {
                         }               
                     }
 
-        Mock -CommandName Process-Notifications -ModuleName PoShMon -Verifiable -MockWith {
+        Mock -CommandName Initialize-Notifications -ModuleName PoShMon -Verifiable -MockWith {
             Write-Verbose "Final Output Received:"
             $TestOutputValues | % { Write-Verbose "`t$($_.SectionHeader)" }
             return

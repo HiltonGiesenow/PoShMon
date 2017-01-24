@@ -38,7 +38,7 @@ Function Invoke-MonitoringCore
         $stopWatch.Stop()
     }
 
-    Process-Notifications -PoShMonConfiguration $PoShMonConfiguration -TestOutputValues $outputValues -TotalElapsedTime $stopWatch.Elapsed
+    Initialize-Notifications -PoShMonConfiguration $PoShMonConfiguration -TestOutputValues $outputValues -TotalElapsedTime $stopWatch.Elapsed
 
     return $outputValues
 }
