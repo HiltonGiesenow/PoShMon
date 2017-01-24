@@ -12,7 +12,8 @@ Function Update-PoShMon
     {
         Write-Host "Latest version already installed, skipping update"
     } else {
-        Remove-Module PoShMon
+        if ((Get-Module PoShMon))
+            { Remove-Module PoShMon }
         Update-Module PoShMon
         Install-Module PoShMon
 
