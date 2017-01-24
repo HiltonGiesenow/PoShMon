@@ -2,8 +2,6 @@ Function Update-PoShMon
 {
     [CmdletBinding()]
     param(
-        [string[]]$SkippedTests = @(),
-        [TimeSpan]$TotalElapsedTime
     )
 
     $currentVersion = Get-Module PoShMon -ListAvailable | Select -First 1 | Sort Version 
