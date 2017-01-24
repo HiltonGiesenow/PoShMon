@@ -2,26 +2,20 @@ $rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPa
 Remove-Module PoShMon -ErrorAction SilentlyContinue
 Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 
-class SPServiceInstanceMock {
+class ServiceInstanceMock {
     [object]$Status
     [object]$Service
     [object]$Server
 
-    SPServiceInstanceMock ([string]$NewServerDisplayName, [string]$NewServiceName, [string]$NewStatusValue) {
+    ServiceInstanceMock ([string]$NewServerDisplayName, [string]$NewServiceName, [string]$NewStatusValue) {
         $this.Server = [pscustomobject]@{DisplayName=$NewServerDisplayName};
         $this.Service = [pscustomobject]@{Name=$NewServiceName};
         $this.Status = [pscustomobject]@{Value=$NewStatusValue};
     }
 }
 
-Describe "Test-SPWindowsServiceState" {
+Describe "Test-ServiceState" {
     It "Should return a matching output structure" {
-
-        Mock -CommandName Invoke-RemoteCommand -ModuleName PoShMon -Verifiable -MockWith {
-            return @(
-                [SPServiceInstanceMock]::new('Server1', 'TheService', 'Online')
-            )
-        }
 
         Mock -CommandName Test-ServiceStatePartial -ModuleName PoShMon -Verifiable -MockWith {
             return @(
@@ -47,10 +41,11 @@ Describe "Test-SPWindowsServiceState" {
         }
 
         $poShMonConfiguration = New-PoShMonConfiguration {
-                                    OperatingSystem
+                                    General -ServerNames "Server1"
+                                    OperatingSystem -WindowsServices "ABC"
                                 }   
 
-        $actual = Test-SPWindowsServiceState $poShMonConfiguration
+        $actual = Test-ServiceState $poShMonConfiguration
 
         $headerKeyCount = 3
 
@@ -61,7 +56,7 @@ Describe "Test-SPWindowsServiceState" {
         $actual.ContainsKey("SectionHeader") | Should Be $true
         $actual.ContainsKey("ElapsedTime") | Should Be $true
         $valuesGroup1 = $actual.OutputValues[0]
-        $valuesGroup1.Keys.Count | Should Be 3
+        $valuesGroup1.Keys.Count | Should Be $headerKeyCount
         $values1 = $valuesGroup1.GroupOutputValues[0]
         $values1.Keys.Count | Should Be ($headerKeyCount + 1)
         $values1.ContainsKey("DisplayName") | Should Be $true
@@ -71,11 +66,44 @@ Describe "Test-SPWindowsServiceState" {
 
     }
 
+    It "Should pass for all running services" {
+
+        Mock -CommandName Test-ServiceStatePartial -ModuleName PoShMon -Verifiable -MockWith {
+            return @(
+                        @{
+                            'GroupName' = $ServerName
+                            'NoIssuesFound' = $true
+                            'GroupOutputValues' = @(
+                                                    @{
+                                                        'DisplayName' = 'Service 2 DisplayName';
+                                                        'Name' = $Services;
+                                                        'Status' = "Started";
+                                                        'Highlight' = @('Status')
+                                                    }
+                                                   )
+                        }
+                    )
+        }
+
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                                    General -ServerNames "Server2"
+                                    OperatingSystem -WindowsServices "ABC"
+                                }
+
+        $actual = Test-ServiceState $poShMonConfiguration
+
+        Assert-VerifiableMocks
+
+        $actual.OutputValues.Count | Should Be 1
+        $actual.OutputValues[0].GroupOutputValues.Count | Should Be 1
+        $actual.OutputValues[0].GroupOutputValues[0].Name | Should Be "ABC"
+    }
+
     It "Should fail for any service in the wrong state" {
     
         Mock -CommandName Invoke-RemoteCommand -ModuleName PoShMon -Verifiable -MockWith {
             return @(
-                [SPServiceInstanceMock]::new('Server1', 'TheService', 'Online')
+                [ServiceInstanceMock]::new('Server1', 'TheService', 'Online')
             )
         }
 
@@ -97,47 +125,11 @@ Describe "Test-SPWindowsServiceState" {
         }
 
         $poShMonConfiguration = New-PoShMonConfiguration {
-                                    OperatingSystem
-                                }   
+                                    General -ServerNames "Server1"
+                                    OperatingSystem -WindowsServices "ABC"
+                                }
 
-        $actual = Test-SPWindowsServiceState $poShMonConfiguration
-
-        $actual.NoIssuesFound | Should Be $false
-    }
-
-    It "Should test for services discovered" {
-    
-        Mock -CommandName Invoke-RemoteCommand -ModuleName PoShMon -Verifiable -MockWith {
-            return @(
-                [SPServiceInstanceMock]::new('Server1', 'TheService', 'Online')
-            )
-        }
-
-        Mock -CommandName Test-ServiceStatePartial -ModuleName PoShMon -Verifiable -MockWith {
-
-            if (!$Services.Contains('TheService')) { throw "Service Not Found" }
-
-            return @(
-                        @{
-                            'GroupName' = $ServerName
-                            'NoIssuesFound' = $false
-                            'GroupOutputValues' = @(
-                                                    @{
-                                                        'DisplayName' = 'Service 2 DisplayName';
-                                                        'Name' = 'Svc2';
-                                                        'Status' = "Stopped";
-                                                        'Highlight' = @('Status')
-                                                    }
-                                                   )
-                        }
-                    )
-        }
-
-        $poShMonConfiguration = New-PoShMonConfiguration {
-                                    OperatingSystem
-                                }   
-
-        $actual = Test-SPWindowsServiceState $poShMonConfiguration
+        $actual = Test-ServiceState $poShMonConfiguration
 
         $actual.NoIssuesFound | Should Be $false
     }

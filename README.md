@@ -94,6 +94,10 @@ Of course there are loads of monitoring systems and tools out there, both paid a
 ---
 
 ## Release Notes
+0.9.1
+* Fixed a bug crossing hour and day boundaries for Server Time test
+* Fixed a bug with Services on server testing in non-SharePoint environments
+
 0.9.0
 * Added a Server Time test for servers drifting apart
 * Add an 'update' notification for new versions of PoShMon
