@@ -16,7 +16,7 @@ Function New-TestOutputEmailBody
 
     if ($output.ContainsKey("Exception"))
     {
-        $emailSection += "<tbody><tr><td>An Exception Occurred</td></tr><tr><td>$($output.Exception.ToString())</td></tr></tbody"
+        $emailSection += "<tbody><tr><td>An Exception Occurred</td></tr><tr><td>$($output.Exception.ToString())</td></tr></tbody>"
     }
     elseif ($output.OutputValues -ne $null -and $output.OutputValues.Count -gt 0 -and `
         $output.OutputValues[0].ContainsKey("GroupName")) #grouped output
