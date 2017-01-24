@@ -7,7 +7,8 @@ Function Invoke-MonitoringCore
         [parameter(Mandatory=$true)]
         [string[]]$TestList,
         [Parameter(HelpMessage="In the case of a Farm product, such as SharePoint, provide a function to call to auto-discover the remaining servers")]
-        [string]$FarmDiscoveryFunctionName = $null
+        [string]$FarmDiscoveryFunctionName = $null,
+        [string[]]$OutputOptimizationList = @()
     )
 
     if ($PoShMonConfiguration.TypeName -ne 'PoShMon.Configuration')
@@ -21,9 +22,14 @@ Function Invoke-MonitoringCore
         if ($FarmDiscoveryFunctionName -ne $null -and $FarmDiscoveryFunctionName -ne '')
             { $PoShMonConfiguration.General.ServerNames = & $FarmDiscoveryFunctionName $PoShMonConfiguration }
 
+        # Perform the actual main monitoring tests
         $outputValues = $TestList | `
                             Remove-SkippedTests -PoShMonConfiguration $PoShMonConfiguration | `
                                 Invoke-Tests -PoShMonConfiguration $PoShMonConfiguration
+
+        # Resolve any output issues with all test output (e.g. High CPU might be explained because of something in another test's output)
+        if ($OutputOptimizationList.Count -gt 0)
+            { $outputValues = & $OutputOptimizationFunctionName $PoShMonConfiguration $outputValues $OutputOptimizationList }
 
     } catch {
         Send-ExceptionNotifications -PoShMonConfiguration $PoShMonConfiguration -Exception $_.Exception
