@@ -1,6 +1,6 @@
 $rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPath ('..\..\..\') -Resolve
 Remove-Module PoShMon -ErrorAction SilentlyContinue
-Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1") -Verbose
+Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 
 class CounterSampleMock {
     [string]$Path
@@ -45,7 +45,7 @@ Describe "Test-CPULoad" {
                         OperatingSystem
                     }
 
-        $actual = Test-CPULoad $poShMonConfiguration -Verbose
+        $actual = Test-CPULoad $poShMonConfiguration
 
         $actual.Keys.Count | Should Be 5
         $actual.ContainsKey("NoIssuesFound") | Should Be $true
@@ -60,6 +60,32 @@ Describe "Test-CPULoad" {
         $values1.ContainsKey("ServerName") | Should Be $true
         $values1.ContainsKey("CPULoad") | Should Be $true
         $values1.ContainsKey("Highlight") | Should Be $true
+    }
+
+    It "Should write the expected Verbose output" {
+    
+        Mock -CommandName Get-Counter -MockWith {
+            $sample1 = [CounterSampleMock]::new("\\Server1\\processor(_total)\% processor time", 12.345)
+            $sample2 = [CounterSampleMock]::new("\\Server2\\processor(_total)\% processor time", 56.789)
+            $samples = @($sample1, $sample2)
+            $timestamp = Get-Date
+            return [CounterResultsMock]::new($timestamp, $samples)
+        }
+
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                        General -ServerNames '.'
+                        OperatingSystem
+                    }
+
+        $actual = Test-CPULoad $poShMonConfiguration -Verbose
+        $output = $($actual = Test-CPULoad $poShMonConfiguration -Verbose) 4>&1
+
+        $output.Count | Should Be 4
+        $output[0].ToString() | Should Be "Initiating 'Server CPU Load Review' Test..."
+        $output[1].ToString() | Should Be "`tSERVER1: 12%"
+        $output[2].ToString() | Should Be "`tSERVER2: 57%"
+        $output[3].ToString() | Should Be "Complete 'Server CPU Load Review' Test"
+
     }
 
     It "Should not warn on CPU below threshold" {

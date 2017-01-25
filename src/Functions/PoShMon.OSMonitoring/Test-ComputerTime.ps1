@@ -30,13 +30,14 @@ Function Test-ComputerTime
 
     foreach ($serverResult in $results)
     {
-        Write-Verbose ($serverResult.PSComputerName + ": " + $serverResult.DateTime.ToShortTimeString())
+        Write-Verbose ("`t" + $serverResult.PSComputerName + ": " + $serverResult.DateTime.ToShortTimeString())
 
         $highlight = @()
         
         if ($difference.Minutes -ge $PoShMonConfiguration.OperatingSystem.AllowedMinutesVarianceBetweenServerTimes)
         {
             $mainOutput.NoIssuesFound = $false
+            Write-Warning "`tDifference ($($difference.Minutes)) is above variance threshold minutes ($($PoShMonConfiguration.OperatingSystem.AllowedMinutesVarianceBetweenServerTimes))"
             $highlight += "CurrentTime"
         }
 

@@ -17,7 +17,8 @@ Function Test-CPULoad
         $cpuLoad = $counterResult.CookedValue
         $highlight = @()
 
-        Write-Verbose "` $serverName : $cpuLoad"
+        $cpuPercentValue = $(($cpuLoad / 100).ToString("00%"))
+        Write-Verbose "`t$($serverName): $cpuPercentValue"
 
         if ($cpuLoad -gt $PoShMonConfiguration.OperatingSystem.CPULoadThresholdPercent)
         {
@@ -27,7 +28,7 @@ Function Test-CPULoad
 
         $mainOutput.OutputValues += @{
             'ServerName' = $serverName
-            'CPULoad' = ($cpuLoad / 100).ToString("00%")
+            'CPULoad' = $cpuPercentValue
             'Highlight' = $highlight
         }
     }

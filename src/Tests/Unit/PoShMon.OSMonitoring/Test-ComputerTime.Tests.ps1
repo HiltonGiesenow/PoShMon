@@ -1,6 +1,6 @@
 $rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPath ('..\..\..\') -Resolve
 Remove-Module PoShMon -ErrorAction SilentlyContinue
-Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1") -Verbose
+Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 
 class ServerTimeMock {
     [string]$PSComputerName
@@ -55,6 +55,27 @@ Describe "Test-ComputerTime" {
         $values1.Keys.Count | Should Be 3
     }
 
+    It "Should write the expected Verbose output" {
+    
+        Mock -CommandName Get-WmiObject -MockWith {
+            return [ServerTimeMock]::new('Server1', (Get-Date -Hour 10 -Minute 15))
+        }
+
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                        General -ServerNames 'Server1'
+                        OperatingSystem
+                    }
+        
+        $actual = Test-ComputerTime $poShMonConfiguration -Verbose
+        $output = $($actual = Test-ComputerTime $poShMonConfiguration -Verbose) 4>&1
+
+        $output.Count | Should Be 3
+        $output[0].ToString() | Should Be "Initiating 'Server Clock Review' Test..."
+        $output[1].ToString() | Should Be "`tServer1: 10:15 AM"
+        $output[2].ToString() | Should Be "Complete 'Server Clock Review' Test"
+
+    }
+
     It "Should warn on different server time (to local PoShMon machine)" {
 
         Mock -CommandName Get-WmiObject -MockWith {
@@ -103,7 +124,7 @@ Describe "Test-ComputerTime" {
         Mock -CommandName Get-WmiObject -MockWith {
             return @(
                 [ServerTimeMock]::new('Server1', (Get-Date -Hour 10 -Minute 15))
-                [ServerTimeMock]::new('Server2', (Get-Date -Hour 10 -Minute 15).AddMinutes(-1))
+                [ServerTimeMock]::new('Server2', (Get-Date -Hour 10 -Minute 15).AddSeconds(-30))
                 [ServerTimeMock]::new('Server3', (Get-Date -Hour 10 -Minute 15))
             )
         }
@@ -228,4 +249,32 @@ Describe "Test-ComputerTime" {
 
         $actual.NoIssuesFound | Should Be $true
     }
+}
+
+Describe "Test-ComputerTime 2" {
+    It "Should write the expected Warning output" {
+    
+        Mock -CommandName Get-WmiObject -MockWith {
+            return @(
+                [ServerTimeMock]::new('Server1', (Get-Date -Year 2017 -Month 1 -Day 1 -Hour 10 -Minute 15).AddMinutes(-6))
+            )
+        }
+
+        Mock -CommandName Get-Date -MockWith {
+            Return [datetime]::new(2017, 1, 1, 10, 15, 0)
+        }
+
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                        General -ServerNames 'Server1'
+                        OperatingSystem
+                    }
+        
+        $actual = Test-ComputerTime $poShMonConfiguration
+        $output = $($actual = Test-ComputerTime $poShMonConfiguration) 3>&1
+
+        $output.Count | Should Be 1
+        $output[0].ToString() | Should Be "`tDifference (6) is above variance threshold minutes (1)"
+
+    }
+
 }

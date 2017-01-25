@@ -11,5 +11,7 @@ Function Complete-TimedOutput
 
     $TestOutputValues.Remove("StopWatch")
 
+    Write-Verbose "Complete '$($TestOutputValues.SectionHeader)' Test"
+
     return $TestOutputValues
 }
