@@ -37,8 +37,8 @@ Function Test-ComputerTime
         if ($difference.Minutes -ge $PoShMonConfiguration.OperatingSystem.AllowedMinutesVarianceBetweenServerTimes)
         {
             $mainOutput.NoIssuesFound = $false
-            Write-Warning "`tDifference ($($difference.Minutes)) is above variance threshold minutes ($($PoShMonConfiguration.OperatingSystem.AllowedMinutesVarianceBetweenServerTimes))"
             $highlight += "CurrentTime"
+            Write-Warning "`tDifference ($($difference.Minutes)) is above variance threshold minutes ($($PoShMonConfiguration.OperatingSystem.AllowedMinutesVarianceBetweenServerTimes))"
         }
 
         $mainOutput.OutputValues += @{
