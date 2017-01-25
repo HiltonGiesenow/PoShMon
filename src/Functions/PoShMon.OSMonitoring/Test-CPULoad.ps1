@@ -24,6 +24,7 @@ Function Test-CPULoad
         {
             $mainOutput.NoIssuesFound = $false
             $highlight += "CPULoad"
+            Write-Warning "`tCPU Load ($cpuPercentValue) is above variance threshold ($($PoShMonConfiguration.OperatingSystem.CPULoadThresholdPercent))"
         }
 
         $mainOutput.OutputValues += @{

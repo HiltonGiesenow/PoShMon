@@ -85,7 +85,28 @@ Describe "Test-CPULoad" {
         $output[1].ToString() | Should Be "`tSERVER1: 12%"
         $output[2].ToString() | Should Be "`tSERVER2: 57%"
         $output[3].ToString() | Should Be "Complete 'Server CPU Load Review' Test"
+    }
 
+    It "Should write the expected Warning output" {
+    
+        Mock -CommandName Get-Counter -MockWith {
+            $sample1 = [CounterSampleMock]::new("\\Server1\\processor(_total)\% processor time", 12.345)
+            $sample2 = [CounterSampleMock]::new("\\Server1\\processor(_total)\% processor time", 97.789)
+            $samples = @($sample1, $sample2)
+            $timestamp = Get-Date
+            return [CounterResultsMock]::new($timestamp, $samples)
+        }
+
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                        General -ServerNames '.'
+                        OperatingSystem
+                    }
+
+        $actual = Test-CPULoad $poShMonConfiguration -Verbose
+        $output = $($actual = Test-CPULoad $poShMonConfiguration -Verbose) 3>&1
+
+        $output.Count | Should Be 1
+        $output[0].ToString() | Should Be "`tCPU Load (98%) is above variance threshold (90)"
     }
 
     It "Should not warn on CPU below threshold" {

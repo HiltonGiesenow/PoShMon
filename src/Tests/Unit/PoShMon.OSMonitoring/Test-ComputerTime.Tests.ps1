@@ -274,7 +274,6 @@ Describe "Test-ComputerTime 2" {
 
         $output.Count | Should Be 1
         $output[0].ToString() | Should Be "`tDifference (6) is above variance threshold minutes (1)"
-
     }
 
 }
