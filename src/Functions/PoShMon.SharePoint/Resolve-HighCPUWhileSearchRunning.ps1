@@ -7,4 +7,42 @@ Function Resolve-HighCPUWhileSearchRunning
     )
 
     Write-Verbose "`tResolving High CPU While Search is running"
+
+    $highCpuOutputValues = $TestOutputValues | Where { $_.SectionHeader -EQ "Server CPU Load Review" -and $_.NoIssuesFound -eq $false }
+
+    if ($highCpuOutputValues.Count -gt 0) # CPU usage is high, let's see why
+    {
+        $remoteComponents = Invoke-RemoteCommand -PoShMonConfiguration $PoShMonConfiguration -ScriptBlock {
+            $contentSources = Get-SPEnterpriseSearchServiceApplication | Get-SPEnterpriseSearchCrawlContentSource | Where CrawlState -Like "*crawl*"
+            $componentTopology = Get-SPEnterpriseSearchComponent -SearchTopology $ssa.ActiveTopology | Select Name,ServerName
+            
+            return @{
+                "ContentSources" = $contentSources;
+                "ComponentTopology" = $componentTopology
+            }
+        }
+
+        if ($remoteComponents.contentSources.Count -gt 0) #there's at least one content source currently crawling
+        {
+            $crawlServers = $remoteComponents.componentTopology | Where Name -NotLike 'QueryProcessing*' | Select -ExpandProperty ServerName
+            
+            $highCpuServers = $highCpuOutputValues.OutputValues | Where { $_.Highlight.Count -gt 0 }
+
+            foreach ($highCpuServer in $highCpuServers)
+            {
+                if ($crawlServers.Contains($highCpuServer.ServerName))
+                    { $highCpuServer.Highlight = @() }
+            }
+        }
+        else # It's not what we thought - a Search crawl running, carry on as usual
+        {
+            return
+        }
+    }
+
+    $highCpuServers = $highCpuOutputValues.OutputValues | Where { $_.Highlight.Count -gt 0 }
+    if ($highCpuServers.Count -eq 0 -and $highCpuOutputValues.NoIssuesFound -eq $false)
+       { $highCpuOutputValues.NoIssuesFound = $true } 
+
+    return $TestOutputValues
 }

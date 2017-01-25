@@ -30,7 +30,7 @@ Function Invoke-MonitoringCore
 
         # Resolve any output issues with all test output (e.g. High CPU might be explained because of something in another test's output)
         if ($OutputOptimizationList.Count -gt 0)
-            { $outputValues = & $OutputOptimizationFunctionName $PoShMonConfiguration $outputValues $OutputOptimizationList }
+            { $outputValues = Optimize-Output $PoShMonConfiguration $outputValues $OutputOptimizationList }
 
     } catch {
         Send-ExceptionNotifications -PoShMonConfiguration $PoShMonConfiguration -Exception $_.Exception

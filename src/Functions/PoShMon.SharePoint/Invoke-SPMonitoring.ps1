@@ -6,7 +6,11 @@ Function Invoke-SPMonitoring
         [hashtable]$PoShMonConfiguration
     )
 
-    $outputValues = Invoke-MonitoringCore -PoShMonConfiguration $PoShMonConfiguration -TestList (Get-SPTests) -FarmDiscoveryFunctionName 'Get-ServersInSPFarm'
+    $outputValues = Invoke-MonitoringCore `
+                        -PoShMonConfiguration $PoShMonConfiguration `
+                        -TestList (Get-SPTests) `
+                        -FarmDiscoveryFunctionName 'Get-ServersInSPFarm' `
+                        -OutputOptimizationList (Get-SPResolutions)
 
     return $outputValues
 }
