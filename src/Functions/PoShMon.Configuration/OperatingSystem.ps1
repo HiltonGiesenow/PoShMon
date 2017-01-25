@@ -8,7 +8,7 @@ Function OperatingSystem
         [double]$FreeMemoryThresholdPercent = 10,
         [double]$DriveSpaceThreshold = 10, #This is GB
         [string[]]$WindowsServices = $null,
-        [int]$AllowedMinutesVarianceBetweenServerTimes = 2
+        [int]$AllowedMinutesVarianceBetweenServerTimes = 1
     )
 
     if ($Script:PoShMon.ConfigurationItems.OperatingSystem -eq $null)
