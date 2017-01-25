@@ -13,8 +13,9 @@ Function Invoke-MonitoringCore
     if ($PoShMonConfiguration.TypeName -ne 'PoShMon.Configuration')
         { throw "PoShMonConfiguration is not of the correct type - please use New-PoShMonConfiguration to create it" }
 
+    Compare-SkippedTestsToActual $PoShMonConfiguration $TestList
+
     $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
-    
 
     try {
         # Auto-Discover Servers
