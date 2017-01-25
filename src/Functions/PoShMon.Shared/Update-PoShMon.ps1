@@ -2,8 +2,6 @@ Function Update-PoShMon
 {
     [CmdletBinding()]
     param(
-        [string[]]$SkippedTests = @(),
-        [TimeSpan]$TotalElapsedTime
     )
 
     $currentVersion = Get-Module PoShMon -ListAvailable | Select -First 1 | Sort Version 
@@ -14,7 +12,8 @@ Function Update-PoShMon
     {
         Write-Host "Latest version already installed, skipping update"
     } else {
-        Remove-Module PoShMon
+        if ((Get-Module PoShMon))
+            { Remove-Module PoShMon }
         Update-Module PoShMon
         Install-Module PoShMon
 
