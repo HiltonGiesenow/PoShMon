@@ -102,8 +102,7 @@ Describe "Test-CPULoad" {
                         OperatingSystem
                     }
 
-        $actual = Test-CPULoad $poShMonConfiguration -Verbose
-        $output = $($actual = Test-CPULoad $poShMonConfiguration -Verbose) 3>&1
+        $output = $($actual = Test-CPULoad $poShMonConfiguration) 3>&1
 
         $output.Count | Should Be 1
         $output[0].ToString() | Should Be "`tCPU Load (98%) is above variance threshold (90)"

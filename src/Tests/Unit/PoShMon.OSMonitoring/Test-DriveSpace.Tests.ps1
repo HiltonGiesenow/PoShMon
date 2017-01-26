@@ -61,6 +61,45 @@ Describe "Test-DriveSpace" {
         $values1.ContainsKey("Highlight") | Should Be $true
     }
 
+    It "Should write the expected Verbose output" {
+    
+        Mock -CommandName Get-WmiObject -MockWith {
+            return [DiskMock]::new('C:', 3, "", [UInt64]50GB, [UInt64]15GB, "MyCDrive")
+        }
+
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                        General -ServerNames 'localhost'
+                        OperatingSystem
+                    }
+
+        $actual = Test-DriveSpace $poShMonConfiguration -Verbose
+        $output = $($actual = Test-DriveSpace $poShMonConfiguration -Verbose) 4>&1
+
+        $output.Count | Should Be 4
+        $output[0].ToString() | Should Be "Initiating 'Harddrive Space Review' Test..."
+        $output[1].ToString() | Should Be "`tlocalhost"
+        $output[2].ToString() | Should Be "`t`tC: : 50.00 : 15.00"
+        $output[3].ToString() | Should Be "Complete 'Harddrive Space Review' Test"
+    }
+
+    It "Should write the expected Warning output" {
+    
+        Mock -CommandName Get-WmiObject -MockWith {
+            return [DiskMock]::new('C:', 3, "", [UInt64]50GB, [UInt64]5GB, "MyCDrive")
+        }
+
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                        General -ServerNames 'Server1'
+                        OperatingSystem
+                    }
+
+        $actual = Test-DriveSpace $poShMonConfiguration -Verbose
+        $output = $($actual = Test-DriveSpace $poShMonConfiguration) 3>&1
+
+        $output.Count | Should Be 1
+        $output[0].ToString() | Should Be "`t`tFree drive Space (5) is below variance threshold (10)"
+    }
+
     It "Should not warn on space above threshold" {
 
         Mock -CommandName Get-WmiObject -MockWith {
@@ -80,12 +119,6 @@ Describe "Test-DriveSpace" {
     }
 
     It "Should warn on space below threshold" {
-        
-        $expected = @{
-            "NoIssuesFound" = $true;
-            "OutputHeaders" = @{ 'DriveLetter' = 'Drive Letter'; 'TotalSpace' = 'Total Space (GB)'; 'FreeSpace' = 'Free Space (GB)' };
-            "OutputValues" = @()
-            }
 
         Mock -CommandName Get-WmiObject -MockWith {
             return [DiskMock]::new('C:', 3, "", [UInt64]50GB, [UInt64]5GB, "MyCDrive")

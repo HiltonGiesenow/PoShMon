@@ -76,27 +76,6 @@ Describe "Test-ComputerTime" {
 
     }
 
-    It "Should warn on different server time (to local PoShMon machine)" {
-
-        Mock -CommandName Get-WmiObject -MockWith {
-            return @(
-                [ServerTimeMock]::new('Server1', (Get-Date -Hour 10 -Minute 15).AddMinutes(-6))
-            )
-        }
-
-        $poShMonConfiguration = New-PoShMonConfiguration {
-                        General -ServerNames 'Server1'
-                        OperatingSystem
-                    }
-
-        $actual = Test-ComputerTime $poShMonConfiguration
-
-        $actual.NoIssuesFound | Should Be $false
-
-        $actual.OutputValues.Highlight.Count | Should Be 1
-        $actual.OutputValues.Highlight | Should Be "CurrentTime"
-    }
-
     It "Should not warn on matching server times" {
 
         Mock -CommandName Get-WmiObject -MockWith {
@@ -269,11 +248,34 @@ Describe "Test-ComputerTime 2" {
                         OperatingSystem
                     }
         
-        $actual = Test-ComputerTime $poShMonConfiguration
         $output = $($actual = Test-ComputerTime $poShMonConfiguration) 3>&1
 
         $output.Count | Should Be 1
         $output[0].ToString() | Should Be "`tDifference (6) is above variance threshold minutes (1)"
     }
 
+    It "Should warn on different server time (to local PoShMon machine)" {
+
+        Mock -CommandName Get-WmiObject -MockWith {
+            return @(
+                [ServerTimeMock]::new('Server1', (Get-Date -Year 2017 -Month 1 -Day 1 -Hour 10 -Minute 15).AddMinutes(-6))
+            )
+        }
+
+        Mock -CommandName Get-Date -MockWith {
+            Return [datetime]::new(2017, 1, 1, 10, 15, 0)
+        }
+
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                        General -ServerNames 'Server1'
+                        OperatingSystem
+                    }
+
+        $actual = Test-ComputerTime $poShMonConfiguration
+
+        $actual.NoIssuesFound | Should Be $false
+
+        $actual.OutputValues.Highlight.Count | Should Be 1
+        $actual.OutputValues.Highlight | Should Be "CurrentTime"
+    }
 }

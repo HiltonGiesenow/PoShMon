@@ -11,7 +11,7 @@ Function Test-DriveSpace
 
     foreach ($serverName in $PoShMonConfiguration.General.ServerNames)
     {
-        Write-Verbose $serverName
+        Write-Verbose "`t$serverName"
 
         $itemOutputValues = @()
     
@@ -23,13 +23,14 @@ Function Test-DriveSpace
             $freeSpace = $drive.FreeSpace/1GB
             $highlight = @()
 
+            Write-Verbose ("`t`t" + $drive.DeviceID + " : " + $totalSpace.ToString(".00") + " : " + $freeSpace.ToString(".00"))
+
             if ($freeSpace -lt $PoShMonConfiguration.OperatingSystem.DriveSpaceThreshold)
             {
                 $mainOutput.NoIssuesFound = $false
                 $highlight += "FreeSpace"
+                Write-Warning "`t`tFree drive Space ($freeSpace) is below variance threshold ($($PoShMonConfiguration.OperatingSystem.DriveSpaceThreshold))"
             }
-
-            Write-Verbose ("`t" + $drive.DeviceID + " : " + $totalSpace.ToString(".00") + " : " + $freeSpace.ToString(".00"))
 
             $outputItem = @{
                 'DriveLetter' = $drive.DeviceID;
