@@ -32,14 +32,14 @@ Function Test-DriveSpace
                 {
                     $mainOutput.NoIssuesFound = $false
                     $highlight += "FreeSpace"
-                    Write-Warning "`t`tFree drive Space ($freeSpacePercent%) is below variance threshold ($($PoShMonConfiguration.OperatingSystem.DriveSpaceThresholdPercent)%)"
+                    Write-Warning "`t`tFree drive Space ($("{0:N0}" -f $freeSpacePercent)%) is below variance threshold ($($PoShMonConfiguration.OperatingSystem.DriveSpaceThresholdPercent)%)"
                 }
             }
             elseif ($freeSpace -lt $PoShMonConfiguration.OperatingSystem.DriveSpaceThreshold)
             {
                 $mainOutput.NoIssuesFound = $false
                 $highlight += "FreeSpace"
-                Write-Warning "`t`tFree drive Space ($freeSpace) is below variance threshold ($($PoShMonConfiguration.OperatingSystem.DriveSpaceThreshold))"
+                Write-Warning "`t`tFree drive Space ($($freeSpace.ToString(".00"))) is below variance threshold ($($PoShMonConfiguration.OperatingSystem.DriveSpaceThreshold))"
             }
 
             $outputItem = @{

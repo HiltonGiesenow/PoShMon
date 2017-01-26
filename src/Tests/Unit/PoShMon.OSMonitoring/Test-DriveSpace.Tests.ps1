@@ -69,7 +69,7 @@ Describe "Test-DriveSpace" {
 
         $poShMonConfiguration = New-PoShMonConfiguration {
                         General -ServerNames 'localhost'
-                        OperatingSystem -DriveSpaceThreshold 0 # zero will trigger the default, 10 (GB)
+                        OperatingSystem # zero will trigger the default, 10 (GB)
                     }
 
         $actual = Test-DriveSpace $poShMonConfiguration -Verbose
@@ -85,7 +85,7 @@ Describe "Test-DriveSpace" {
     It "Should write the expected Warning output (fixed)" {
     
         Mock -CommandName Get-WmiObject -MockWith {
-            return [DiskMock]::new('C:', 3, "", [UInt64]50GB, [UInt64]5GB, "MyCDrive")
+            return [DiskMock]::new('C:', 3, "", [UInt64]50GB, [UInt64]5.143GB, "MyCDrive")
         }
 
         $poShMonConfiguration = New-PoShMonConfiguration {
@@ -97,13 +97,13 @@ Describe "Test-DriveSpace" {
         $output = $($actual = Test-DriveSpace $poShMonConfiguration) 3>&1
 
         $output.Count | Should Be 1
-        $output[0].ToString() | Should Be "`t`tFree drive Space (5) is below variance threshold (10)"
+        $output[0].ToString() | Should Be "`t`tFree drive Space (5.14) is below variance threshold (10)"
     }
 
     It "Should write the expected Warning output (percent)" {
     
         Mock -CommandName Get-WmiObject -MockWith {
-            return [DiskMock]::new('C:', 3, "", [UInt64]50GB, [UInt64]5GB, "MyCDrive")
+            return [DiskMock]::new('C:', 3, "", [UInt64]50GB, [UInt64]5.945GB, "MyCDrive")
         }
 
         $poShMonConfiguration = New-PoShMonConfiguration {
@@ -115,7 +115,7 @@ Describe "Test-DriveSpace" {
         $output = $($actual = Test-DriveSpace $poShMonConfiguration) 3>&1
 
         $output.Count | Should Be 1
-        $output[0].ToString() | Should Be "`t`tFree drive Space (90%) is below variance threshold (95%)"
+        $output[0].ToString() | Should Be "`t`tFree drive Space (88%) is below variance threshold (95%)"
     }
     It "Should not warn on space above threshold" {
 
