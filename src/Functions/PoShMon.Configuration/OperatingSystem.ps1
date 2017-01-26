@@ -1,6 +1,6 @@
 Function OperatingSystem
 {
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName="All")]
     param(
         [string[]]$EventLogCodes = 'Critical',
         [hashtable]$EventIDIgnoreList = @{},
@@ -21,8 +21,8 @@ Function OperatingSystem
     }
 
     if ($DriveSpaceThresholdPercent -gt 99) { throw "DriveSpaceThresholdPercent too high" }    
-    if ($DriveSpaceThresholdPercent -lt 1 -and $DriveSpaceThreshold -lt 1)  {throw "DriveSpaceThresholdPercent too low" }    
-    if ($DriveSpaceThreshold -lt 1)  {throw "DriveSpaceThreshold too low" }    
+    if ($DriveSpaceThresholdPercent -lt 1 -and $DriveSpaceThreshold -lt 0)  {throw "DriveSpaceThresholdPercent too low" }    
+    if ($DriveSpaceThreshold -lt 0)  {throw "DriveSpaceThreshold cannot be below zero" }     
 
     if ($DriveSpaceThreshold -eq 0 -and $DriveSpaceThresholdPercent -eq 0)
         { $DriveSpaceThreshold = 10 } #GB
