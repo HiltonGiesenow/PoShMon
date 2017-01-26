@@ -13,8 +13,11 @@ Function Resolve-HighCPUWhileSearchRunning
     if ($highCpuOutputValues.Count -gt 0) # CPU usage is high, let's see why
     {
         $remoteComponents = Invoke-RemoteCommand -PoShMonConfiguration $PoShMonConfiguration -ScriptBlock {
+            
             $contentSources = Get-SPEnterpriseSearchServiceApplication | Get-SPEnterpriseSearchCrawlContentSource | Where CrawlState -Like "*crawl*"
-            $componentTopology = Get-SPEnterpriseSearchComponent -SearchTopology $ssa.ActiveTopology | Select Name,ServerName
+            
+            $ssa = Get-SPEnterpriseSearchServiceApplication
+            $componentTopology = Get-SPEnterpriseSearchComponent -SearchTopology $ssa.ActiveTopology | Select Name, ServerName
             
             return @{
                 "ContentSources" = $contentSources;
@@ -22,7 +25,7 @@ Function Resolve-HighCPUWhileSearchRunning
             }
         }
 
-        if ($remoteComponents.contentSources.Count -gt 0) #there's at least one content source currently crawling
+        if ($remoteComponents.contentSources.Name -ne "" -or $remoteComponents.contentSources.Count -gt 0) #there's at least one content source currently crawling
         {
             $crawlServers = $remoteComponents.componentTopology | Where Name -NotLike 'QueryProcessing*' | Select -ExpandProperty ServerName
             
