@@ -13,21 +13,20 @@ Function Test-Memory
 
     foreach ($serverResult in $results)
     {
-        Write-Verbose $serverResult.PSComputerName
-
         $freeMemoryPercent = $serverResult.FreePhysicalMemory / $serverResult.TotalVisibleMemorySize * 100
         $highlight = @()
+
+        $totalSpace = $serverResult.TotalVisibleMemorySize/1MB
+        $freeSpace = $serverResult.FreePhysicalMemory/1MB
+
+        Write-Verbose ("`t" + $serverResult.PSComputerName + " : " + $totalSpace.ToString(".00") + " : " + $freeSpace.ToString(".00"))
 
         if ($freeMemoryPercent -lt $PoShMonConfiguration.OperatingSystem.FreeMemoryThresholdPercent)
         {
             $mainOutput.NoIssuesFound = $false
             $highlight += "FreeMemory"
+            Write-Warning "`t`tFree memory ($($freeMemoryPercent.ToString("0") + "%")) is below variance threshold ($($PoShMonConfiguration.OperatingSystem.FreeMemoryThresholdPercent))"
         }
-
-        $totalSpace = $serverResult.TotalVisibleMemorySize/1MB
-        $freeSpace = $serverResult.FreePhysicalMemory/1MB
-
-        Write-Verbose ("`t" + $totalSpace.ToString(".00") + " : " + $freeSpace.ToString(".00"))
 
         $mainOutput.OutputValues += @{
             'ServerName' = $serverResult.PSComputerName

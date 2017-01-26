@@ -28,7 +28,7 @@ Function Test-SPJobHealth
 
         foreach ($jobHistoryEntry in $jobHistoryEntries)
         {
-            Write-Verbose ($jobHistoryEntry.JobDefinitionTitle + " at " + $jobHistoryEntry.EndTime + " on " + $jobHistoryEntry.ServerName + " for " + $jobHistoryEntry.WebApplicationName + " : " + $jobHistoryEntry.ErrorMessage)
+            Write-Warning ("`t" + $jobHistoryEntry.JobDefinitionTitle + " at " + $jobHistoryEntry.EndTime + " on " + $jobHistoryEntry.ServerName + " for " + $jobHistoryEntry.WebApplicationName + " : " + $jobHistoryEntry.ErrorMessage)
             
             $mainOutput.OutputValues += @{
                 'JobDefinitionTitle' = $jobHistoryEntry.JobDefinitionTitle;

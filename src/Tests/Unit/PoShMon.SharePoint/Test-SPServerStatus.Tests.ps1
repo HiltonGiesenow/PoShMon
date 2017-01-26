@@ -48,6 +48,48 @@ Describe "Test-SPServerStatus" {
         $values1.ContainsKey("Highlight") | Should Be $true
     }
 
+    It "Should write the expected Verbose output" {
+    
+        Mock -CommandName Get-SPServerForRemoteServer -ModuleName PoShMon -MockWith {
+            return [SPServerMock]::new($ServerName, 'Online', $false, 'Application')
+        }
+
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                                    General -ServerNames 'Server1','Server2'
+                                }
+
+        $actual = Test-SPServerStatus $poShMonConfiguration -Verbose
+        $output = $($actual = Test-SPServerStatus $poShMonConfiguration -Verbose) 4>&1
+
+        $output.Count | Should Be 4
+        $output[0].ToString() | Should Be "Initiating 'Farm Server Status' Test..."
+        $output[1].ToString() | Should Be "`tServer1 : Online : False"
+        $output[2].ToString() | Should Be "`tServer2 : Online : False"
+        $output[3].ToString() | Should Be "Complete 'Farm Server Status' Test, Issues Found: No"
+    }
+
+    It "Should write the expected Warning output" {
+    
+        Mock -CommandName Get-SPServerForRemoteServer -ModuleName PoShMon -MockWith {
+
+            $needsUpgrade = if ($ServerName -eq 'Server2') { $true } else { $false }
+            $online = if ($ServerName -eq 'Server3') { 'Offline' } else { 'Online' }
+            
+            return [SPServerMock]::new($ServerName, $online, $needsUpgrade, 'Application')
+        }
+
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                                    General -ServerNames 'Server1','Server2','Server3'
+                                }
+
+        $actual = Test-SPServerStatus $poShMonConfiguration
+        $output = $($actual = Test-SPServerStatus $poShMonConfiguration) 3>&1
+
+        $output.Count | Should Be 2
+        $output[0].ToString() | Should Be "`tServer2 is listed as Needing Upgrade"
+        $output[1].ToString() | Should Be "`tServer3 is not listed as Online. Status: Offline"
+    }
+
     It "Should return an output for each Server" {
     
         Mock -CommandName Get-SPServerForRemoteServer -ModuleName PoShMon -MockWith {
@@ -63,7 +105,7 @@ Describe "Test-SPServerStatus" {
         $actual.OutputValues.Count | Should Be 2
     }
 
-    It "Should not warn on any component needing upgrade" {
+    It "Should warn on any component needing upgrade" {
     
         Mock -CommandName Get-SPServerForRemoteServer -ModuleName PoShMon -MockWith {
 
@@ -76,7 +118,7 @@ Describe "Test-SPServerStatus" {
                                     General -ServerNames 'Server1','Server2'
                                 }
 
-        $actual = Test-SPServerStatus $poShMonConfiguration
+        $actual = Test-SPServerStatus $poShMonConfiguration -WarningAction SilentlyContinue
 
         $actual.NoIssuesFound | Should Be $false
 
@@ -86,7 +128,7 @@ Describe "Test-SPServerStatus" {
         $actual.OutputValues[1].Highlight[0] | Should Be 'NeedsUpgrade'
     }
 
-   It "Should not warn on any component not being Online" {
+   It "Should warn on any component not being Online" {
     
         Mock -CommandName Get-SPServerForRemoteServer -ModuleName PoShMon -MockWith {
 
@@ -99,7 +141,7 @@ Describe "Test-SPServerStatus" {
                                     General -ServerNames 'Server1','Server2'
                                 }
 
-        $actual = Test-SPServerStatus $poShMonConfiguration
+        $actual = Test-SPServerStatus $poShMonConfiguration -WarningAction SilentlyContinue
 
         $actual.NoIssuesFound | Should Be $false
 
@@ -109,7 +151,7 @@ Describe "Test-SPServerStatus" {
         $actual.OutputValues[1].Highlight[0] | Should Be 'Status'
     }
 
-   It "Should not warn on any component not being Online and needing upgrade" {
+   It "Should warn on any component not being Online and needing upgrade" {
     
         Mock -CommandName Get-SPServerForRemoteServer -ModuleName PoShMon -MockWith {
 
@@ -123,7 +165,7 @@ Describe "Test-SPServerStatus" {
                                     General -ServerNames 'Server1','Server2'
                                 }
 
-        $actual = Test-SPServerStatus $poShMonConfiguration
+        $actual = Test-SPServerStatus $poShMonConfiguration -WarningAction SilentlyContinue
 
         $actual.NoIssuesFound | Should Be $false
 

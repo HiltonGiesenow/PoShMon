@@ -43,6 +43,46 @@ Describe "Test-SPDistributedCacheHealth" {
         $values1.ContainsKey("Highlight") | Should Be $true
     }
 
+    It "Should write the expected Verbose output" {
+    
+        Mock -CommandName Invoke-RemoteCommand -ModuleName PoShMon -Verifiable -MockWith {
+            return @(
+                [SPDistributedCacheMock]::new('Server1', 'Online')
+            )
+        }
+
+        $poShMonConfiguration = New-PoShMonConfiguration {}
+
+        $actual = Test-SPDistributedCacheHealth $poShMonConfiguration -Verbose
+        $output = $($actual = Test-SPDistributedCacheHealth $poShMonConfiguration -Verbose) 4>&1
+
+        $output.Count | Should Be 3
+        $output[0].ToString() | Should Be "Initiating 'Distributed Cache Status' Test..."
+        $output[1].ToString() | Should Be "`tServer1 : Online"
+        $output[2].ToString() | Should Be "Complete 'Distributed Cache Status' Test, Issues Found: No"
+    }
+
+    It "Should write the expected Warning output" {
+    
+        Mock -CommandName Invoke-RemoteCommand -ModuleName PoShMon -Verifiable -MockWith {
+            return @(
+                [SPDistributedCacheMock]::new('Server1', 'Online'),
+                [SPDistributedCacheMock]::new('Server2', 'Offline')
+            )
+        }
+
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                        General -ServerNames 'Server1'
+                        OperatingSystem
+                    }
+
+        $actual = Test-SPDistributedCacheHealth $poShMonConfiguration
+        $output = $($actual = Test-SPDistributedCacheHealth $poShMonConfiguration) 3>&1
+
+        $output.Count | Should Be 1
+        $output[0].ToString() | Should Be "`tServer2 is listed as Offline"
+    }
+
     It "Should not warn on all server are online" {
 
         Mock -CommandName Invoke-RemoteCommand -ModuleName PoShMon -Verifiable -MockWith {
@@ -73,7 +113,7 @@ Describe "Test-SPDistributedCacheHealth" {
 
         $poShMonConfiguration = New-PoShMonConfiguration {}
 
-        $actual = Test-SPDistributedCacheHealth $poShMonConfiguration
+        $actual = Test-SPDistributedCacheHealth $poShMonConfiguration -WarningAction SilentlyContinue
         
         Assert-VerifiableMocks
 

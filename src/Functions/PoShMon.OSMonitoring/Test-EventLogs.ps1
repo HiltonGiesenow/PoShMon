@@ -22,7 +22,7 @@ Function Test-EventLogs
         
             $eventLogEntryGroups = Get-GroupedEventLogItemsBySeverity -ComputerName $serverName -SeverityCode $SeverityCode -WmiStartDate $wmiStartDateWmi
 
-            Write-Verbose $serverName
+            Write-Verbose "`t$serverName"
 
             if ($eventLogEntryGroups.Count -gt 0)
             {
@@ -34,7 +34,7 @@ Function Test-EventLogs
                     {
                         $mainOutput.NoIssuesFound = $false
 
-                        Write-Verbose ($currentEntry.EventCode.ToString() + ' (' + $eventLogEntryGroup.Count + ', ' + $currentEntry.SourceName + ', ' + $currentEntry.User + ') : ' + $currentEntry.ConvertToDateTime($currentEntry.TimeGenerated) + ' - ' + $currentEntry.Message)
+                        Write-Warning ("`t`t" + $currentEntry.EventCode.ToString() + ' : ' + $eventLogEntryGroup.Count + ' : ' + $currentEntry.SourceName + ' : ' + $currentEntry.User + ' : ' + $currentEntry.ConvertToDateTime($currentEntry.TimeGenerated) + ' - ' + $currentEntry.Message)
                 
                         $outputItem = @{
                                         'EventID' = $currentEntry.EventCode;
@@ -57,7 +57,8 @@ Function Test-EventLogs
 
             if ($mainOutput.NoIssuesFound)
             {
-                Write-Verbose "`tNone"
+                Write-Verbose "`t`tNo Entries Found In Time Specified"
+
                 $mainOutput.OutputValues += @{
                                     'GroupName' = $serverName
                                     'GroupOutputValues' = @()

@@ -79,7 +79,7 @@ Describe "Test-DriveSpace" {
         $output[0].ToString() | Should Be "Initiating 'Harddrive Space Review' Test..."
         $output[1].ToString() | Should Be "`tlocalhost"
         $output[2].ToString() | Should Be "`t`tC: : 50.00 : 15.00"
-        $output[3].ToString() | Should Be "Complete 'Harddrive Space Review' Test"
+        $output[3].ToString() | Should Be "Complete 'Harddrive Space Review' Test, Issues Found: No"
     }
 
     It "Should write the expected Warning output" {
@@ -93,7 +93,7 @@ Describe "Test-DriveSpace" {
                         OperatingSystem
                     }
 
-        $actual = Test-DriveSpace $poShMonConfiguration -Verbose
+        $actual = Test-DriveSpace $poShMonConfiguration
         $output = $($actual = Test-DriveSpace $poShMonConfiguration) 3>&1
 
         $output.Count | Should Be 1
@@ -129,7 +129,7 @@ Describe "Test-DriveSpace" {
                         OperatingSystem
                     }
 
-        $actual = Test-DriveSpace $poShMonConfiguration
+        $actual = Test-DriveSpace $poShMonConfiguration -WarningAction SilentlyContinue
         
         $actual.NoIssuesFound | Should Be $false
 

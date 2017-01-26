@@ -16,12 +16,14 @@ Function Test-SPServerStatus
 
         $highlight = @()
 
+        Write-Verbose "`t$($server.DisplayName) : $($server.Status) : $($server.NeedsUpgrade)"
+
         if ($server.NeedsUpgrade)
         {
             $needsUpgradeValue = "Yes"
             $highlight += 'NeedsUpgrade'
             $mainOutput.NoIssuesFound = $false
-            Write-Verbose ($server.DisplayName + " is listed as Needing Upgrade")
+            Write-Warning "`t$($server.DisplayName) is listed as Needing Upgrade"
         } else {
             $needsUpgradeValue = "No"
         }
@@ -30,7 +32,7 @@ Function Test-SPServerStatus
         {
             $highlight += 'Status'
             $mainOutput.NoIssuesFound = $false
-            Write-Verbose ($server.DisplayName + " is not listed as Online")
+            Write-Warning "`t$($server.DisplayName) is not listed as Online. Status: $($server.Status)"
         }
 
         $mainOutput.OutputValues += @{

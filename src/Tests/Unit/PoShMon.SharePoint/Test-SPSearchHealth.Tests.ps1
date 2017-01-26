@@ -50,6 +50,49 @@ Describe "Test-SPSearchHealth" {
         $values1.ContainsKey("Highlight") | Should Be $true
     }
 
+    It "Should write the expected Verbose output" {
+    
+        Mock -CommandName Invoke-RemoteCommand -ModuleName PoShMon -MockWith {
+            $searchItemsMock = [SearchItemsMock]::new()
+            
+            $searchItemsMock.AddComponentWithState("Component1", "Server1", "Active")
+            $searchItemsMock.AddComponentWithState("Component2", "Server1", "Active")
+
+            return $searchItemsMock
+        }
+
+        $poShMonConfiguration = New-PoShMonConfiguration {}
+
+        $actual = Test-SPSearchHealth $poShMonConfiguration -Verbose
+        $output = $($actual = Test-SPSearchHealth $poShMonConfiguration -Verbose) 4>&1
+
+        $output.Count | Should Be 4
+        $output[0].ToString() | Should Be "Initiating 'Search Status' Test..."
+        $output[1].ToString() | Should Be "`tComponent1 is in the following state: Active"
+        $output[2].ToString() | Should Be "`tComponent2 is in the following state: Active"
+        $output[3].ToString() | Should Be "Complete 'Search Status' Test, Issues Found: No"
+    }
+
+    It "Should write the expected Warning output" {
+    
+        Mock -CommandName Invoke-RemoteCommand -ModuleName PoShMon -MockWith {
+            $searchItemsMock = [SearchItemsMock]::new()
+            
+            $searchItemsMock.AddComponentWithState("Component1", "Server1", "Active")
+            $searchItemsMock.AddComponentWithState("Component2", "Server1", "InActive")
+
+            return $searchItemsMock
+        }
+
+        $poShMonConfiguration = New-PoShMonConfiguration {}
+
+        $actual = Test-SPSearchHealth $poShMonConfiguration
+        $output = $($actual = Test-SPSearchHealth $poShMonConfiguration) 3>&1
+
+        $output.Count | Should Be 1
+        $output[0].ToString() | Should Be "`tComponent2 is not listed as 'Active'. State: InActive"
+    }
+
     It "Should return an output for each component" {
     
         Mock -CommandName Invoke-RemoteCommand -ModuleName PoShMon -MockWith {
@@ -102,7 +145,7 @@ Describe "Test-SPSearchHealth" {
 
         $poShMonConfiguration = New-PoShMonConfiguration {}   
 
-        $actual = Test-SPSearchHealth $poShMonConfiguration
+        $actual = Test-SPSearchHealth $poShMonConfiguration -WarningAction SilentlyContinue
 
         $actual.NoIssuesFound | Should Be $false
 

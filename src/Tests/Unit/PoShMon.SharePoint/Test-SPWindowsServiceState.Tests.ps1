@@ -71,6 +71,51 @@ Describe "Test-SPWindowsServiceState" {
 
     }
 
+    It "Should write the expected Verbose output" {
+    
+        Mock -CommandName Invoke-RemoteCommand -ModuleName PoShMon -Verifiable -MockWith {
+            return @(
+                [SPServiceInstanceMock]::new('Server1', 'TheService', 'Online')
+            )
+        }
+
+        Mock -CommandName Test-ServiceStatePartial -ModuleName PoShMon -Verifiable -MockWith {
+            return @(
+                        @{
+                            'GroupName' = $ServerName
+                            'NoIssuesFound' = $true
+                            'GroupOutputValues' = @(
+                                                    @{
+                                                        'DisplayName' = 'Service 1 DisplayName';
+                                                        'Name' = 'Svc1';
+                                                        'Status' = "Running";
+                                                        'Highlight' = @()
+                                                    },
+                                                    @{
+                                                        'DisplayName' = 'Service 2 DisplayName';
+                                                        'Name' = 'Svc2';
+                                                        'Status' = "Running";
+                                                        'Highlight' = @()
+                                                    }
+                                                   )
+                        }
+                    )
+        }
+
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                                    OperatingSystem
+                                }   
+
+        $actual = Test-SPWindowsServiceState $poShMonConfiguration -Verbose
+        $output = $($actual = Test-SPWindowsServiceState $poShMonConfiguration -Verbose) 4>&1
+
+        $output.Count | Should Be 4
+        $output[0].ToString() | Should Be "Initiating 'Windows Service State' Test..."
+        $output[1].ToString() | Should Be "`tGetting SharePoint service list..."
+        $output[2].ToString() | Should Be "`tGetting state of services per server..."
+        $output[3].ToString() | Should Be "Complete 'Windows Service State' Test, Issues Found: No"
+    }
+
     It "Should fail for any service in the wrong state" {
     
         Mock -CommandName Invoke-RemoteCommand -ModuleName PoShMon -Verifiable -MockWith {

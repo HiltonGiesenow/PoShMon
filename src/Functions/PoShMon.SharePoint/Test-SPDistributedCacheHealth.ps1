@@ -23,11 +23,13 @@ Function Test-SPDistributedCacheHealth
     {
         $highlight = @()
 
+        Write-Verbose "`t$($cacheServer.Server.DisplayName) : $($cacheServer.Status.Value)"
+
         if ($cacheServer.Status.Value -ne 'Online')
         {
             $mainOutput.NoIssuesFound = $false
 
-            Write-Verbose ($cacheServer.Server.DisplayName + " is listed as " + $cacheServer.Status.Value)
+            Write-Warning ("`t" + $cacheServer.Server.DisplayName + " is listed as " + $cacheServer.Status.Value)
 
             $highlight += 'Status'
         }

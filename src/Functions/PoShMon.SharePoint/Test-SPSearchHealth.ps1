@@ -29,13 +29,13 @@ Function Test-SPSearchHealth
         {
             if ($componentTopologyItem.Name.ToLower() -eq $searchComponentState.Name.ToLower())
             {
-                Write-Verbose ($componentTopologyItem.Name + " is in the following state: " + $searchComponentState.State)
+                Write-Verbose ("`t" + $componentTopologyItem.Name + " is in the following state: " + $searchComponentState.State)
 
                 if ($searchComponentState.State -ne "Active")
                 {
                     $mainOutput.NoIssuesFound = $false
-
                     $highlight += 'State'
+                    Write-Warning ("`t" + $componentTopologyItem.Name + " is not listed as 'Active'. State: " + $searchComponentState.State)
                 }
 
                 $mainOutput.OutputValues += @{

@@ -52,6 +52,23 @@ Describe "Test-SPJobHealth" {
         #$values1.ContainsKey("Highlight") | Should Be $true
     }
 
+    It "Should write the expected Verbose output" {
+    
+        Mock -CommandName Invoke-RemoteCommand -ModuleName PoShMon -Verifiable -MockWith {
+            return @(
+            )
+        }
+
+        $poShMonConfiguration = New-PoShMonConfiguration { }
+
+        $actual = Test-SPJobHealth $poShMonConfiguration -Verbose
+        $output = $($actual = Test-SPJobHealth $poShMonConfiguration -Verbose) 4>&1
+
+        $output.Count | Should Be 2
+        $output[0].ToString() | Should Be "Initiating 'Failing Timer Jobs' Test..."
+        $output[1].ToString() | Should Be "Complete 'Failing Timer Jobs' Test, Issues Found: No"
+    }
+
     It "Should not warn on no failed Jobs" {
 
         Mock -CommandName Invoke-RemoteCommand -ModuleName PoShMon -Verifiable -MockWith {
@@ -68,6 +85,28 @@ Describe "Test-SPJobHealth" {
         $actual.NoIssuesFound | Should Be $true
     }
 
+    It "Should write the expected Warning output" {
+    
+        Mock -CommandName Invoke-RemoteCommand -ModuleName PoShMon -Verifiable -MockWith {
+
+            $date = Get-Date -Year 2017 -Month 1 -Day 1 -Hour 9 -Minute 30 -Second 15
+
+            return @(
+                [SPJobHealthMock]::new('Job 123', $date, "Server1", "Web App1", "Something went wrong..."),
+                [SPJobHealthMock]::new('Job 456', $date.AddMinutes(-1), "Server1", "Web App1", "Something went wrong...")
+            )
+        }
+
+        $poShMonConfiguration = New-PoShMonConfiguration {}
+
+        $actual = Test-SPJobHealth $poShMonConfiguration
+        $output = $($actual = Test-SPJobHealth $poShMonConfiguration) 3>&1
+
+        $output.Count | Should Be 2
+        $output[0].ToString() | Should Be "`tJob 123 at 01/01/2017 09:30:15 on Server1 for Web App1 : Something went wrong..."
+        $output[1].ToString() | Should Be "`tJob 456 at 01/01/2017 09:29:15 on Server1 for Web App1 : Something went wrong..."
+    }
+
     It "Should warn on any failed Jobs" {
 
         Mock -CommandName Invoke-RemoteCommand -ModuleName PoShMon -Verifiable -MockWith {
@@ -78,7 +117,7 @@ Describe "Test-SPJobHealth" {
 
         $poShMonConfiguration = New-PoShMonConfiguration {}
 
-        $actual = Test-SPJobHealth $poShMonConfiguration
+        $actual = Test-SPJobHealth $poShMonConfiguration -WarningAction SilentlyContinue
         
         Assert-VerifiableMocks
 
@@ -98,7 +137,7 @@ Describe "Test-SPJobHealth" {
 
         $poShMonConfiguration = New-PoShMonConfiguration {}
 
-        $actual = Test-SPJobHealth $poShMonConfiguration
+        $actual = Test-SPJobHealth $poShMonConfiguration -WarningAction SilentlyContinue
         
         Assert-VerifiableMocks
 

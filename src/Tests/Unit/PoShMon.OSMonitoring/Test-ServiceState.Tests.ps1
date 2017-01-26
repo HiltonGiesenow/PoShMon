@@ -66,6 +66,38 @@ Describe "Test-ServiceState" {
 
     }
 
+    It "Should write the expected Verbose output" {
+    
+        Mock -CommandName Test-ServiceStatePartial -ModuleName PoShMon -Verifiable -MockWith {
+            return @(
+                        @{
+                            'GroupName' = $ServerName
+                            'NoIssuesFound' = $true
+                            'GroupOutputValues' = @(
+                                                    @{
+                                                        'DisplayName' = 'Service 2 DisplayName';
+                                                        'Name' = $Services;
+                                                        'Status' = "Started";
+                                                        'Highlight' = @('Status')
+                                                    }
+                                                   )
+                        }
+                    )
+        }
+
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                                    General -ServerNames "Server2"
+                                    OperatingSystem -WindowsServices "ABC"
+                                }
+
+        $actual = Test-ServiceState $poShMonConfiguration -Verbose
+        $output = $($actual = Test-ServiceState $poShMonConfiguration -Verbose) 4>&1
+
+        $output.Count | Should Be 2
+        $output[0].ToString() | Should Be "Windows Service State' Test..."
+        $output[1].ToString() | Should Be "Complete 'Windows Service State' Test, Issues Found: No"
+    }
+
     It "Should pass for all running services" {
 
         Mock -CommandName Test-ServiceStatePartial -ModuleName PoShMon -Verifiable -MockWith {

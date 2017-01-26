@@ -52,6 +52,44 @@ Describe "Test-Memory" {
         $values1.ContainsKey("Highlight") | Should Be $true
     }
 
+    It "Should write the expected Verbose output" {
+    
+        Mock -CommandName Get-WmiObject -MockWith {
+            return [ServerMemoryMock]::new('Server1', 8312456, 2837196)
+        }
+
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                        General -ServerNames 'Server1'
+                        OperatingSystem
+                    }
+
+        $actual = Test-Memory $poShMonConfiguration -Verbose
+        $output = $($actual = Test-Memory $poShMonConfiguration -Verbose) 4>&1
+
+        $output.Count | Should Be 3
+        $output[0].ToString() | Should Be "Initiating 'Memory Review' Test..."
+        $output[1].ToString() | Should Be "`tServer1 : 7.93 : 2.71"
+        $output[2].ToString() | Should Be "Complete 'Memory Review' Test, Issues Found: No"
+    }
+
+    It "Should write the expected Warning output" {
+    
+        Mock -CommandName Get-WmiObject -MockWith {
+            return [ServerMemoryMock]::new('Server1', 8312456, 300000)
+        }
+
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                        General -ServerNames 'Server1'
+                        OperatingSystem
+                    }
+
+        $actual = Test-Memory $poShMonConfiguration
+        $output = $($actual = Test-Memory $poShMonConfiguration) 3>&1
+
+        $output.Count | Should Be 1
+        $output[0].ToString() | Should Be "`t`tFree memory (4%) is below variance threshold (10)"
+    }
+
     It "Should not warn on space above threshold" {
 
         Mock -CommandName Get-WmiObject -MockWith {
@@ -63,7 +101,7 @@ Describe "Test-Memory" {
                         OperatingSystem
                     }
 
-        $actual = Test-Memory $poShMonConfiguration
+        $actual = Test-Memory $poShMonConfiguration -WarningAction SilentlyContinue
         
         $actual.NoIssuesFound | Should Be $true
 
@@ -81,7 +119,7 @@ Describe "Test-Memory" {
                         OperatingSystem
                     }
 
-        $actual = Test-Memory $poShMonConfiguration
+        $actual = Test-Memory $poShMonConfiguration -WarningAction SilentlyContinue
         
         $actual.NoIssuesFound | Should Be $false
 
@@ -102,7 +140,7 @@ Describe "Test-Memory" {
                         OperatingSystem -FreeMemoryThreshold 51
                     }
 
-        $actual = Test-Memory $poShMonConfiguration
+        $actual = Test-Memory $poShMonConfiguration -WarningAction SilentlyContinue
         
         $actual.NoIssuesFound | Should Be $false
 

@@ -48,6 +48,48 @@ Describe "Test-SPDatabaseHealth" {
         $values1.ContainsKey("Highlight") | Should Be $true
     }
 
+    It "Should write the expected Verbose output" {
+    
+        Mock -CommandName Invoke-RemoteCommand -ModuleName PoShMon -Verifiable -MockWith {
+            return @(
+                [SPDatabaseMock]::new('Database1', 'Application1', $false, [UInt64]50GB),
+                [SPDatabaseMock]::new('Database2', 'Application1', $false, [UInt64]4GB)
+            )
+        }
+
+        $poShMonConfiguration = New-PoShMonConfiguration {}
+
+        $actual = Test-SPDatabaseHealth $poShMonConfiguration -Verbose
+        $output = $($actual = Test-SPDatabaseHealth $poShMonConfiguration -Verbose) 4>&1
+
+        $output.Count | Should Be 4
+        $output[0].ToString() | Should Be "Initiating 'Database Status' Test..."
+        $output[1].ToString() | Should Be "`tDatabase1 : No : 50.00 GB"
+        $output[2].ToString() | Should Be "`tDatabase2 : No : 4.00 GB"
+        $output[3].ToString() | Should Be "Complete 'Database Status' Test, Issues Found: No"
+    }
+
+    It "Should write the expected Warning output" {
+    
+        Mock -CommandName Invoke-RemoteCommand -ModuleName PoShMon -Verifiable -MockWith {
+            return @(
+                [SPDatabaseMock]::new('Database1', 'Application1', $false, [UInt64]50GB),
+                [SPDatabaseMock]::new('Database2', 'Application1', $true, [UInt64]4GB)
+            )
+        }
+
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                        General -ServerNames 'Server1'
+                        OperatingSystem
+                    }
+
+        $actual = Test-SPDatabaseHealth $poShMonConfiguration
+        $output = $($actual = Test-SPDatabaseHealth $poShMonConfiguration) 3>&1
+
+        $output.Count | Should Be 1
+        $output[0].ToString() | Should Be "`tDatabase2 (Application1) is listed as Needing Upgrade"
+    }
+
     It "Should not warn on databases that are all fine" {
 
         Mock -CommandName Invoke-RemoteCommand -ModuleName PoShMon -Verifiable -MockWith {
@@ -79,7 +121,7 @@ Describe "Test-SPDatabaseHealth" {
 
         $poShMonConfiguration = New-PoShMonConfiguration {}
 
-        $actual = Test-SPDatabaseHealth $poShMonConfiguration
+        $actual = Test-SPDatabaseHealth $poShMonConfiguration -WarningAction SilentlyContinue
         
         Assert-VerifiableMocks
 

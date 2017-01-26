@@ -14,21 +14,24 @@ Function Test-SPDatabaseHealth
 
     foreach ($spDatabase in $spDatabases)
     {
+        $needsUpgradeText = if ($spDatabase.NeedsUpgrade) {"Yes"} else {"No"}
+        $SizeText = ($spDatabase.DiskSizeRequired/1GB).ToString(".00")
+
+        Write-Verbose "`t$($spDatabase.DisplayName) : $needsUpgradeText : $SizeText GB"
+
         $highlight = @()
 
         if ($spDatabase.NeedsUpgrade)
         {
             $mainOutput.NoIssuesFound = $false
-
-            Write-Verbose ($spDatabase.DisplayName + " (" + $spDatabase.ApplicationName + ") is listed as Needing Upgrade")
-
             $highlight += 'NeedsUpgrade'
+            Write-Warning ("`t" + $spDatabase.DisplayName + " (" + $spDatabase.ApplicationName + ") is listed as Needing Upgrade")
         }
 
         $mainOutput.OutputValues += @{
             'DatabaseName' = $spDatabase.DisplayName;
-            'NeedsUpgrade' = &{if($spDatabase.NeedsUpgrade) {"Yes"} else {"No"}};
-            'Size' = ($spDatabase.DiskSizeRequired/1GB).ToString(".00");
+            'NeedsUpgrade' = $needsUpgradeText
+            'Size' = $SizeText;
             'Highlight' = $highlight
         }
     }

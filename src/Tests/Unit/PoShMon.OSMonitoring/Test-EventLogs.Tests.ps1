@@ -1,15 +1,15 @@
 $rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPath ('..\..\..\') -Resolve
 Remove-Module PoShMon -ErrorAction SilentlyContinue
-Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1") -Verbose
+Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 
 class EventLogItemMock {
     [int]$EventCode
     [string]$SourceName
     [string]$User
-    [string]$TimeGenerated
+    [datetime]$TimeGenerated
     [string]$Message
 
-    EventLogItemMock ([int]$NewEventCode, [String]$NewSourceName, [String]$NewUser, [String]$NewTimeGenerated, [String]$NewMessage) {
+    EventLogItemMock ([int]$NewEventCode, [String]$NewSourceName, [String]$NewUser, [datetime]$NewTimeGenerated, [String]$NewMessage) {
         $this.EventCode = $NewEventCode;
         $this.SourceName = $NewSourceName;
         $this.User = $NewUser;
@@ -17,8 +17,8 @@ class EventLogItemMock {
         $this.Message = $NewMessage;
     }
 
-    [string] ConvertToDateTime([string]$something) {
-        return (Get-Date).ToString()
+    [string] ConvertToDateTime([datetime]$something) {
+        return $something.ToString()
     }
 }
 
@@ -28,7 +28,7 @@ Describe "Test-EventLogs" {
         Mock -CommandName Get-WmiObject -MockWith {
             $eventsCollection = @()
 
-            $eventsCollection += [EventLogItemMock]::new(123, "Test App", "domain\user1", "123", "Sample Message")
+            $eventsCollection += [EventLogItemMock]::new(123, "Test App", "domain\user1", (Get-Date), "Sample Message")
             return $eventsCollection
         }
 
@@ -37,7 +37,7 @@ Describe "Test-EventLogs" {
                         OperatingSystem
                     }
 
-        $actual = Test-EventLogs $poShMonConfiguration
+        $actual = Test-EventLogs $poShMonConfiguration -WarningAction SilentlyContinue
 
         $actual.Keys.Count | Should Be 5
         $actual.ContainsKey("NoIssuesFound") | Should Be $true
@@ -59,6 +59,54 @@ Describe "Test-EventLogs" {
         $values1.ContainsKey("Message") | Should Be $true
     }
 
+    It "Should write the expected Verbose output" {
+    
+        Mock -CommandName Get-WmiObject -MockWith {
+            $eventsCollection = @()
+
+            return $eventsCollection
+        }
+
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                        General -ServerNames 'Server1'
+                        OperatingSystem
+                    }
+
+        $actual = Test-EventLogs $poShMonConfiguration -Verbose
+        $output = $($actual = Test-EventLogs $poShMonConfiguration -Verbose) 4>&1
+
+        $output.Count | Should Be 4
+        $output[0].ToString() | Should Be "Initiating 'Critical Event Log Issues' Test..."
+        $output[1].ToString() | Should Be "`tServer1"
+        $output[2].ToString() | Should Be "`t`tNo Entries Found In Time Specified"
+        $output[3].ToString() | Should Be "Complete 'Critical Event Log Issues' Test, Issues Found: No"
+    }
+
+    It "Should write the expected Warning output" {
+    
+        Mock -CommandName Get-WmiObject -MockWith {
+            $eventsCollection = @()
+
+            $date = Get-Date -Year 2017 -Month 1 -Day 1 -Hour 9 -Minute 30 -Second 15
+
+            $eventsCollection += [EventLogItemMock]::new(123, "Test App", "domain\user1", $date, "Sample Message")
+            $eventsCollection += [EventLogItemMock]::new(456, "Test App2", "domain\user2", $date.AddSeconds(1), "Another Message")
+            return $eventsCollection
+        }
+
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                        General -ServerNames 'Server1'
+                        OperatingSystem
+                    }
+
+        $actual = Test-EventLogs $poShMonConfiguration
+        $output = $($actual = Test-EventLogs $poShMonConfiguration) 3>&1
+
+        $output.Count | Should Be 2
+        $output[0].ToString() | Should Be "`t`t123 : 1 : Test App : domain\user1 : 01 Jan 2017 9:30:15 AM - Sample Message"
+        $output[1].ToString() | Should Be "`t`t456 : 1 : Test App2 : domain\user2 : 01 Jan 2017 9:30:16 AM - Another Message"
+    }
+
     It "Should alert on items found" {
         
         Mock -CommandName Get-WmiObject -MockWith {
@@ -73,7 +121,7 @@ Describe "Test-EventLogs" {
                         OperatingSystem
                     }
 
-        $actual = Test-EventLogs $poShMonConfiguration
+        $actual = Test-EventLogs $poShMonConfiguration -WarningAction SilentlyContinue
         
         $actual.NoIssuesFound | Should Be $false
     }
@@ -95,7 +143,7 @@ Describe "Test-EventLogs" {
                         OperatingSystem
                     }
 
-        $actual = Test-EventLogs $poShMonConfiguration
+        $actual = Test-EventLogs $poShMonConfiguration -WarningAction SilentlyContinue
         
         $actual.NoIssuesFound | Should Be $false
 
@@ -121,7 +169,7 @@ Describe "Test-EventLogs" {
                         OperatingSystem
                     }
 
-        $actual = Test-EventLogs $poShMonConfiguration
+        $actual = Test-EventLogs $poShMonConfiguration -WarningAction SilentlyContinue
         
         $actual.NoIssuesFound | Should Be $false
 

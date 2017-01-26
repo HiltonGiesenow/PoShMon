@@ -11,7 +11,9 @@ Function Complete-TimedOutput
 
     $TestOutputValues.Remove("StopWatch")
 
-    Write-Verbose "Complete '$($TestOutputValues.SectionHeader)' Test"
+    $issuesFound = if ($TestOutputValues.NoIssuesFound) { "No" } else { "Yes" }
+
+    Write-Verbose "Complete '$($TestOutputValues.SectionHeader)' Test, Issues Found: $issuesFound"
 
     return $TestOutputValues
 }

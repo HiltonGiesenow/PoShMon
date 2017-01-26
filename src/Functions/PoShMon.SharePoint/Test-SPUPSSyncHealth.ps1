@@ -8,7 +8,7 @@ Function Test-SPUPSSyncHealth
      
     $mainOutput = Get-InitialOutputWithTimer -SectionHeader "User Profile Sync State" -OutputHeaders ([ordered]@{ 'ManagementAgent' = 'Management Agent'; 'RunProfile' = 'Run Profile'; 'RunStartTime' = 'Run Start Time'; 'ErrorDetail' = 'ErrorDetail' })
 
-    Write-Verbose "`tGetting SharePoint service list..."
+    Write-Verbose "`tGetting SharePoint service list to locate UPS Sync server..."
     
     $upsServiceInstance = Invoke-RemoteCommand -PoShMonConfiguration $PoShMonConfiguration -ScriptBlock {
                             return Get-SPServiceInstance | Where { $_.TypeName -eq 'User Profile Synchronization Service' -and $_.Status -eq "Online" } | Select Server
@@ -44,7 +44,7 @@ Function Test-SPUPSSyncHealth
 
                         if ($connectionErrors -ne "") { $errors = $connectionErrors } else { $errors = $syncErrors }
                         
-                        Write-Verbose "` Step $stepNumber has status of $stepResult : $($errors.InnerXml)"
+                        Write-Warning "`tStep $stepNumber has status of $stepResult : $($errors.InnerXml)"
 
                         $mainOutput.OutputValues += @{
                             'ManagementAgent' = $maName;
