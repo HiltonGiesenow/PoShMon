@@ -6,7 +6,10 @@ Function OperatingSystem
         [hashtable]$EventIDIgnoreList = @{},
         [double]$CPULoadThresholdPercent = 90,
         [double]$FreeMemoryThresholdPercent = 10,
-        [double]$DriveSpaceThreshold = 10, #This is GB
+        [Parameter(ParameterSetName="DriveSpaceFixed")]
+        [double]$DriveSpaceThreshold, #This is GB
+        [Parameter(ParameterSetName="DriveSpacePercent")]
+        [double]$DriveSpaceThresholdPercent, #This is GB
         [string[]]$WindowsServices = $null,
         [int]$AllowedMinutesVarianceBetweenServerTimes = 1
     )
@@ -17,6 +20,13 @@ Function OperatingSystem
         throw "OperatingSystem configuration group already created."
     }
 
+    if ($DriveSpaceThresholdPercent -gt 99) { throw "DriveSpaceThresholdPercent too high" }    
+    if ($DriveSpaceThresholdPercent -lt 1)  {throw "DriveSpaceThresholdPercent too low" }    
+    if ($DriveSpaceThreshold -lt 1)  {throw "DriveSpaceThreshold too low" }    
+
+    if ($DriveSpaceThreshold -eq 0 -and $DriveSpaceThresholdPercent -eq 0)
+        { $DriveSpaceThreshold = 10 } #GB
+
     return @{
             TypeName = "PoShMon.ConfigurationItems.OperatingSystem"
             EventLogCodes = $EventLogCodes
@@ -24,6 +34,7 @@ Function OperatingSystem
             CPULoadThresholdPercent = $CPULoadThresholdPercent
             FreeMemoryThresholdPercent = $FreeMemoryThresholdPercent
             DriveSpaceThreshold = $DriveSpaceThreshold
+            DriveSpaceThresholdPercent = $DriveSpaceThresholdPercent
             WindowsServices = $WindowsServices
             AllowedMinutesVarianceBetweenServerTimes = $AllowedMinutesVarianceBetweenServerTimes
         }

@@ -1,7 +1,7 @@
 
 $rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPath ('..\..\..\') -Resolve
 Remove-Module PoShMon -ErrorAction SilentlyContinue
-Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1") -Verbose
+Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 
 class DiskMock {
     [string]$DeviceID
@@ -38,7 +38,7 @@ Describe "Test-DriveSpace" {
 
         $poShMonConfiguration = New-PoShMonConfiguration {
                         General -ServerNames 'localhost'
-                        OperatingSystem
+                        OperatingSystem -DriveSpaceThreshold 0 # zero will trigger the default, 10 (GB)
                     }
 
         $actual = Test-DriveSpace $poShMonConfiguration
@@ -61,7 +61,7 @@ Describe "Test-DriveSpace" {
         $values1.ContainsKey("Highlight") | Should Be $true
     }
 
-    It "Should write the expected Verbose output" {
+    It "Should write the expected Verbose output (fixed)" {
     
         Mock -CommandName Get-WmiObject -MockWith {
             return [DiskMock]::new('C:', 3, "", [UInt64]50GB, [UInt64]15GB, "MyCDrive")
@@ -69,7 +69,7 @@ Describe "Test-DriveSpace" {
 
         $poShMonConfiguration = New-PoShMonConfiguration {
                         General -ServerNames 'localhost'
-                        OperatingSystem
+                        OperatingSystem -DriveSpaceThreshold 0 # zero will trigger the default, 10 (GB)
                     }
 
         $actual = Test-DriveSpace $poShMonConfiguration -Verbose
@@ -82,7 +82,7 @@ Describe "Test-DriveSpace" {
         $output[3].ToString() | Should Be "Complete 'Harddrive Space Review' Test, Issues Found: No"
     }
 
-    It "Should write the expected Warning output" {
+    It "Should write the expected Warning output (fixed)" {
     
         Mock -CommandName Get-WmiObject -MockWith {
             return [DiskMock]::new('C:', 3, "", [UInt64]50GB, [UInt64]5GB, "MyCDrive")
@@ -90,7 +90,7 @@ Describe "Test-DriveSpace" {
 
         $poShMonConfiguration = New-PoShMonConfiguration {
                         General -ServerNames 'Server1'
-                        OperatingSystem
+                        OperatingSystem -DriveSpaceThreshold 0 # zero will trigger the default, 10 (GB)
                     }
 
         $actual = Test-DriveSpace $poShMonConfiguration
@@ -100,6 +100,23 @@ Describe "Test-DriveSpace" {
         $output[0].ToString() | Should Be "`t`tFree drive Space (5) is below variance threshold (10)"
     }
 
+    It "Should write the expected Warning output (percent)" {
+    
+        Mock -CommandName Get-WmiObject -MockWith {
+            return [DiskMock]::new('C:', 3, "", [UInt64]50GB, [UInt64]5GB, "MyCDrive")
+        }
+
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                        General -ServerNames 'Server1'
+                        OperatingSystem -DriveSpaceThresholdPercent 95 # zero will trigger the default, 10 (GB)
+                    }
+
+        $actual = Test-DriveSpace $poShMonConfiguration
+        $output = $($actual = Test-DriveSpace $poShMonConfiguration) 3>&1
+
+        $output.Count | Should Be 1
+        $output[0].ToString() | Should Be "`t`tFree drive Space (90%) is below variance threshold (95%)"
+    }
     It "Should not warn on space above threshold" {
 
         Mock -CommandName Get-WmiObject -MockWith {
@@ -108,7 +125,7 @@ Describe "Test-DriveSpace" {
 
         $poShMonConfiguration = New-PoShMonConfiguration {
                         General -ServerNames 'localhost'
-                        OperatingSystem
+                        OperatingSystem -DriveSpaceThreshold 0 # zero will trigger the default, 10 (GB)
                     }
 
         $actual = Test-DriveSpace $poShMonConfiguration
@@ -118,7 +135,7 @@ Describe "Test-DriveSpace" {
         $actual.OutputValues.GroupOutputValues.Highlight.Count | Should Be 0
     }
 
-    It "Should warn on space below threshold" {
+    It "Should warn on space below threshold (default)" {
 
         Mock -CommandName Get-WmiObject -MockWith {
             return [DiskMock]::new('C:', 3, "", [UInt64]50GB, [UInt64]5GB, "MyCDrive")
@@ -126,7 +143,7 @@ Describe "Test-DriveSpace" {
 
         $poShMonConfiguration = New-PoShMonConfiguration {
                         General -ServerNames 'localhost'
-                        OperatingSystem
+                        OperatingSystem -DriveSpaceThreshold 0 # zero will trigger the default, 10 (GB)
                     }
 
         $actual = Test-DriveSpace $poShMonConfiguration -WarningAction SilentlyContinue
@@ -136,4 +153,61 @@ Describe "Test-DriveSpace" {
         $actual.OutputValues.GroupOutputValues.Highlight.Count | Should Be 1
         $actual.OutputValues.GroupOutputValues.Highlight[0] | Should Be 'FreeSpace'
     }
+
+    It "Should warn on space below specified threshold (fixed)" {
+
+        Mock -CommandName Get-WmiObject -MockWith {
+            return [DiskMock]::new('C:', 3, "", [UInt64]50GB, [UInt64]15GB, "MyCDrive")
+        }
+
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                        General -ServerNames 'localhost'
+                        OperatingSystem -DriveSpaceThreshold 20
+                    }
+
+        $actual = Test-DriveSpace $poShMonConfiguration -WarningAction SilentlyContinue
+        
+        $actual.NoIssuesFound | Should Be $false
+
+        $actual.OutputValues.GroupOutputValues.Highlight.Count | Should Be 1
+        $actual.OutputValues.GroupOutputValues.Highlight[0] | Should Be 'FreeSpace'
+    }
+
+    It "Should warn on space above specified threshold (percent)" {
+
+        Mock -CommandName Get-WmiObject -MockWith {
+            return [DiskMock]::new('C:', 3, "", [UInt64]50GB, [UInt64]45GB, "MyCDrive")
+        }
+
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                        General -ServerNames 'localhost'
+                        OperatingSystem -DriveSpaceThresholdPercent 50
+                    }
+
+        $actual = Test-DriveSpace $poShMonConfiguration -WarningAction SilentlyContinue
+        
+        $actual.NoIssuesFound | Should Be $false
+
+        $actual.OutputValues.GroupOutputValues.Highlight.Count | Should Be 1
+        $actual.OutputValues.GroupOutputValues.Highlight[0] | Should Be 'FreeSpace'
+    }
+
+    It "Should not warn on space below specified threshold (percent)" {
+
+        Mock -CommandName Get-WmiObject -MockWith {
+            return [DiskMock]::new('C:', 3, "", [UInt64]50GB, [UInt64]15GB, "MyCDrive")
+        }
+
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                        General -ServerNames 'localhost'
+                        OperatingSystem -DriveSpaceThresholdPercent 5
+                    }
+
+        $actual = Test-DriveSpace $poShMonConfiguration -WarningAction SilentlyContinue
+        
+        $actual.NoIssuesFound | Should Be $true
+
+        $actual.OutputValues.GroupOutputValues.Highlight.Count | Should Be 0
+    }
+
 }

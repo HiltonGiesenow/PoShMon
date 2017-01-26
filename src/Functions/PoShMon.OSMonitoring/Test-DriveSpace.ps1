@@ -21,11 +21,21 @@ Function Test-DriveSpace
         {
             $totalSpace = $drive.Size/1GB
             $freeSpace = $drive.FreeSpace/1GB
+            $freeSpacePercent = 100 - $freeSpace / $totalSpace * 100
             $highlight = @()
 
             Write-Verbose ("`t`t" + $drive.DeviceID + " : " + $totalSpace.ToString(".00") + " : " + $freeSpace.ToString(".00"))
 
-            if ($freeSpace -lt $PoShMonConfiguration.OperatingSystem.DriveSpaceThreshold)
+            if ($PoShMonConfiguration.OperatingSystem.DriveSpaceThresholdPercent -gt 0)
+            {
+                if ($freeSpacePercent -lt $PoShMonConfiguration.OperatingSystem.DriveSpaceThresholdPercent)
+                {
+                    $mainOutput.NoIssuesFound = $false
+                    $highlight += "FreeSpace"
+                    Write-Warning "`t`tFree drive Space ($freeSpacePercent%) is below variance threshold ($($PoShMonConfiguration.OperatingSystem.DriveSpaceThresholdPercent)%)"
+                }
+            }
+            elseif ($freeSpace -lt $PoShMonConfiguration.OperatingSystem.DriveSpaceThreshold)
             {
                 $mainOutput.NoIssuesFound = $false
                 $highlight += "FreeSpace"
