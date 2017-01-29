@@ -32,5 +32,4 @@ $poShMonConfiguration = New-PoShMonConfiguration {
                         -SmtpServer "smtp.company.com" `
                         -Port 27
                 }
-                
             }
