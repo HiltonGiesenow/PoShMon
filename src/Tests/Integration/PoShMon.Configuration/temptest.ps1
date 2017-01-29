@@ -34,4 +34,3 @@ $poShMonConfiguration = New-PoShMonConfiguration {
                 }
                 
             }
-
