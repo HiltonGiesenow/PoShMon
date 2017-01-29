@@ -11,8 +11,9 @@ Function New-PoShMonConfiguration
 
     $newConfiguration = @{
             TypeName = 'PoShMon.Configuration'
-            General = General
-            OperatingSystem = OperatingSystem
+            General = $null
+            #General = General
+            #OperatingSystem = OperatingSystem
             WebSite = $null
             Notifications = @()
         }
@@ -31,6 +32,11 @@ Function New-PoShMonConfiguration
             { 
                 $newConfiguration.Notifications += $configurationItem }
     }
+
+    if ($newConfiguration.General -eq $null)
+        { $newConfiguration.General = General }
+    if ($newConfiguration.OperatingSystem -eq $null)
+        { $newConfiguration.OperatingSystem = OperatingSystem }
 
     return $newConfiguration
 }
