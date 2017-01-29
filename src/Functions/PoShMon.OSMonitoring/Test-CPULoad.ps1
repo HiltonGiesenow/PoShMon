@@ -9,7 +9,7 @@ Function Test-CPULoad
 
     $mainOutput = Get-InitialOutputWithTimer -SectionHeader "Server CPU Load Review" -OutputHeaders ([ordered]@{ 'ServerName' = 'Server Name'; 'CPULoad' = 'CPU Load (%)' })
 
-    if ($PoShMonConfiguration.General.ServerNames -eq "localhost")
+    if ($PoShMonConfiguration.General.ServerNames -eq $env:COMPUTERNAME)
         { $results = Get-Counter "\processor(_total)\% processor time" }
     else
         { $results = Get-Counter "\processor(_total)\% processor time" -Computername $PoShMonConfiguration.General.ServerNames }
