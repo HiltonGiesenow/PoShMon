@@ -3,13 +3,13 @@ Function General
     [CmdletBinding()]
     param(
         #[scriptblock]$bodyScript,
-        [string]$EnvironmentName = $null,
+        [string]$EnvironmentName = $env:COMPUTERNAME,
         [int]$MinutesToScanHistory = 15,
         [string[]]$TestsToSkip = @(),
         [parameter(HelpMessage="For monitoring a 'farm'' product, like SharePoint, specify a server name to run the main monitoring operations.")]
         [string]$PrimaryServerName,
         [parameter(HelpMessage="For monitoring standalone servers, specify the names of the servers to monitor.")]
-        [string[]]$ServerNames = @(),
+        [string[]]$ServerNames = @('localhost'),
         [parameter(HelpMessage="A ConfiguratioName for PowerShell to create remote sessions using pre-existing configurations")]
         [string]$ConfigurationName = $null,
         [switch]$SkipVersionUpdateCheck = $false        

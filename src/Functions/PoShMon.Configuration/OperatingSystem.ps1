@@ -10,7 +10,7 @@ Function OperatingSystem
         [double]$DriveSpaceThreshold, #This is GB
         [Parameter(ParameterSetName="DriveSpacePercent")]
         [double]$DriveSpaceThresholdPercent, #This is GB
-        [string[]]$WindowsServices = $null,
+        [string[]]$WindowsServices = @(),
         [int]$AllowedMinutesVarianceBetweenServerTimes = 1
     )
 
