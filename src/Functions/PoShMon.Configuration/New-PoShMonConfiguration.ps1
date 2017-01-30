@@ -12,8 +12,6 @@ Function New-PoShMonConfiguration
     $newConfiguration = @{
             TypeName = 'PoShMon.Configuration'
             General = $null
-            #General = General
-            #OperatingSystem = OperatingSystem
             WebSite = $null
             Notifications = @()
         }
