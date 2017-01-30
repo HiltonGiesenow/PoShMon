@@ -2,8 +2,8 @@ $rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPa
 Remove-Module PoShMon -ErrorAction SilentlyContinue
 Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 
-Describe "Invoke-SPMonitoring" {
-    It "Should invoke SP monitoring" {
+Describe "Invoke-OSMonitoring" {
+    It "Should invoke OS monitoring" {
 
         $poShMonConfiguration = New-PoShMonConfiguration {
                         General `
@@ -11,7 +11,7 @@ Describe "Invoke-SPMonitoring" {
                             -MinutesToScanHistory 60 `
                             -ServerNames 'Server01','Server02' `
                             -ConfigurationName SpFarmPosh `
-                            -TestsToSkip 'FreeMemory'
+                            -TestsToSkip 'Memory'
                         Notifications -When All {
                             Email -ToAddress "hilton@giesenow.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
                             Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
@@ -51,11 +51,60 @@ Describe "Invoke-SPMonitoring" {
         }
 
         Mock -CommandName Initialize-Notifications -ModuleName PoShMon -Verifiable -MockWith {
-            Write-Verbose "Final Output Received:"
+            Write-Verbose "Tests Run:"
             $TestOutputValues | % { Write-Verbose "`t$($_.SectionHeader)" }
             return
         }
 
+        $actual = Invoke-OSMonitoring $poShMonConfiguration -Verbose
+
+        Assert-VerifiableMocks
+    }
+}
+
+Describe "Invoke-OSMonitoring2" {
+    It "Should work with a minimal configuration" {
+
+        $poShMonConfiguration = New-PoShMonConfiguration {}
+        
+        <#
+        Mock -CommandName Invoke-Tests -ModuleName PoShMon -Verifiable -MockWith {
+            Begin
+            {
+                $outputValues = @()
+            }
+
+            Process
+            {
+                foreach ($test in $TestToRuns)
+                {
+                    $outputValues += @{
+                                    "SectionHeader" = "Mock Test: $test"
+                                    "OutputHeaders" = @{ 'Item1' = 'Item 1'; }
+                                    "NoIssuesFound" = $false
+                                    "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
+                                    "OutputValues" = @(
+                                                        @{
+                                                            "Item1" = 123
+                                                            "State" = "State 1"
+                                                        }
+                                                    )
+                                }
+                }
+            }
+    
+            End
+            {
+                return $outputValues
+            }
+        }
+        Mock -CommandName Initialize-Notifications -ModuleName PoShMon -Verifiable -MockWith {
+            Write-Verbose "Tests Run:"
+            $TestOutputValues | % { Write-Verbose "`t$($_.SectionHeader)" }
+            return
+        }
+        #>
+        
         $actual = Invoke-OSMonitoring $poShMonConfiguration -Verbose
 
         Assert-VerifiableMocks
