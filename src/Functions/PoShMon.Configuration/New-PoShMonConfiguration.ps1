@@ -39,4 +39,5 @@ Function New-PoShMonConfiguration
         { $newConfiguration.OperatingSystem = OperatingSystem }
 
     return $newConfiguration
+>>>>>>> 4a8496a3e561ccb11cd44dba935326bec986b07e
 }
