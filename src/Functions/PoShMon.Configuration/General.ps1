@@ -6,10 +6,10 @@ Function General
         [string]$EnvironmentName = $env:COMPUTERNAME,
         [int]$MinutesToScanHistory = 15,
         [string[]]$TestsToSkip = @(),
-        [parameter(HelpMessage="For monitoring a 'farm'' product, like SharePoint, specify a server name to run the main monitoring operations.")]
-        [string]$PrimaryServerName,
-        [parameter(HelpMessage="For monitoring standalone servers, specify the names of the servers to monitor.")]
-        [string[]]$ServerNames = @('localhost'),
+        [parameter(ParameterSetName="PrimaryServer",HelpMessage="For monitoring a 'farm'' product, like SharePoint, specify a server name to run the main monitoring operations.")]
+        [string]$PrimaryServerName = $null,
+        #[parameter(ParameterSetName="ServerNames",HelpMessage="For monitoring standalone servers, specify the names of the servers to monitor.")]
+        [string[]]$ServerNames = $null,
         [parameter(HelpMessage="A ConfiguratioName for PowerShell to create remote sessions using pre-existing configurations")]
         [string]$ConfigurationName = $null,
         [switch]$SkipVersionUpdateCheck = $false        
@@ -21,7 +21,7 @@ Function General
         throw "General configuration group already created."
     }
 
-    if ($PrimaryServerName -eq $null -and $ServerNames.Count -eq 0)
+    if ($PrimaryServerName -eq "" -and $ServerNames.Count -eq 0)
         { $ServerNames += $env:COMPUTERNAME }
     elseif ($PrimaryServerName -ne "" -and $ServerNames.Count -gt 0)
         { throw "You cannot specify both PrimaryServerName and ServerNames. If you are monitoring a 'farm' product, like SharePoint, specify PrimaryServerName on which to run the main monitoring operations." `
