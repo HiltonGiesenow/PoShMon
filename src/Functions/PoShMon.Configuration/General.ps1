@@ -8,7 +8,7 @@ Function General
         [string[]]$TestsToSkip = @(),
         [parameter(ParameterSetName="PrimaryServer",HelpMessage="For monitoring a 'farm'' product, like SharePoint, specify a server name to run the main monitoring operations.")]
         [string]$PrimaryServerName = $null,
-        #[parameter(ParameterSetName="ServerNames",HelpMessage="For monitoring standalone servers, specify the names of the servers to monitor.")]
+        [parameter(ParameterSetName="ServerNames",HelpMessage="For monitoring standalone servers, specify the names of the servers to monitor.")]
         [string[]]$ServerNames = $null,
         [parameter(HelpMessage="A ConfiguratioName for PowerShell to create remote sessions using pre-existing configurations")]
         [string]$ConfigurationName = $null,
