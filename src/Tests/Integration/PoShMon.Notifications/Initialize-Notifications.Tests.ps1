@@ -30,7 +30,7 @@ Describe "Initialize-Notifications" {
         }
 
         $poShMonConfiguration = New-PoShMonConfiguration {
-                                    General -EnvironmentName "SharePoint" -TestsToSkip 'SkippedTest1','SkippedTest2'
+                                    General -EnvironmentName "SharePoint" -PrimaryServerName "Server1" -TestsToSkip 'SkippedTest1','SkippedTest2'
                                     Notifications -When All {
                                         Email -ToAddress "testTo@email.com" -FromAddress "testFrom@email.com" -SmtpServer "EXCHANGE.COMPANY.COM"
                                     }

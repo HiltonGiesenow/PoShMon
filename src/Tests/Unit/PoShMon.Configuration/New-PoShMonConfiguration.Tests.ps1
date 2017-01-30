@@ -2,7 +2,7 @@ $rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPa
 Remove-Module PoShMon -ErrorAction SilentlyContinue
 Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 
-Describe "Invoke-OSMonitoring" {
+Describe "New-PoShMonConfiguration" {
     It "Should work with a minimal configuration" {
 
         $env:COMPUTERNAME = "THESERVERNAME"
@@ -52,4 +52,3 @@ Describe "Invoke-OSMonitoring" {
         $poShMonConfiguration.General.PrimaryServerName | Should Be "Server1"
     }
 }
-.
