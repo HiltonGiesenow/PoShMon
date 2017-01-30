@@ -2,7 +2,6 @@ Function General
 {
     [CmdletBinding()]
     param(
-        #[scriptblock]$bodyScript,
         [string]$EnvironmentName = $env:COMPUTERNAME,
         [int]$MinutesToScanHistory = 15,
         [string[]]$TestsToSkip = @(),
