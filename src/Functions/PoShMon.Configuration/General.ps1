@@ -11,7 +11,10 @@ Function General
         [string[]]$ServerNames = $null,
         [parameter(HelpMessage="A ConfiguratioName for PowerShell to create remote sessions using pre-existing configurations")]
         [string]$ConfigurationName = $null,
-        [switch]$SkipVersionUpdateCheck = $false        
+        [switch]$SkipVersionUpdateCheck = $false,
+        [pscredential]$InternetAccessRunAsAccount,
+        [parameter(HelpMessage="Web proxy for internet access (e.g. for notification API calls)")]
+        [string]$ProxyAddress
     )
 
     if ($Script:PoShMon.ConfigurationItems.General -eq $null)
@@ -38,5 +41,7 @@ Function General
             ConfigurationName = $ConfigurationName
             RemoteSessionName = $remoteSessionName
             SkipVersionUpdateCheck = $SkipVersionUpdateCheck
+            InternetAccessRunAsAccount = $InternetAccessRunAsAccount
+            ProxyAddress = $ProxyAddress
         }
 }

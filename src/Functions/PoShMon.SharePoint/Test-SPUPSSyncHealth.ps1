@@ -20,6 +20,9 @@ Function Test-SPUPSSyncHealth
         $FimRunHistory = Get-WmiObject -Namespace "root\MicrosoftIdentityIntegrationServer" -class "MIIS_RunHistory" -ComputerName $upsServiceInstance.Server.DisplayName -Filter "RunStartTime >'$runStartDate'"
         $failedRuns = $FimRunHistory | Where RunStatus -NotIn "success","in-progress"
 
+        if ($failedRuns -ne $null -and $failedRuns.GetType().Name -eq 'ManagementObject') #only 1 occurred - force it to be an array
+            { $failedRuns = ,$failedRuns }
+
         if ($failedRuns.Count -gt 0)
         {
             $mainOutput.NoIssuesFound = $false
