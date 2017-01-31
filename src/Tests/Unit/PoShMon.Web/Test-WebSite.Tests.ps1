@@ -1,7 +1,7 @@
 $rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPath ('..\..\..\') -Resolve
 Remove-Module PoShMon -ErrorAction SilentlyContinue
 Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
-<#
+
 class WebRequestMock {
     [int]$StatusCode
     [string]$StatusDescription
@@ -31,14 +31,23 @@ class RemoteWebRequestMock {
 Describe "Test-Website" {
     It "Should return a matching output structure" {
     
-        Mock -CommandName Invoke-WebRequest -MockWith {
-            return [WebRequestMock]::new(200, "OK", $testContent)
+        Mock -CommandName Invoke-WebRequest -Verifiable -MockWith {
+            return [WebRequestMock]::new(200, "OK", "Some Text")
         }
-        Mock -CommandName Invoke-RemoteWebRequest -MockWith {
-            return [RemoteWebRequestMock]::new(200, "OK", $testContent, $serverName)
+        Mock -CommandName Invoke-RemoteWebRequest -Verifiable -ModuleName PoShMon -MockWith {
+            return [RemoteWebRequestMock]::new(200, "OK", "Some Text", $serverName)
         }
 
-        $actual = Test-WebSites -SiteUrl 'abc' -TextToLocate $testContent -ServerNames $serverName
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                General `
+                    -ServerNames 'Server1','Server2'
+                WebSite `
+                    -WebsiteDetails @{
+                                        "http://my.website.com" = "Some Text"
+                                     }
+            }
+
+        $actual = Test-WebSites $poShMonConfiguration
 
         Assert-VerifiableMocks
 
@@ -50,9 +59,6 @@ Describe "Test-Website" {
         $actual.ContainsKey("ElapsedTime") | Should Be $true
         $headers = $actual.OutputHeaders
         $headers.Keys.Count | Should Be 3
-        $headers.ContainsKey("ServerName") | Should Be $true
-        $headers.ContainsKey("StatusCode") | Should Be $true
-        $headers.ContainsKey("Outcome") | Should Be $true
         $values1 = $actual.OutputValues[0]
         $values1.Keys.Count | Should Be 4
         $values1.ContainsKey("ServerName") | Should Be $true
@@ -60,7 +66,39 @@ Describe "Test-Website" {
         $values1.ContainsKey("Outcome") | Should Be $true
         $values1.ContainsKey("Highlight") | Should Be $true
     }
-    
+
+    It "Should write the expected Verbose output" {
+
+        Mock -CommandName Invoke-WebRequest -MockWith {
+            return [WebRequestMock]::new(200, "OK", "Some Text")
+        }
+        Mock -CommandName Invoke-RemoteWebRequest -ModuleName PoShMon -MockWith {
+            return [RemoteWebRequestMock]::new(200, "OK", "Some Text", $serverName)
+        }
+
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                General `
+                    -ServerNames 'Server1','Server2'
+                WebSite `
+                    -WebsiteDetails @{
+                                        "http://my.website.com" = "Some Text"
+                                     }
+            }
+
+        $actual = Test-WebSites $poShMonConfiguration -Verbose
+        $output = $($actual = Test-WebSites $poShMonConfiguration -Verbose) 4>&1
+
+        $output.Count | Should Be 8
+        $output[0].ToString() | Should Be "Initiating 'Web Test - http://my.website.com' Test..."
+        $output[1].ToString() | Should Be "`tScanning Site http://my.website.com (Direct)"
+        $output[2].ToString() | Should Be "`t`t(Direct) : 200 : Specified Page Content Found"
+        $output[3].ToString() | Should Be "`tScanning Site http://my.website.com on Server1"
+        $output[4].ToString() | Should Be "`t`tServer1 : 200 : Specified Page Content Found"
+        $output[5].ToString() | Should Be "`tScanning Site http://my.website.com on Server2"
+        $output[6].ToString() | Should Be "`t`tServer2 : 200 : Specified Page Content Found"
+        $output[7].ToString() | Should Be "Complete 'Web Test - http://my.website.com' Test, Issues Found: No"
+    }
+
     It "Should test directly and on each server" {
 
         Mock -CommandName Invoke-WebRequest -Verifiable -MockWith {
@@ -130,4 +168,3 @@ Describe "Test-Website" {
         $actual.OutputValues[2].Outcome | Should Be 'Specified Page Content Not Found'
     }
 }
-#>
