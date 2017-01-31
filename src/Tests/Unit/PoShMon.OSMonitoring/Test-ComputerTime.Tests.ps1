@@ -23,12 +23,12 @@ class ServerTimeMock {
 }
 
 Describe "Test-ComputerTime" {
-    It "Should throw an exception if no OperatingSystem configuration is set" {
-    
-        $poShMonConfiguration = New-PoShMonConfiguration { }
-
-        { Test-ComputerTime $poShMonConfiguration } | Should throw
-    }
+    #It "Should throw an exception if no OperatingSystem configuration is set" {
+    #
+    #    $poShMonConfiguration = New-PoShMonConfiguration { }
+    #
+    #    { Test-ComputerTime $poShMonConfiguration } | Should throw
+    #}
 
     It "Should return a matching output structure" {
     
