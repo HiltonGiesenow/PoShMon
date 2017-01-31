@@ -101,15 +101,23 @@ Describe "Test-Website" {
 
     It "Should test directly and on each server" {
 
-        Mock -CommandName Invoke-WebRequest -Verifiable -MockWith {
-            return [WebRequestMock]::new('200', 'OK', '<html>Test Content</html>')
+        Mock -CommandName Invoke-WebRequest -MockWith {
+            return [WebRequestMock]::new(200, "OK", "Some Text")
+        }
+        Mock -CommandName Invoke-RemoteWebRequest -ModuleName PoShMon -MockWith {
+            return [RemoteWebRequestMock]::new(200, "OK", "Some Text", $serverName)
         }
 
-        Mock -CommandName Invoke-RemoteWebRequest -Verifiable -MockWith {
-            return [RemoteWebRequestMock]::new('200', 'OK', '<html>Test Content</html>', $ServerName) 
-        }
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                General `
+                    -ServerNames 'Server1','Server2'
+                WebSite `
+                    -WebsiteDetails @{
+                                        "http://my.website.com" = "Some Text"
+                                     }
+            }
 
-        $actual = Test-WebSite -SiteUrl 'https://www.mywebsite.test' -TextToLocate 'Test content' -ServerNames 'Server1','Server2'
+        $actual = Test-WebSites $poShMonConfiguration
 
         Assert-VerifiableMocks
 
@@ -126,14 +134,23 @@ Describe "Test-Website" {
             return [WebRequestMock]::new('200', '<html>Test Content</html>', 'OK')
         }
 
-        Mock -CommandName Invoke-RemoteWebRequest -Verifiable -MockWith {
+        Mock -CommandName Invoke-RemoteWebRequest -ModuleName PoShMon -Verifiable -MockWith {
             if ($ServerName -ne "Server1")
                 { return [RemoteWebRequestMock]::new('200', 'OK', '<html>Test Content</html>', $ServerName) }
             else
                 { return [RemoteWebRequestMock]::new('500', 'Server Error', '<html><title>Server Error</title></html>', $ServerName) }
         }
 
-        $actual = Test-WebSite -SiteUrl 'https://www.mywebsite.test' -TextToLocate 'Test content' -ServerNames 'Server1','Server2'
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                General `
+                    -ServerNames 'Server1','Server2'
+                WebSite `
+                    -WebsiteDetails @{
+                                        "http://my.website.com" = "Test Content"
+                                     }
+            }
+
+        $actual = Test-WebSites $poShMonConfiguration
 
         Assert-VerifiableMocks
 
@@ -148,18 +165,27 @@ Describe "Test-Website" {
             return [WebRequestMock]::new('200', 'OK', '<html>Test Content</html>')
         }
 
-        Mock -CommandName Invoke-RemoteWebRequest -Verifiable -MockWith {
+        Mock -CommandName Invoke-RemoteWebRequest -ModuleName PoShMon -Verifiable -MockWith {
             if ($ServerName -eq "Server1")
                 { return [RemoteWebRequestMock]::new('200', 'OK', '<html>Test Content</html>', $ServerName) }
             else
                 { return [RemoteWebRequestMock]::new('200', 'OK', '<html>other stuff</html>', $ServerName) }
         }
 
-        $actual = Test-WebSite -SiteUrl 'https://www.mywebsite.test' -TextToLocate 'Test Content' -ServerNames 'Server1','Server2'
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                General `
+                    -ServerNames 'Server1','Server2'
+                WebSite `
+                    -WebsiteDetails @{
+                                        "http://my.website.com" = "Test Content"
+                                     }
+            }
+
+        $actual = Test-WebSites $poShMonConfiguration
 
         Assert-VerifiableMocks
 
-        $actual.NoIssuesFound | Should Be $true
+        $actual.NoIssuesFound | Should Be $false
         $actual.OutputValues[0].Highlight.Count | Should Be 0
         $actual.OutputValues[0].Outcome | Should Be 'Specified Page Content Found'
         $actual.OutputValues[1].Highlight.Count | Should Be 0
