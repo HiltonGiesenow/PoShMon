@@ -13,5 +13,7 @@ Function Connect-RemoteSharePointSession
         Add-PSSnapin Microsoft.SharePoint.PowerShell -ErrorAction SilentlyContinue
     }
 
+    $Global:PoShMon_RemoteSession = $remoteSession
+
     return $remoteSession
 }

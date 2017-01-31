@@ -15,13 +15,6 @@ class ServerMemoryMock {
 }
 
 Describe "Test-Memory" {
-    It "Should throw an exception if no OperatingSystem configuration is set" {
-    
-        $poShMonConfiguration = New-PoShMonConfiguration { }
-
-        { Test-Memory $poShMonConfiguration } | Should throw
-    }
-
     It "Should return a matching output structure" {
     
         Mock -CommandName Get-WmiObject -MockWith {
