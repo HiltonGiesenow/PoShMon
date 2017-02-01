@@ -94,6 +94,16 @@ Of course there are loads of monitoring systems and tools out there, both paid a
 ---
 
 ## Release Notes
+0.10.1
+* Added Proxy settings to enable PushBullet and 0365 Teams connectivity
+* Introduced a 'minimum configuration' for local machine monitoring
+* Fixed bug in SharePoint UPS Sync monitor
+* Added Resolver for High CPU usage while SharePoint Search Index is running
+* Improved Verbose output logging
+* Added option for harddrive space to track by percent
+* Add a check for any invalid TestsToSkip
+* Fixed bug in Update-PoShMon
+
 0.9.2
 * Fixed bug in email output
 * Fixed bug with not terminating Remote sessions correctly
@@ -132,9 +142,5 @@ Of course there are loads of monitoring systems and tools out there, both paid a
 * Added CPU monitoring
 * Added html encoding for Email notification
 * Some unit test bug fixes and coverage work
-
-0.7.0
-* Added monitoring for server memory (free + total)
-* Removed Credential for Pushbullet, using Header directly instead
 
 See [here](https://github.com/HiltonGiesenow/PoShMon/wiki/Changelog) for full Changelog
