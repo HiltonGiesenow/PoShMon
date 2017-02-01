@@ -1,4 +1,4 @@
-﻿$version = "0.9.2"
+﻿$version = "0.10.1"
 $manifestPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPath "\PoShMon.psd1"
 
 Remove-Item -Path $manifestPath -ErrorAction SilentlyContinue
@@ -17,6 +17,16 @@ Some of the key features / benefits of PoShMon are:
 For more information, documentation etc. visit https://github.com/HiltonGiesenow/PoShMon as well as the Samples folder within the module itself."
 
 $releaseNotes = "
+0.10.1
+* Added Proxy settings to enable PushBullet and 0365 Teams connectivity
+* Introduced a 'minimum configuration' for local machine monitoring
+* Fixed bug in SharePoint UPS Sync monitor
+* Added Resolver for High CPU usage while SharePoint Search Index is running
+* Improved Verbose output logging
+* Added option for harddrive space to track by percent
+* Add a check for any invalid TestsToSkip
+* Fixed bug in Update-PoShMon
+
 0.9.2
 * Fixed bug in email output
 * Fixed bug with not terminating Remote sessions correctly
