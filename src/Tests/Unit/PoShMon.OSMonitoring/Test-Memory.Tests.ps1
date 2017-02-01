@@ -1,6 +1,6 @@
 $rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPath ('..\..\..\') -Resolve
 Remove-Module PoShMon -ErrorAction SilentlyContinue
-Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1") -Verbose
+Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 
 class ServerMemoryMock {
     [string]$PSComputerName
@@ -15,13 +15,6 @@ class ServerMemoryMock {
 }
 
 Describe "Test-Memory" {
-    It "Should throw an exception if no OperatingSystem configuration is set" {
-    
-        $poShMonConfiguration = New-PoShMonConfiguration { }
-
-        { Test-Memory $poShMonConfiguration } | Should throw
-    }
-
     It "Should return a matching output structure" {
     
         Mock -CommandName Get-WmiObject -MockWith {

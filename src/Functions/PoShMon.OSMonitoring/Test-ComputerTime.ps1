@@ -5,7 +5,7 @@ Function Test-ComputerTime
         [hashtable]$PoShMonConfiguration
     )
 
-    if ($PoShMonConfiguration.OperatingSystem -eq $null) { throw "'OperatingSystem' configuration not set properly on PoShMonConfiguration parameter." }
+    #if ($PoShMonConfiguration.OperatingSystem -eq $null) { throw "'OperatingSystem' configuration not set properly on PoShMonConfiguration parameter." }
 
     $mainOutput = Get-InitialOutputWithTimer -SectionHeader "Server Clock Review" -OutputHeaders ([ordered]@{ 'ServerName' = 'Server Name'; 'CurrentTime' = 'Current Time' })
 

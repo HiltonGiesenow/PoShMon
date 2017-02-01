@@ -112,7 +112,7 @@ Describe "Test-EventLogs" {
         Mock -CommandName Get-WmiObject -MockWith {
             $eventsCollection = @()
 
-            $eventsCollection += [EventLogItemMock]::new(123, "Test App", "domain\user1", "123", "Sample Message")
+            $eventsCollection += [EventLogItemMock]::new(123, "Test App", "domain\user1", (Get-Date), "Sample Message")
             return $eventsCollection
         }
 
@@ -130,10 +130,12 @@ Describe "Test-EventLogs" {
         Mock -CommandName Get-WmiObject -MockWith {
             $eventsCollection = @()
 
-            $eventsCollection += [EventLogItemMock]::new(123, "Test App", "domain\user1", "123", "Sample Message")
-            $eventsCollection += [EventLogItemMock]::new(123, "Test App", "domain\user1", "123", "Sample Message")
-            $eventsCollection += [EventLogItemMock]::new(123, "Test App", "domain\user1", "123", "Another Sample Message")
-            $eventsCollection += [EventLogItemMock]::new(456, "Test App", "domain\user1", "123", "Different Event Code")
+            $date = Get-Date
+
+            $eventsCollection += [EventLogItemMock]::new(123, "Test App", "domain\user1", $date, "Sample Message")
+            $eventsCollection += [EventLogItemMock]::new(123, "Test App", "domain\user1", $date.AddMinutes(-1), "Sample Message")
+            $eventsCollection += [EventLogItemMock]::new(123, "Test App", "domain\user1", $date.AddMinutes(-2), "Another Sample Message")
+            $eventsCollection += [EventLogItemMock]::new(456, "Test App", "domain\user1", $date.AddMinutes(-3), "Different Event Code")
 
             return $eventsCollection
         }
@@ -156,10 +158,12 @@ Describe "Test-EventLogs" {
         Mock -CommandName Get-WmiObject -MockWith {
             $eventsCollection = @()
 
-            $eventsCollection += [EventLogItemMock]::new(123, "Test App", "domain\user1", "123", "Sample Message")
-            $eventsCollection += [EventLogItemMock]::new(123, "Test App", "domain\user1", "123", "Sample Message")
-            $eventsCollection += [EventLogItemMock]::new(123, "Test App", "domain\user1", "123", "Another Sample Message")
-            $eventsCollection += [EventLogItemMock]::new(456, "Test App", "domain\user1", "123", "Different Event Code")
+            $date = Get-Date
+
+            $eventsCollection += [EventLogItemMock]::new(123, "Test App", "domain\user1", $date, "Sample Message")
+            $eventsCollection += [EventLogItemMock]::new(123, "Test App", "domain\user1", $date.AddMinutes(-1), "Sample Message")
+            $eventsCollection += [EventLogItemMock]::new(123, "Test App", "domain\user1", $date.AddMinutes(-2), "Another Sample Message")
+            $eventsCollection += [EventLogItemMock]::new(456, "Test App", "domain\user1", $date.AddMinutes(-3), "Different Event Code")
 
             return $eventsCollection
         }

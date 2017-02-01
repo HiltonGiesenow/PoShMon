@@ -5,8 +5,8 @@ Function Get-ServersInSPFarm
         [hashtable]$PoShMonConfiguration
     )            
     
-    try
-    {
+    #try
+    #{
         $remoteSession = Connect-RemoteSharePointSession $PoShMonConfiguration
     
         # Auto-Discover Servers
@@ -15,10 +15,10 @@ Function Get-ServersInSPFarm
 
         return $serverNames
 
-    } catch {
-        throw $_.Exception
-    } finally {
-        if ($remoteSession -ne $null)
-            { Disconnect-PSSession $remoteSession -ErrorAction SilentlyContinue | Out-Null }
-    }
+    #} catch {
+    #    throw $_.Exception
+    #} finally {
+    #    if ($remoteSession -ne $null)
+    #        { Disconnect-PSSession $remoteSession -ErrorAction SilentlyContinue | Out-Null }
+    #}
 }

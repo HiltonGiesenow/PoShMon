@@ -84,7 +84,7 @@ Describe "Test-CPULoad" {
         $output[0].ToString() | Should Be "Initiating 'Server CPU Load Review' Test..."
         $output[1].ToString() | Should Be "`tSERVER1: 12%"
         $output[2].ToString() | Should Be "`tSERVER2: 57%"
-        $output[3].ToString() | Should Be "Complete 'Server CPU Load Review' Test"
+        $output[3].ToString() | Should Be "Complete 'Server CPU Load Review' Test, Issues Found: No"
     }
 
     It "Should write the expected Warning output" {
@@ -105,7 +105,7 @@ Describe "Test-CPULoad" {
         $output = $($actual = Test-CPULoad $poShMonConfiguration) 3>&1
 
         $output.Count | Should Be 1
-        $output[0].ToString() | Should Be "`tCPU Load (98%) is above variance threshold (90)"
+        $output[0].ToString() | Should Be "`tCPU Load (98%) is above variance threshold (90%)"
     }
 
     It "Should not warn on CPU below threshold" {

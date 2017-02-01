@@ -39,7 +39,7 @@ Function Resolve-HighCPUWhileSearchRunning
         }
         else # It's not what we thought - a Search crawl running, carry on as usual
         {
-            return
+            return $TestOutputValues
         }
     }
 

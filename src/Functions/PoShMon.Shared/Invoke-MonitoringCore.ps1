@@ -37,7 +37,7 @@ Function Invoke-MonitoringCore
     } finally {
         if ($PoShMonConfiguration.General.PrimaryServerName -ne $null -and $PoShMonConfiguration.General.PrimaryServerName -ne '')
         {
-            $remoteSession = Get-PSSession -ComputerName $PoShMonConfiguration.General.PrimaryServerName -Name $PoShMonConfiguration.General.RemoteSessionName -ConfigurationName $PoShMonConfiguration.General.ConfigurationName -ErrorAction SilentlyContinue
+            $remoteSession = $Global:PoShMon_RemoteSession #Get-PSSession -ComputerName $PoShMonConfiguration.General.PrimaryServerName -Name $PoShMonConfiguration.General.RemoteSessionName -ConfigurationName $PoShMonConfiguration.General.ConfigurationName -ErrorAction SilentlyContinue
             if ($remoteSession -ne $null)
                 { Remove-PSSession $remoteSession }
         }

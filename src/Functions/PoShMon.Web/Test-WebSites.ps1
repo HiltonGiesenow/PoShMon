@@ -21,18 +21,16 @@ Function Test-WebSites
 
             if ($i -eq -1) # Direct Call
             {
-                Write-Verbose ("Scanning Site $siteUrl (Direct)")
+                Write-Verbose ("`tScanning Site $siteUrl (Direct)")
 
                 $webRequest = Invoke-WebRequest $siteUrl -UseDefaultCredentials
             } else {
                 $serverName = $PoShMonConfiguration.General.ServerNames[$i]
             
-                Write-Verbose ("Scanning Site $siteUrl on $serverName")
+                Write-Verbose ("`tScanning Site $siteUrl on $serverName")
             
                 $webRequest = Invoke-RemoteWebRequest -siteUrl $siteUrl -ServerName $serverName -ConfigurationName $PoShMonConfiguration.General.ConfigurationName
             }
-
-            Write-Verbose ("StatusCode - " + $webRequest.StatusCode)
 
             if ($webRequest.StatusCode -ne 200)
             {
@@ -48,6 +46,8 @@ Function Test-WebSites
                     $outcome = "Specified Page Content Not Found"
                 }
             }
+
+            Write-Verbose "`t`t$serverName : $($webRequest.StatusCode) : $outcome"
 
             $mainOutput.OutputValues += @{
                 'ServerName' = $serverName;

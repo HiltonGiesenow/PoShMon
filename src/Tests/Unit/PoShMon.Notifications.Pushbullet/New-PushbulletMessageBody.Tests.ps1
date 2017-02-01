@@ -8,6 +8,7 @@ Describe "New-PushbulletMessageBody" {
         $poShMonConfiguration = New-PoShMonConfiguration {
                         General `
                             -EnvironmentName 'SharePoint' `
+                            -PrimaryServerName 'Server1' `
                             -TestsToSkip 'SPServerStatus','WindowsServiceState','SPFailingTimerJobs','SPDatabaseHealth','SPSearchHealth','SPDistributedCacheHealth','WebTests'
                         Notifications -When All {
                             Email -ToAddress "hilton@giesenow.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
@@ -78,6 +79,7 @@ Describe "New-PushbulletMessageBody" {
         $poShMonConfiguration = New-PoShMonConfiguration {
                         General `
                             -EnvironmentName 'SharePoint' `
+                            -PrimaryServerName 'Server1' `
                             -TestsToSkip 'SPServerStatus','WindowsServiceState','SPFailingTimerJobs','SPDatabaseHealth','SPSearchHealth','SPDistributedCacheHealth','WebTests'
                         Notifications -When OnlyOnFailure {
                             Email -ToAddress "hilton@giesenow.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"

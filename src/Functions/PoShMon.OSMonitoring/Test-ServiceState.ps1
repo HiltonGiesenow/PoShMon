@@ -6,18 +6,21 @@ Function Test-ServiceState
     )
 
     if ($PoShMonConfiguration.OperatingSystem -eq $null) { throw "'OperatingSystem' configuration not set properly on PoShMonConfiguration parameter." }
-    if ($PoShMonConfiguration.OperatingSystem.WindowsServices.Count -eq 0) { throw "'WindowsServices' configuration not set properly on PoShMonConfiguration.OperatingSystem parameter." }
+    #if ($PoShMonConfiguration.OperatingSystem.WindowsServices.Count -eq 0) { throw "'WindowsServices' configuration not set properly on PoShMonConfiguration.OperatingSystem parameter." }
 
-    $mainOutput = Get-InitialOutputWithTimer -SectionHeader "Windows Service State" -OutputHeaders ([ordered]@{ 'DisplayName' = 'Display Name'; 'Name' = 'Name'; 'Status' = 'Status' })
-
-    foreach ($serverName in $PoShMonConfiguration.General.ServerNames)
+    if ($PoShMonConfiguration.OperatingSystem.WindowsServices.Count -gt 0)
     {
-        $groupedoutputItem = Test-ServiceStatePartial -ServerName $serverName -Services $PoShMonConfiguration.OperatingSystem.WindowsServices
+        $mainOutput = Get-InitialOutputWithTimer -SectionHeader "Windows Service State" -OutputHeaders ([ordered]@{ 'DisplayName' = 'Display Name'; 'Name' = 'Name'; 'Status' = 'Status' })
 
-        $mainOutput.NoIssuesFound = $mainOutput.NoIssuesFound -and $groupedoutputItem.NoIssuesFound
+        foreach ($serverName in $PoShMonConfiguration.General.ServerNames)
+        {
+            $groupedoutputItem = Test-ServiceStatePartial -ServerName $serverName -Services $PoShMonConfiguration.OperatingSystem.WindowsServices
 
-        $mainOutput.OutputValues += $groupedoutputItem
+            $mainOutput.NoIssuesFound = $mainOutput.NoIssuesFound -and $groupedoutputItem.NoIssuesFound
+
+            $mainOutput.OutputValues += $groupedoutputItem
+        }
+
+        return (Complete-TimedOutput $mainOutput)
     }
-
-    return (Complete-TimedOutput $mainOutput)
 }

@@ -1,4 +1,3 @@
-
 $rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPath ('..\..\..\') -Resolve
 Remove-Module PoShMon -ErrorAction SilentlyContinue
 Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
@@ -22,13 +21,13 @@ class DiskMock {
 }
 
 Describe "Test-DriveSpace" {
-    It "Should throw an exception if no OperatingSystem configuration is set" {
-    
-        $poShMonConfiguration = New-PoShMonConfiguration {
-                    }
-
-        { Test-DriveSpace $poShMonConfiguration } | Should throw
-    }
+    #It "Should throw an exception if no OperatingSystem configuration is set" {
+    #
+    #    $poShMonConfiguration = New-PoShMonConfiguration {
+    #                }
+    #
+    #    { Test-DriveSpace $poShMonConfiguration } | Should throw
+    #}
 
     It "Should return a matching output structure" {
     

@@ -3,7 +3,52 @@ Remove-Module PoShMon -ErrorAction SilentlyContinue
 Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 
 Describe "Invoke-OSMonitoring" {
-    It "Should invoke OS monitoring" {
+    It "Should work with a minimal configuration" {
+
+        $poShMonConfiguration = New-PoShMonConfiguration {}
+        
+        Mock -CommandName Invoke-Tests -ModuleName PoShMon -Verifiable -MockWith {
+            Begin
+            {
+                $outputValues = @()
+            }
+
+            Process
+            {
+                foreach ($test in $TestToRuns)
+                {
+                    $outputValues += @{
+                                    "SectionHeader" = "Mock Test: $test"
+                                    "OutputHeaders" = @{ 'Item1' = 'Item 1'; }
+                                    "NoIssuesFound" = $false
+                                    "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
+                                    "OutputValues" = @(
+                                                        @{
+                                                            "Item1" = 123
+                                                            "State" = "State 1"
+                                                        }
+                                                    )
+                                }
+                }
+            }
+    
+            End
+            {
+                return $outputValues
+            }
+        }
+        Mock -CommandName Initialize-Notifications -ModuleName PoShMon -Verifiable -MockWith {
+            Write-Verbose "Tests Run:"
+            $TestOutputValues | % { Write-Verbose "`t$($_.SectionHeader)" }
+            return
+        }
+        
+        $actual = Invoke-OSMonitoring $poShMonConfiguration -Verbose
+
+        Assert-VerifiableMocks
+    }
+
+    It "Should work with a full configuration (Servers list)" {
 
         $poShMonConfiguration = New-PoShMonConfiguration {
                         General `
@@ -18,7 +63,7 @@ Describe "Invoke-OSMonitoring" {
                             O365Teams -TeamsWebHookUrl "http://teams.office.com/theapi"
                         }               
                     }
-
+        
         Mock -CommandName Invoke-Tests -ModuleName PoShMon -Verifiable -MockWith {
             Begin
             {
@@ -49,25 +94,33 @@ Describe "Invoke-OSMonitoring" {
                 return $outputValues
             }
         }
-
         Mock -CommandName Initialize-Notifications -ModuleName PoShMon -Verifiable -MockWith {
             Write-Verbose "Tests Run:"
             $TestOutputValues | % { Write-Verbose "`t$($_.SectionHeader)" }
             return
         }
-
+        
         $actual = Invoke-OSMonitoring $poShMonConfiguration -Verbose
 
         Assert-VerifiableMocks
     }
-}
 
-Describe "Invoke-OSMonitoring2" {
-    It "Should work with a minimal configuration" {
+    It "Should work with a full configuration (primary server)" {
 
-        $poShMonConfiguration = New-PoShMonConfiguration {}
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                        General `
+                            -EnvironmentName 'OS Base Test' `
+                            -MinutesToScanHistory 60 `
+                            -PrimaryServerName "Server1" `
+                            -ConfigurationName SpFarmPosh `
+                            -TestsToSkip 'Memory'
+                        Notifications -When All {
+                            Email -ToAddress "hilton@giesenow.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
+                            Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            O365Teams -TeamsWebHookUrl "http://teams.office.com/theapi"
+                        }               
+                    }
         
-        <#
         Mock -CommandName Invoke-Tests -ModuleName PoShMon -Verifiable -MockWith {
             Begin
             {
@@ -103,7 +156,6 @@ Describe "Invoke-OSMonitoring2" {
             $TestOutputValues | % { Write-Verbose "`t$($_.SectionHeader)" }
             return
         }
-        #>
         
         $actual = Invoke-OSMonitoring $poShMonConfiguration -Verbose
 

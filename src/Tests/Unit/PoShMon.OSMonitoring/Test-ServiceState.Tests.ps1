@@ -94,7 +94,7 @@ Describe "Test-ServiceState" {
         $output = $($actual = Test-ServiceState $poShMonConfiguration -Verbose) 4>&1
 
         $output.Count | Should Be 2
-        $output[0].ToString() | Should Be "Windows Service State' Test..."
+        $output[0].ToString() | Should Be "Initiating 'Windows Service State' Test..."
         $output[1].ToString() | Should Be "Complete 'Windows Service State' Test, Issues Found: No"
     }
 

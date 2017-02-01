@@ -9,11 +9,17 @@ Function Test-CPULoad
 
     $mainOutput = Get-InitialOutputWithTimer -SectionHeader "Server CPU Load Review" -OutputHeaders ([ordered]@{ 'ServerName' = 'Server Name'; 'CPULoad' = 'CPU Load (%)' })
 
-    $results = Get-Counter "\processor(_total)\% processor time" -Computername $PoShMonConfiguration.General.ServerNames
+    if ($PoShMonConfiguration.General.ServerNames -eq $env:COMPUTERNAME)
+        { $results = Get-Counter "\processor(_total)\% processor time" }
+    else
+        { $results = Get-Counter "\processor(_total)\% processor time" -Computername $PoShMonConfiguration.General.ServerNames }
 
     foreach ($counterResult in $results.CounterSamples)
     {
-        $serverName = $counterResult.Path.Substring(2, $counterResult.Path.LastIndexOf("\\") - 2).ToUpper()
+        if ($PoShMonConfiguration.General.ServerNames -eq "localhost")
+            { $serverName = "localhost" }
+        else
+            { $serverName = $counterResult.Path.Substring(2, $counterResult.Path.LastIndexOf("\\") - 2).ToUpper() }
         $cpuLoad = $counterResult.CookedValue
         $highlight = @()
 
