@@ -16,7 +16,7 @@ Function Test-CPULoad
 
     foreach ($counterResult in $results.CounterSamples)
     {
-        if ($PoShMonConfiguration.General.ServerNames -eq "localhost")
+        if ($PoShMonConfiguration.General.ServerNames -eq "localhost" -or $PoShMonConfiguration.General.ServerNames -eq $env:COMPUTERNAME)
             { $serverName = "localhost" }
         else
             { $serverName = $counterResult.Path.Substring(2, $counterResult.Path.LastIndexOf("\\") - 2).ToUpper() }
