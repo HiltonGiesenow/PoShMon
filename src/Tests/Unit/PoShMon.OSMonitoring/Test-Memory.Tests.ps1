@@ -18,7 +18,7 @@ Describe "Test-Memory" {
     It "Should return a matching output structure" {
     
         Mock -CommandName Get-WmiObject -MockWith {
-            return [ServerMemoryMock]::new('Server1', 8312456, 2837196)
+            return [ServerMemoryMock]::new($ComputerName, 8312456, 2837196)
         }
 
         $poShMonConfiguration = New-PoShMonConfiguration {
@@ -48,7 +48,7 @@ Describe "Test-Memory" {
     It "Should write the expected Verbose output" {
     
         Mock -CommandName Get-WmiObject -MockWith {
-            return [ServerMemoryMock]::new('Server1', 8312456, 2837196)
+            return [ServerMemoryMock]::new($ComputerName, 8312456, 2837196)
         }
 
         $poShMonConfiguration = New-PoShMonConfiguration {
@@ -68,7 +68,7 @@ Describe "Test-Memory" {
     It "Should write the expected Warning output" {
     
         Mock -CommandName Get-WmiObject -MockWith {
-            return [ServerMemoryMock]::new('Server1', 8312456, 300000)
+            return [ServerMemoryMock]::new($ComputerName, 8312456, 300000)
         }
 
         $poShMonConfiguration = New-PoShMonConfiguration {
@@ -86,7 +86,7 @@ Describe "Test-Memory" {
     It "Should not warn on space above threshold" {
 
         Mock -CommandName Get-WmiObject -MockWith {
-            return [ServerMemoryMock]::new('Server1', 8312456, 2837196)
+            return [ServerMemoryMock]::new($ComputerName, 8312456, 2837196)
         }
 
         $poShMonConfiguration = New-PoShMonConfiguration {
@@ -125,7 +125,7 @@ Describe "Test-Memory" {
         $memory = 8312456*0.5
 
         Mock -CommandName Get-WmiObject -MockWith {
-            return [ServerMemoryMock]::new('Server1', 8312456, $memory)
+            return [ServerMemoryMock]::new($ComputerName, 8312456, $memory)
         }
 
         $poShMonConfiguration = New-PoShMonConfiguration {

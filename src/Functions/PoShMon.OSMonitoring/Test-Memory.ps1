@@ -9,7 +9,7 @@ Function Test-Memory
 
     $mainOutput = Get-InitialOutputWithTimer -SectionHeader "Memory Review" -OutputHeaders ([ordered]@{ 'ServerName' = 'Server Name'; 'TotalMemory' = 'Total Memory (GB)'; 'FreeMemory' = 'Free Memory (GB)'; 'FreeMemoryPerc' = 'Free Memory (%)' })
 
-    $results = Get-WmiObject Win32_OperatingSystem -Computername $PoShMonConfiguration.General.ServerNames
+    $results = Get-WmiObject Win32_OperatingSystem -ComputerName $PoShMonConfiguration.General.ServerNames
 
     foreach ($serverResult in $results)
     {
