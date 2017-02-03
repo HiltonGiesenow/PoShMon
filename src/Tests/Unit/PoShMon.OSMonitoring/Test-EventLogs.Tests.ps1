@@ -102,6 +102,9 @@ Describe "Test-EventLogs" {
         $actual = Test-EventLogs $poShMonConfiguration
         $output = $($actual = Test-EventLogs $poShMonConfiguration) 3>&1
 
+        $date = Get-Date -Year 2017 -Month 1 -Day 1 -Hour 9 -Minute 30 -Second 15
+        Write-Host $date.toString()
+
         $output.Count | Should Be 2
         $output[0].ToString() | Should Be "`t`t123 : 1 : Test App : domain\user1 : 01 Jan 2017 9:30:15 AM - Sample Message"
         $output[1].ToString() | Should Be "`t`t456 : 1 : Test App2 : domain\user2 : 01 Jan 2017 9:30:16 AM - Another Message"
