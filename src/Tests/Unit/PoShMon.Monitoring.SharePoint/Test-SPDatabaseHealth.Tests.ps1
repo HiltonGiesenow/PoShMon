@@ -67,6 +67,8 @@ Describe "Test-SPDatabaseHealth" {
         $output[1].ToString() | Should Be "`tDatabase1 : No : 50.00 GB"
         $output[2].ToString() | Should Be "`tDatabase2 : No : 4.00 GB"
         $output[3].ToString() | Should Be "Complete 'Database Status' Test, Issues Found: No"
+
+        Assert-VerifiableMocks
     }
 
     It "Should write the expected Warning output" {
