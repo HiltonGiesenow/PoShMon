@@ -148,6 +148,8 @@ Describe "Test-SPWindowsServiceState" {
         $actual = Test-SPWindowsServiceState $poShMonConfiguration
 
         $actual.NoIssuesFound | Should Be $false
+
+        Assert-VerifiableMocks
     }
 
     It "Should test for services discovered" {
@@ -185,6 +187,48 @@ Describe "Test-SPWindowsServiceState" {
         $actual = Test-SPWindowsServiceState $poShMonConfiguration
 
         $actual.NoIssuesFound | Should Be $false
+
+        Assert-VerifiableMocks
+    }
+
+    It "Should skip any service specified discovered" {
+    
+        Mock -CommandName Invoke-RemoteCommand -ModuleName PoShMon -Verifiable -MockWith {
+            return @(
+                [SPServiceInstanceMock]::new('Server1', 'TheService', 'Online')
+            )
+        }
+
+        Mock -CommandName Test-ServiceStatePartial -ModuleName PoShMon -Verifiable -MockWith {
+        
+            if (!$Services.Contains('TheService')) { throw "Service Not Found" }
+            if ($Services.Contains('SPWriterV4')) { throw "SPWriterV4 Should be skipped!" }
+            
+            return @(
+                        @{
+                            'GroupName' = $ServerName
+                            'NoIssuesFound' = $false
+                            'GroupOutputValues' = @(
+                                                    @{
+                                                        'DisplayName' = 'Service 2 DisplayName';
+                                                        'Name' = 'Svc2';
+                                                        'Status' = "Stopped";
+                                                        'Highlight' = @('Status')
+                                                    }
+                                                   )
+                        }
+                    )
+        }
+
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                                    OperatingSystem -WindowsServicesToSkip 'SPWriterV4'
+                                }   
+
+        $actual = Test-SPWindowsServiceState $poShMonConfiguration
+
+        $actual.NoIssuesFound | Should Be $false
+
+        Assert-VerifiableMocks
     }
 
 }

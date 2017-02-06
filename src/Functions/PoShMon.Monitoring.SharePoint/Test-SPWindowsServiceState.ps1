@@ -14,16 +14,24 @@ Function Test-SPWindowsServiceState
                         }
 
     $serversWithServices = @{}
-    $defaultServiceList = 'IISADMIN','SPAdminV4','SPTimerV4','SPTraceV4','SPWriterV4'
+    [System.Collections.ArrayList]$defaultServiceList = 'IISADMIN','SPAdminV4','SPTimerV4','SPTraceV4','SPWriterV4'
     if ($PoShMonConfiguration.OperatingSystem.WindowsServices -ne $null -and $PoShMonConfiguration.OperatingSystem.WindowsServices.Count -gt 0)
         { $defaultServiceList += $PoShMonConfiguration.OperatingSystem.WindowsServices }
+    if ($PoShMonConfiguration.OperatingSystem.WindowsServicesToSkip -ne $null -and $PoShMonConfiguration.OperatingSystem.WindowsServicesToSkip.Count -gt 0)
+    {
+        foreach ($serviceToSkip in $PoShMonConfiguration.OperatingSystem.WindowsServicesToSkip)
+        {
+            $defaultServiceList.Remove($serviceToSkip)
+        }
+    }
 
     foreach ($spServiceInstance in $spServiceInstances)
     {
         # ignore non Windows services
         if ($spServiceInstance.Status.Value -eq 'Online' `
             -and $spServiceInstance.Service.Name -ne 'WSS_Administration' `
-            -and $spServiceInstance.Service.Name -ne 'spworkflowtimerv4'
+            -and $spServiceInstance.Service.Name -ne 'spworkflowtimerv4' `
+            -and !$PoShMonConfiguration.OperatingSystem.WindowsServicesToSkip.Contains($spServiceInstance.Server.DisplayName) # Skip the service if told to
         )
         {
             if (!$serversWithServices.ContainsKey($spServiceInstance.Server.DisplayName))
