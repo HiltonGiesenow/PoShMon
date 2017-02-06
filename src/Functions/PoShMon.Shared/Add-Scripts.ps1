@@ -12,7 +12,7 @@ Function Add-Scripts
         if (Test-Path $scriptToImport)
         {
             . $scriptToImport
-            $scriptsLoaded += $scriptToImport | Get-Item | Select BaseName
+            $scriptsLoaded += $scriptToImport | Get-Item | Select -ExpandProperty BaseName
         } else {
             Write-Warning "Script not found, will be skipped: $scriptToImport"
         }

@@ -2,7 +2,7 @@ Function Invoke-Repairs
 {
     [CmdletBinding()]
     Param(
-        [string[]]$RepairsToRuns,
+        [string[]]$RepairScripts,
         [hashtable]$PoShMonConfiguration,
         [object[]]$PoShMonOutputValues
     )
@@ -14,15 +14,25 @@ Function Invoke-Repairs
 
     Process
     {
-        foreach ($repair in $RepairsToRuns)
+        foreach ($repairScript in $RepairScripts)
         {
-            try {
-                $outputValues += & $repair $PoShMonConfiguration $PoShMonOutputValues
-            } catch {
-                $outputValues += @{
-                    "SectionHeader" = $repair;
-                    "Exception" = $_.Exception
+            if (Test-Path $repairScript)
+            {
+                . $repairScript # Load the script
+
+                $repairFunctionName = $repairScript | Get-Item | Select -ExpandProperty BaseName
+
+                try {
+                    $outputValues += & $repairFunctionName $PoShMonConfiguration $PoShMonOutputValues
+                } catch {
+                    $outputValues += @{
+                        "SectionHeader" = $repairFunctionName;
+                        "Exception" = $_.Exception
+                    }
                 }
+
+            } else {
+                Write-Warning "Script not found, will be skipped: $scriptToImport"
             }
         }
     }

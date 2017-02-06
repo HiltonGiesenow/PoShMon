@@ -7,10 +7,10 @@ Function Repair-Environment
         [string[]]$RepairScripts
     )
 
-    $commands = Add-Scripts $RepairScripts
+    #$commands = Add-Scripts $RepairScripts
 
     try {
-        $repairOutput = Invoke-Repairs $commands $PoShMonConfiguration $PoShMonOutputValues
+        $repairOutput = Invoke-Repairs $RepairScripts $PoShMonConfiguration $PoShMonOutputValues
     } catch {
         Send-ExceptionNotifications -PoShMonConfiguration $PoShMonConfiguration -Exception $_.Exception -Action "Repairing"
     }
