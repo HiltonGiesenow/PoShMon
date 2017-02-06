@@ -2,11 +2,13 @@ Function New-EmailFooter
 {
     [CmdletBinding()]
     param(
-        [string[]]$SkippedTests = @(),
+        [hashtable]$PoShMonConfiguration,
         [TimeSpan]$TotalElapsedTime
     )
 
     $emailSection = ''
+
+    $SkippedTests = $PoShMonConfiguration.General.TestsToSkip
 
     $emailSection += '<p>Skipped Tests: '
     if ($SkippedTests.Count -eq 0)
@@ -19,7 +21,7 @@ Function New-EmailFooter
 
     $currentVersion = Get-Module PoShMon -ListAvailable | Select -First 1 | Sort Version 
 
-    $emailSection += "<p>PoShMon Version: $($currentVersion.Version.ToString()) - $(Get-VersionUpgradeInformation)</p>"
+    $emailSection += "<p>PoShMon Version: $($currentVersion.Version.ToString()) - $(Get-VersionUpgradeInformation $PoShMonConfiguration)</p>"
 
     $emailSection += '</body>'
 

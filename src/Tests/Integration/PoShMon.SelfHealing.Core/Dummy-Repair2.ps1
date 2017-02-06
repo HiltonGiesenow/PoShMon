@@ -5,4 +5,9 @@ Function Dummy-Repair2
         [hashtable]$PoShMonConfiguration,
         [object[]]$PoShMonOutputValues
     )
+
+    return @{
+        "SectionHeader" = "Another Mock Repair"
+        "RepairResult" = "Another repair message"
+    }
 }

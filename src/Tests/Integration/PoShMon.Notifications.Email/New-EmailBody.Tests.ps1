@@ -8,6 +8,8 @@ Describe "New-EmailBody" {
         $poShMonConfiguration = New-PoShMonConfiguration {
                         General `
                             -EnvironmentName 'SharePoint' `
+                            -PrimaryServerName 'Server1' `
+                            -SkipVersionUpdateCheck `
                             -TestsToSkip 'SPServerStatus','WindowsServiceState','SPFailingTimerJobs','SPDatabaseHealth','SPSearchHealth','SPDistributedCacheHealth','WebTests'
                         Notifications -When All {
                             Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
@@ -78,6 +80,8 @@ Describe "New-EmailBody" {
         $poShMonConfiguration = New-PoShMonConfiguration {
                         General `
                             -EnvironmentName 'SharePoint' `
+                            -PrimaryServerName 'Server1' `
+                            -SkipVersionUpdateCheck `
                             -TestsToSkip 'SPServerStatus','WindowsServiceState','SPFailingTimerJobs','SPDatabaseHealth','SPSearchHealth','SPDistributedCacheHealth','WebTests'
                         Notifications -When All {
                             Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
@@ -142,6 +146,7 @@ Describe "New-EmailBody" {
         $poShMonConfiguration = New-PoShMonConfiguration {
                         General `
                             -EnvironmentName 'SharePoint' `
+                            -SkipVersionUpdateCheck `
                             -TestsToSkip 'SPServerStatus','WindowsServiceState','SPFailingTimerJobs','SPDatabaseHealth','SPSearchHealth','SPDistributedCacheHealth','WebTests'
                         Notifications -When OnlyOnFailure {
                             Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"

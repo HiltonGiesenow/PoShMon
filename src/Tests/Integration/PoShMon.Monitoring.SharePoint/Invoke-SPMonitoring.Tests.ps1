@@ -60,9 +60,9 @@ Describe "Invoke-SPMonitoring" {
             return
         }
 
-        Mock -CommandName Get-PSSession -Verifiable -MockWith {
-            return $null
-        }
+        #Mock -CommandName Get-PSSession -Verifiable -MockWith {
+        #    return $null
+        #}
 
         $actual = Invoke-SPMonitoring $poShMonConfiguration -Verbose
 

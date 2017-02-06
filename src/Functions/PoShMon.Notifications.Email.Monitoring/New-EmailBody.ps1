@@ -18,7 +18,7 @@ Function New-EmailBody
             { $emailBody += New-TestOutputEmailBody -Output $testOutputValue }
     }
 
-    $emailBody += New-EmailFooter $PoShMonConfiguration.General.TestsToSkip $TotalElapsedTime
+    $emailBody += New-EmailFooter $PoShMonConfiguration $TotalElapsedTime
 
     return $emailBody
 }

@@ -2,8 +2,8 @@ $rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPa
 Remove-Module PoShMon -ErrorAction SilentlyContinue
 Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 
-. (Join-Path $rootPath -ChildPath "Tests\Integration\PoShMon.SelfHealing.Core\Dummy-Repair.ps1")
-. (Join-Path $rootPath -ChildPath "Tests\Integration\PoShMon.SelfHealing.Core\Dummy-Repair2.ps1")
+#. (Join-Path $rootPath -ChildPath "Tests\Integration\PoShMon.SelfHealing.Core\Dummy-Repair.ps1")
+#. (Join-Path $rootPath -ChildPath "Tests\Integration\PoShMon.SelfHealing.Core\Dummy-Repair2.ps1")
 
 Describe "Repair-Environment" {
     It "Should send notifications of repairs" {
@@ -38,18 +38,9 @@ Describe "Repair-Environment" {
             }
         )
 
-        $RepairScripts = @()
-
-        Mock -CommandName Add-Scripts -ModuleName PoShMon -Verifiable -MockWith {
-            return @("Dummy-Repair")
-        }
-
-        Mock -CommandName Dummy-Repair -ModuleName PoShMon -Verifiable -MockWith {
-            return @{
-                "SectionHeader" = "Mock Repair"
-                "RepairResult" = "Some repair message"
-            }
-        }
+        $RepairScripts = @(
+                            (Join-Path $rootPath -ChildPath "Tests\Integration\PoShMon.SelfHealing.Core\Dummy-Repair.ps1")        
+        )
 
         Mock -CommandName Send-PoShMonEmail -ModuleName PoShMon -Verifiable -MockWith {
             Write-Verbose $Subject
@@ -116,22 +107,16 @@ Describe "Repair-Environment" {
             }
         )
 
-        $RepairScripts = @()
-
-        Mock -CommandName Add-Scripts -ModuleName PoShMon -Verifiable -MockWith {
-            return @("Dummy-Repair")
-        }
-
-        Mock -CommandName Dummy-Repair -ModuleName PoShMon -Verifiable -MockWith {
-            throw "Something"
-        }
+        $RepairScripts = @(
+                            (Join-Path $rootPath -ChildPath "Tests\Integration\PoShMon.SelfHealing.Core\Failing-Repair.ps1")        
+        )
 
         Mock -CommandName Send-PoShMonEmail -ModuleName PoShMon -Verifiable -MockWith {
             Write-Verbose $Subject
             Write-Verbose $Body
 
             $Subject | Should Be "[PoshMon] Core Repair Results (1 Repairs(s) Performed)"
-            $Body | Should Be '<head><title>Core Repairs Report</title></head><body><h1>Core Repairs Report</h1><p><h1>Dummy-Repair</h1><table border="1"><tbody><tr><td>An Exception Occurred</td></tr><tr><td>System.Management.Automation.RuntimeException: Something</td></tr></tbody></table></body>'
+            $Body | Should Be '<head><title>Core Repairs Report</title></head><body><h1>Core Repairs Report</h1><p><h1>Failing-Repair</h1><table border="1"><tbody><tr><td>An Exception Occurred</td></tr><tr><td>System.Management.Automation.RuntimeException: Something</td></tr></tbody></table></body>'
 
             return
         }
@@ -140,7 +125,7 @@ Describe "Repair-Environment" {
             Write-Verbose $Body
 
             $Subject | Should Be "[PoshMon Core Repair Results]`r`n"
-            $Body | Should Be "Dummy-Repair : (Exception occurred)`r`n"
+            $Body | Should Be "Failing-Repair : (Exception occurred)`r`n"
 
             return
         }
@@ -149,7 +134,7 @@ Describe "Repair-Environment" {
             Write-Verbose $Body
 
             $Subject | Should Be "[PoshMon Core Repair Results]`r`n"
-            $Body | Should Be "Dummy-Repair : (Exception occurred)`r`n"
+            $Body | Should Be "Failing-Repair : (Exception occurred)`r`n"
 
             return
         }
@@ -191,25 +176,10 @@ Describe "Repair-Environment" {
             }
         )
 
-        $RepairScripts = @()
-
-        Mock -CommandName Add-Scripts -ModuleName PoShMon -Verifiable -MockWith {
-            return @("Dummy-Repair", "Dummy-Repair2")
-        }
-
-        Mock -CommandName Dummy-Repair -ModuleName PoShMon -Verifiable -MockWith {
-            return @{
-                "SectionHeader" = "Mock Repair"
-                "RepairResult" = "Some repair message"
-            }
-        }
-
-        Mock -CommandName Dummy-Repair2 -ModuleName PoShMon -Verifiable -MockWith {
-            return @{
-                "SectionHeader" = "Another Mock Repair"
-                "RepairResult" = "Another repair message"
-            }
-        }
+        $RepairScripts = @(
+                            (Join-Path $rootPath -ChildPath "Tests\Integration\PoShMon.SelfHealing.Core\Dummy-Repair.ps1")        
+                            (Join-Path $rootPath -ChildPath "Tests\Integration\PoShMon.SelfHealing.Core\Dummy-Repair2.ps1")        
+        )
 
         Mock -CommandName Send-PoShMonEmail -ModuleName PoShMon -Verifiable -MockWith {
             Write-Verbose $Subject
@@ -276,29 +246,17 @@ Describe "Repair-Environment" {
             }
         )
 
-        $RepairScripts = @()
-
-        Mock -CommandName Add-Scripts -ModuleName PoShMon -Verifiable -MockWith {
-            return @("Dummy-Repair", "Dummy-Repair2")
-        }
-
-        Mock -CommandName Dummy-Repair -ModuleName PoShMon -Verifiable -MockWith {
-            throw "something"
-        }
-
-        Mock -CommandName Dummy-Repair2 -ModuleName PoShMon -Verifiable -MockWith {
-            return @{
-                "SectionHeader" = "Another Mock Repair"
-                "RepairResult" = "Another repair message"
-            }
-        }
+        $RepairScripts = @(
+                            (Join-Path $rootPath -ChildPath "Tests\Integration\PoShMon.SelfHealing.Core\Failing-Repair.ps1")        
+                            (Join-Path $rootPath -ChildPath "Tests\Integration\PoShMon.SelfHealing.Core\Dummy-Repair2.ps1")        
+        )
 
         Mock -CommandName Send-PoShMonEmail -ModuleName PoShMon -Verifiable -MockWith {
             Write-Verbose $Subject
             Write-Verbose $Body
 
             $Subject | Should Be "[PoshMon] Core Repair Results (2 Repairs(s) Performed)"
-            $Body | Should Be '<head><title>Core Repairs Report</title></head><body><h1>Core Repairs Report</h1><p><h1>Dummy-Repair</h1><table border="1"><tbody><tr><td>An Exception Occurred</td></tr><tr><td>System.Management.Automation.RuntimeException: something</td></tr></tbody></table><p><h1>Another Mock Repair</h1><table border="1"><tbody><tr><td>Another repair message</td></tr></tbody></table></body>'
+            $Body | Should Be '<head><title>Core Repairs Report</title></head><body><h1>Core Repairs Report</h1><p><h1>Failing-Repair</h1><table border="1"><tbody><tr><td>An Exception Occurred</td></tr><tr><td>System.Management.Automation.RuntimeException: something</td></tr></tbody></table><p><h1>Another Mock Repair</h1><table border="1"><tbody><tr><td>Another repair message</td></tr></tbody></table></body>'
 
             return
         }
@@ -307,7 +265,7 @@ Describe "Repair-Environment" {
             Write-Verbose $Body
 
             $Subject | Should Be "[PoshMon Core Repair Results]`r`n"
-            $Body | Should Be "Dummy-Repair : (Exception occurred)`r`nAnother Mock Repair : Repair performed`r`n"
+            $Body | Should Be "Failing-Repair : (Exception occurred)`r`nAnother Mock Repair : Repair performed`r`n"
 
             return
         }
@@ -316,7 +274,7 @@ Describe "Repair-Environment" {
             Write-Verbose $Body
 
             $Subject | Should Be "[PoshMon Core Repair Results]`r`n"
-            $Body | Should Be "Dummy-Repair : (Exception occurred)`r`nAnother Mock Repair : Repair performed`r`n"
+            $Body | Should Be "Failing-Repair : (Exception occurred)`r`nAnother Mock Repair : Repair performed`r`n"
 
             return
         }

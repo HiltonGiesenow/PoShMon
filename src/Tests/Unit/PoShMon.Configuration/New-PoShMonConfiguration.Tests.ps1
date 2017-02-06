@@ -48,7 +48,7 @@ Describe "New-PoShMonConfiguration" {
                         }               
                     }
 
-        $poShMonConfiguration.General.ServerNames | Should Be @()
+        $poShMonConfiguration.General.ServerNames | Should Be $null
         $poShMonConfiguration.General.PrimaryServerName | Should Be "Server1"
     }
 }

@@ -23,12 +23,12 @@ class CounterResultsMock {
 }
 
 Describe "Test-CPULoad" {
-    It "Should throw an exception if no OperatingSystem configuration is set" {
-    
-        $poShMonConfiguration = New-PoShMonConfiguration { }
-
-        { Test-CPULoad $poShMonConfiguration } | Should throw
-    }
+    #It "Should throw an exception if no OperatingSystem configuration is set" {
+    #
+    #    $poShMonConfiguration = New-PoShMonConfiguration { }
+    #
+    #    { Test-CPULoad $poShMonConfiguration } | Should throw
+    #}
 
     It "Should return a matching output structure" {
     

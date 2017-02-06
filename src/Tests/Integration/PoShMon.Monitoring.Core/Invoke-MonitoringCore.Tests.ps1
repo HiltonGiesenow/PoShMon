@@ -59,9 +59,9 @@ Describe "Invoke-MonitoringCore" {
             return
         }
 
-        Mock -CommandName Get-PSSession -Verifiable -MockWith {
-            return $null
-        }
+        #Mock -CommandName Get-PSSession -Verifiable -MockWith {
+        #    return $null
+        #}
 
         $actual = Invoke-MonitoringCore $poShMonConfiguration -TestList "Test1","Test2" -Verbose
 
@@ -155,9 +155,9 @@ Describe "Invoke-MonitoringCore (New Scope)" {
             throw "something"
         }
 
-        Mock -CommandName Get-PSSession -Verifiable -MockWith {
-            return $null
-        }
+        #Mock -CommandName Get-PSSession -Verifiable -MockWith {
+        #    return $null
+        #}
 
         Mock -CommandName Send-ExceptionNotifications -ModuleName PoShMon -MockWith {
             throw "Should not get here"
