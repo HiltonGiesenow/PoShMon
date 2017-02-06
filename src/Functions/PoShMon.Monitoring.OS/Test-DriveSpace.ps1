@@ -21,7 +21,7 @@ Function Test-DriveSpace
         {
             $totalSpace = $drive.Size/1GB
             $freeSpace = $drive.FreeSpace/1GB
-            $freeSpacePercent = 100 - $freeSpace / $totalSpace * 100
+            $freeSpacePercent = $freeSpace / $totalSpace * 100
             $highlight = @()
 
             Write-Verbose ("`t`t" + $drive.DeviceID + " : " + $totalSpace.ToString(".00") + " : " + $freeSpace.ToString(".00"))
