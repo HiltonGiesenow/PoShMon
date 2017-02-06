@@ -3,7 +3,7 @@ Remove-Module PoShMon -ErrorAction SilentlyContinue
 Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 
 Describe "Initialize-Notifications" {
-    It "Should return a the correct html for given test output" {
+    It "Should return a the correct html for given test output" -Skip {
 
         <#$poShMonConfiguration = @{
                                     TypeName = 'PoShMon.Configuration'

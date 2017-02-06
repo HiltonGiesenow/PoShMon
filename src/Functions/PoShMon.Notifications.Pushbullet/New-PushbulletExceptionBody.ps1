@@ -2,11 +2,12 @@ Function New-PushbulletExceptionBody
 {
     [CmdletBinding()]
     Param(
-        [System.Exception]$Exception
+        [System.Exception]$Exception,
+        [string]$Action = "monitor"
     )
 
     $messageBody = ''
-    $messageBody += "An exception occurred while trying to monitor the environment.`r`n"
+    $messageBody += "An exception occurred while trying to $Action the environment.`r`n"
     $messageBody += "Details: $($Exception.ToString())"
 
     return $messageBody
