@@ -29,7 +29,7 @@ Function Initialize-Notifications
                     }
                     else
                     {
-                        Send-Notifications -PoShMonConfiguration $PoShMonConfiguration -NotificationSinks $configurationItem.Sinks -SendNotificationsWhen $sendNotificationsWhen -TestOutputValues $TestOutputValues -TotalElapsedTime $TotalElapsedTime
+                        Send-MonitoringNotifications -PoShMonConfiguration $PoShMonConfiguration -NotificationSinks $configurationItem.Sinks -SendNotificationsWhen $sendNotificationsWhen -TestOutputValues $TestOutputValues -TotalElapsedTime $TotalElapsedTime
                     }
                 }
             }

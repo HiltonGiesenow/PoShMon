@@ -2,8 +2,10 @@ Function New-O365TeamsExceptionSubject
 {
     [CmdletBinding()]
     Param(
-        [hashtable]$PoShMonConfiguration
+        [hashtable]$PoShMonConfiguration,
+        [ValidateSet("Monitoring", "Repairing")]
+        [string]$Action = "Monitoring" 
     )
 
-    return "[PoshMon $($PoShMonConfiguration.General.EnvironmentName) Monitoring]`r`n"
+    return "[PoshMon $($PoShMonConfiguration.General.EnvironmentName) $Action]`r`n"
 }
