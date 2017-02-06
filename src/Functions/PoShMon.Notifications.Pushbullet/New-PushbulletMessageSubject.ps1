@@ -11,7 +11,7 @@ Function New-PushbulletMessageSubject
         { if (($outputValue.NoIssuesFound -eq $false))
             { $issueCount++ } }
 
-    $subject = "[PoshMon $EnvironmentName Monitoring Results ($issueCount Issue(s) Found)]"
+    $subject = "[PoshMon $($PoShMonConfiguration.General.EnvironmentName) Monitoring Results ($issueCount Issue(s) Found)]"
 
     return $subject
 }
