@@ -14,7 +14,7 @@ Function New-OutputValuesEmailBody
 
     foreach ($outputValue in $outputValues)
     {
-        $rowStyle = if ($counter % 2 -eq 0) { "" } else { "background-color: lightgrey" }
+        $rowStyle = if ($counter % 2 -eq 0) { "" } else { "background-color: #e1e3e8" }
 
         $tempRow = ""
         foreach ($headerKey in $outputHeaders.Keys)
