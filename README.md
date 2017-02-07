@@ -94,6 +94,13 @@ Of course there are loads of monitoring systems and tools out there, both paid a
 ---
 
 ## Release Notes
+0.11.0
+* Created 'Self-Healing' Framework into which custom scripts can be injected
+* Added ability to skip auto-discovered Windows services
+* Fixed bug where Pushbullet and Office 365 Teams were not showing Environment name
+* Fixed bug in harddrive space percent test
+* Fixed bug in cpu test for standalone 'minimal config test
+
 0.10.1
 * Added Proxy settings to enable PushBullet and 0365 Teams connectivity
 * Introduced a 'minimum configuration' for local machine monitoring
@@ -136,11 +143,5 @@ Of course there are loads of monitoring systems and tools out there, both paid a
 
 0.8.1
 * Fixing a bug in the SharePoint UPS sync query for datetime
-
-0.8.0
-* Added User Profile Sync monitoring for SharePoint 2010/2013 FIM service
-* Added CPU monitoring
-* Added html encoding for Email notification
-* Some unit test bug fixes and coverage work
 
 See [here](https://github.com/HiltonGiesenow/PoShMon/wiki/Changelog) for full Changelog
