@@ -11,6 +11,7 @@ Function OperatingSystem
         [Parameter(ParameterSetName="DriveSpacePercent")]
         [double]$DriveSpaceThresholdPercent, #This is GB
         [string[]]$WindowsServices = @(),
+        [string[]]$WindowsServicesToSkip = @(),        
         [int]$AllowedMinutesVarianceBetweenServerTimes = 1
     )
 
@@ -36,6 +37,7 @@ Function OperatingSystem
             DriveSpaceThreshold = $DriveSpaceThreshold
             DriveSpaceThresholdPercent = $DriveSpaceThresholdPercent
             WindowsServices = $WindowsServices
+            WindowsServicesToSkip = $WindowsServicesToSkip
             AllowedMinutesVarianceBetweenServerTimes = $AllowedMinutesVarianceBetweenServerTimes
         }
 }

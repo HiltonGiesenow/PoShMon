@@ -9,10 +9,10 @@ $VerbosePreference = 'Continue'
 $poShMonConfiguration = New-PoShMonConfiguration {
                 General `
                     -EnvironmentName 'SharePoint' `
-                    -MinutesToScanHistory 15 `
+                    -MinutesToScanHistory 1440 `
                     -PrimaryServerName 'SPAPPSVR01' `
                     -ConfigurationName SpFarmPosh `
-                    -TestsToSkip "SPDatabaseHealth"
+                    -TestsToSkip ""
                 OperatingSystem `
                     -EventLogCodes "Error","Warning"
                 WebSite `

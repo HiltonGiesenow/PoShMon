@@ -22,7 +22,7 @@ Describe "New-PoShMonConfiguration" {
                             -ConfigurationName SpFarmPosh `
                             -TestsToSkip 'Memory'
                         Notifications -When All {
-                            Email -ToAddress "hilton@giesenow.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
+                            Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
                             Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
                             O365Teams -TeamsWebHookUrl "http://teams.office.com/theapi"
                         }               
@@ -42,13 +42,13 @@ Describe "New-PoShMonConfiguration" {
                             -ConfigurationName SpFarmPosh `
                             -TestsToSkip 'Memory'
                         Notifications -When All {
-                            Email -ToAddress "hilton@giesenow.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
+                            Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
                             Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
                             O365Teams -TeamsWebHookUrl "http://teams.office.com/theapi"
                         }               
                     }
 
-        $poShMonConfiguration.General.ServerNames | Should Be @()
+        $poShMonConfiguration.General.ServerNames | Should Be $null
         $poShMonConfiguration.General.PrimaryServerName | Should Be "Server1"
     }
 }
