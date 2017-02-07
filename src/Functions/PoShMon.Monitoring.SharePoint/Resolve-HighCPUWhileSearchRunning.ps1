@@ -39,8 +39,11 @@ Function Resolve-HighCPUWhileSearchRunning
         }
         else # It's not what we thought - a Search crawl running, carry on as usual
         {
+            Write-Verbose "`tResolution not applicable, will report as usual"
             return $TestOutputValues
         }
+    } else {
+        Write-Verbose "`tNothing found to resolve, will report as usual"
     }
 
     $highCpuServers = $highCpuOutputValues.OutputValues | Where { $_.Highlight.Count -gt 0 }
