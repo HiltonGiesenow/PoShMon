@@ -12,7 +12,7 @@ Function New-TestOutputEmailBody
         { $title += $(" ({0:F2} Seconds)" -f $output["ElapsedTime"].TotalSeconds) }
 
     $emailSection += "<p><h1>$title</h1>"
-    $emailSection += '<table border="1">'
+    $emailSection += '<table style="border-collapse: collapse; border: 1px solid black;">'
 
     if ($output.ContainsKey("Exception"))
     {

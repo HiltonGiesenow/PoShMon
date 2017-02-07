@@ -10,16 +10,20 @@ Function New-OutputValuesEmailBody
 
     Add-Type -AssemblyName System.Web
 
+    $counter = 0
+
     foreach ($outputValue in $outputValues)
     {
-        $emailSection += '<tr>'
+        $rowStyle = if ($counter % 2 -eq 0) { "" } else { "background-color: lightgrey" }
 
+        $tempRow = ""
         foreach ($headerKey in $outputHeaders.Keys)
         {
             $fieldValue = $outputValue[$headerKey] #Would need to change to something like $outputValue.psobject.Properties["Message"].Value if this changes to a pscustomobject
             #$fieldValue = $outputValue.psobject.Properties[$headerKey].Value
             if ($outputValue['Highlight'] -ne $null -and $outputValue['Highlight'].Contains($headerKey)) {
-                $style = ' style="font-weight: bold; color: red"'
+                $style = 'font-weight: bold; color: red;"'
+                $rowStyle = "background-color: #FCCFC5"
             } else {
                 $style = ''
             }
@@ -31,9 +35,13 @@ Function New-OutputValuesEmailBody
 
             $fieldValue = [System.Web.HttpUtility]::HtmlEncode($fieldValue)
 
-            $emailSection += '<td valign="top"' + $style + ' align="' + $align +'">' + $fieldValue + '</td>'
+            $tempRow += '<td valign="top" style="border: 1px solid black;' + $style + '" align="' + $align +'">' + $fieldValue + '</td>'
         }
 
+        $emailSection += "<tr style=""$rowStyle"">"
+        $emailSection += $tempRow
+
+        $counter++
         $emailSection += '</tr>'
     }
 

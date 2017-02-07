@@ -10,7 +10,7 @@ Function New-OutputHeadersEmailBody
     foreach ($headerKey in $outputHeaders.Keys)
     {
         $header = $outputHeaders[$headerKey]
-        $emailBody += '<th align="left">' + $header + '</th>'
+        $emailBody += '<th align="left" style="border: 1px solid black;">' + $header + '</th>'
     }
 
     return $emailBody
