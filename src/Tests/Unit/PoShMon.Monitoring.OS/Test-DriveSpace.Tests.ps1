@@ -114,7 +114,7 @@ Describe "Test-DriveSpace" {
         $output = $($actual = Test-DriveSpace $poShMonConfiguration) 3>&1
 
         $output.Count | Should Be 1
-        $output[0].ToString() | Should Be "`t`tFree drive Space (88%) is below variance threshold (95%)"
+        $output[0].ToString() | Should Be "`t`tFree drive Space (12%) is below variance threshold (95%)"
     }
     It "Should not warn on space above threshold" {
 
@@ -175,7 +175,7 @@ Describe "Test-DriveSpace" {
     It "Should warn on space above specified threshold (percent)" {
 
         Mock -CommandName Get-WmiObject -MockWith {
-            return [DiskMock]::new('C:', 3, "", [UInt64]50GB, [UInt64]45GB, "MyCDrive")
+            return [DiskMock]::new('C:', 3, "", [UInt64]50GB, [UInt64]21GB, "MyCDrive")
         }
 
         $poShMonConfiguration = New-PoShMonConfiguration {
