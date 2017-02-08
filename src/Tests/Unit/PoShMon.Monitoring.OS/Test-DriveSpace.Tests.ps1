@@ -58,12 +58,16 @@ Describe "Test-DriveSpace" {
         $values1.ContainsKey("TotalSpace") | Should Be $true
         $values1.ContainsKey("FreeSpace") | Should Be $true
         $values1.ContainsKey("Highlight") | Should Be $true
+        $values1["DriveLetter"] | Should Be "C:"
+        $values1["TotalSpace"] | Should Be "50.00"
+        $values1["FreeSpace"] | Should Be "15.00 (30%)"
+        $values1["Highlight"].Count | Should Be 0
     }
 
     It "Should write the expected Verbose output (fixed)" {
     
         Mock -CommandName Get-WmiObject -MockWith {
-            return [DiskMock]::new('C:', 3, "", [UInt64]50GB, [UInt64]15GB, "MyCDrive")
+            return [DiskMock]::new('C:', 3, "", [UInt64]50GB, [UInt64]13.76GB, "MyCDrive")
         }
 
         $poShMonConfiguration = New-PoShMonConfiguration {
@@ -77,7 +81,7 @@ Describe "Test-DriveSpace" {
         $output.Count | Should Be 4
         $output[0].ToString() | Should Be "Initiating 'Harddrive Space Review' Test..."
         $output[1].ToString() | Should Be "`tlocalhost"
-        $output[2].ToString() | Should Be "`t`tC: : 50.00 : 15.00"
+        $output[2].ToString() | Should Be "`t`tC: : 50.00 : 13.76 (28%)"
         $output[3].ToString() | Should Be "Complete 'Harddrive Space Review' Test, Issues Found: No"
     }
 
