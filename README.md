@@ -20,6 +20,7 @@ PoShMon is available on the [PowerShell Gallery](https://www.powershellgallery.c
 2. In addition to ensuring PowerShell remoting itself is working correctly, you also need to ensure that commands that access other environments further down the line (most commonly SQL Server) have a **means to pass on credentials** effectively and securely. Essentially, this relates to the age-old "Double Hop" issue - we're trying to connect remotely to, say, a SharePoint environment and we in turn need access to SQL Server. This issue is described more fully in a PowerShell context [here](https://blogs.technet.microsoft.com/ashleymcglone/2016/08/30/powershell-remoting-kerberos-double-hop-solved-securely/) and [this link](https://blogs.msdn.microsoft.com/sergey_babkins_blog/2015/03/18/another-solution-to-multi-hop-powershell-remoting/) provides a means for creating more secure connections instead of using CredSSP. More on this appears below in the SharePoint example further down. You can test with SharePoint, for example, by creating a session from a remote machine (say your workstation) and executing `Get-SPFarm` - if that works successfully, you're probably good to go with PoShMon.
 
 ## Getting Started
+(Below is a quick overview - for more, please visit the more complete [Getting Started Guide](https://github.com/HiltonGiesenow/PoShMon/wiki/Getting-Started-With-PoShMon))
 Once you've installed PoShMon, you can have a look at the [Samples](https://github.com/HiltonGiesenow/PoShMon/tree/master/src/0.4.0/Samples) folder to get an idea how to use it. As an example, to monitor a farm of web servers you can use
 
 ```
@@ -94,6 +95,13 @@ Of course there are loads of monitoring systems and tools out there, both paid a
 ---
 
 ## Release Notes
+0.11.0
+* Created 'Self-Healing' Framework into which custom scripts can be injected
+* Added ability to skip auto-discovered Windows services
+* Fixed bug where Pushbullet and Office 365 Teams were not showing Environment name
+* Fixed bug in harddrive space percent test
+* Fixed bug in cpu test for standalone 'minimal config test
+
 0.10.1
 * Added Proxy settings to enable PushBullet and 0365 Teams connectivity
 * Introduced a 'minimum configuration' for local machine monitoring
@@ -136,11 +144,5 @@ Of course there are loads of monitoring systems and tools out there, both paid a
 
 0.8.1
 * Fixing a bug in the SharePoint UPS sync query for datetime
-
-0.8.0
-* Added User Profile Sync monitoring for SharePoint 2010/2013 FIM service
-* Added CPU monitoring
-* Added html encoding for Email notification
-* Some unit test bug fixes and coverage work
 
 See [here](https://github.com/HiltonGiesenow/PoShMon/wiki/Changelog) for full Changelog

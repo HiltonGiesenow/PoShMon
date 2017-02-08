@@ -1,4 +1,4 @@
-﻿$version = "0.10.1"
+﻿$version = "0.11.0"
 $manifestPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPath "\PoShMon.psd1"
 
 Remove-Item -Path $manifestPath -ErrorAction SilentlyContinue
@@ -17,6 +17,13 @@ Some of the key features / benefits of PoShMon are:
 For more information, documentation etc. visit https://github.com/HiltonGiesenow/PoShMon as well as the Samples folder within the module itself."
 
 $releaseNotes = "
+0.11.0
+* Created 'Self-Healing' Framework into which custom scripts can be injected
+* Added ability to skip auto-discovered Windows services
+* Fixed bug where Pushbullet and Office 365 Teams were not showing Environment name
+* Fixed bug in harddrive space percent test
+* Fixed bug in cpu test for standalone 'minimal config test
+
 0.10.1
 * Added Proxy settings to enable PushBullet and 0365 Teams connectivity
 * Introduced a 'minimum configuration' for local machine monitoring
@@ -69,13 +76,6 @@ $releaseNotes = "
 0.7.0
 * Added monitoring for server memory (free + total)
 * Removed Credential for Pushbullet, using Header directly instead
-
-0.6.2
-* Fixed ordering of output columns (in email etc.)
-* Removed hard-coded hard drive space threshold
-* Refactored tests to take in 'PoShMonConfiguration' instead of individual parameters
-* Removed an unnecessary function
-* Sorting database output by size (Desc)
 "
 
 New-ModuleManifest -Path $manifestPath -ModuleVersion $version -RootModule "PoShMon.psm1" -Guid '6e6cb274-1bed-4540-b288-95bc638bf679' -Author "Hilton Giesenow" -CompanyName "Experts Inside" -FunctionsToExport '*' -Copyright "2016 Hilton Giesenow, All Rights Reserved" -ProjectUri "https://github.com/HiltonGiesenow/PoShMon" -LicenseUri "https://github.com/HiltonGiesenow/PoShMon/blob/master/LICENSE" -Description $description -Tags 'Monitoring','Server','Farm','SharePoint' -ReleaseNotes $releaseNotes -Verbose
