@@ -2,8 +2,6 @@ Function Connect-RemoteSession
 {
     [cmdletbinding()]
     param(
-        #[parameter(Mandatory=$true)][string]$ServerName,
-        #[string]$ConfigurationName = $null
         [hashtable]$PoShMonConfiguration
     )
 
