@@ -1,4 +1,4 @@
-Function Get-ServersInSPFarm
+Function Get-ServersInOOSFarm
 {
     [CmdletBinding()]
     Param(
@@ -7,13 +7,12 @@ Function Get-ServersInSPFarm
     
     #try
     #{
-        $remoteSession = Connect-PrimaryServer -PoShMonConfiguration $PoShMonConfiguration -InitiationScriptBlock {
-                            Add-PSSnapin Microsoft.SharePoint.PowerShell -ErrorAction SilentlyContinue
-                        }
+        $remoteSession = Connect-PrimaryServer -PoShMonConfiguration $PoShMonConfiguration
     
         # Auto-Discover Servers
         $serverNames = Invoke-Command -Session $remoteSession -ScriptBlock {
-                                                        Get-SPServer | Where Role -ne "Invalid" | Select -ExpandProperty Name }
+                            Get-OfficeWebAppsFarm | Select -ExpandProperty Machines | Select -ExpandProperty MachineName
+                        }
 
         return $serverNames
 
