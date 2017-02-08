@@ -42,14 +42,17 @@ Describe "Test-Memory" {
         $actual.ContainsKey("SectionHeader") | Should Be $true
         $actual.ContainsKey("ElapsedTime") | Should Be $true
         $headers = $actual.OutputHeaders
-        $headers.Keys.Count | Should Be 4
+        $headers.Keys.Count | Should Be 3
         $values1 = $actual.OutputValues[0]
-        $values1.Keys.Count | Should Be 5
+        $values1.Keys.Count | Should Be 4
         $values1.ContainsKey("ServerName") | Should Be $true
         $values1.ContainsKey("TotalMemory") | Should Be $true
         $values1.ContainsKey("FreeMemory") | Should Be $true
-        $values1.ContainsKey("FreeMemoryPerc") | Should Be $true
         $values1.ContainsKey("Highlight") | Should Be $true
+        $values1["ServerName"] | Should Be "Server1"
+        $values1["TotalMemory"] | Should Be "7.93"
+        $values1["FreeMemory"] | Should Be "2.71 (34%)"
+        $values1["Highlight"].Count | Should Be 0
     }
 
     It "Should write the expected Verbose output" {
@@ -68,7 +71,7 @@ Describe "Test-Memory" {
 
         $output.Count | Should Be 3
         $output[0].ToString() | Should Be "Initiating 'Memory Review' Test..."
-        $output[1].ToString() | Should Be "`tServer1 : 7.93 : 2.71"
+        $output[1].ToString() | Should Be "`tServer1 : 7.93 : 2.71 (34%)"
         $output[2].ToString() | Should Be "Complete 'Memory Review' Test, Issues Found: No"
     }
 
