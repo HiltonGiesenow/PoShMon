@@ -10,7 +10,7 @@ Function New-EmailBody
 
     $emailBody = ''
             
-    $emailBody += New-EmailHeader "$($PoShMonConfiguration.General.EnvironmentName) Monitoring Report"
+    $emailBody += New-EmailHeader $PoShMonConfiguration
 
     foreach ($testOutputValue in $testOutputValues)
     {

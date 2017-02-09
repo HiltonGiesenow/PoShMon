@@ -13,7 +13,7 @@ Function Update-PoShMon
         Write-Host "Latest version already installed, skipping update"
     } else {
         if ((Get-Module PoShMon))
-            { Remove-Module PoShMon }
+            { Remove-Module PoShMon -ErrorAction SilentlyContinue }
         Update-Module PoShMon
         Install-Module PoShMon
 

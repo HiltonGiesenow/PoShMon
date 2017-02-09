@@ -2,10 +2,15 @@ Function New-EmailHeader
 {
     [CmdletBinding()]
     param(
-        [string]$ReportTitle = "PoShMon Monitoring Report"
+        [hashtable]$PoShMonConfiguration
     )
 
-    $emailSection = '<head><title>' + $ReportTitle + '</title></head><body><h1>' + $ReportTitle + '</h1>'
+    $emailSection = ''
+    $emailSection += '<head><title>' + $ReportTitle + '</title></head><body style="font-family: verdana; font-size: 12px;">'
+    $emailSection += '<table width="100%" style="border-collapse: collapse">'
+    $emailSection += '<tr><td style="background-color: #1D6097; color: #FFFFFF; Padding: 20px;"><h1>PoShMon Monitoring Report</h1></td></tr>'
+    $emailSection += '<tr><td style="background-color: #000000; color: #FFFFFF; padding: 10px; padding-left: 20px">' + $PoShMonConfiguration.General.EnvironmentName + ' Environment</td></tr>'
+    $emailSection += '</table>'
 
     return $emailSection;
 
