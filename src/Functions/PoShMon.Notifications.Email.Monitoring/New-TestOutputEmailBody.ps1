@@ -28,7 +28,7 @@ Function New-TestOutputEmailBody
         {    
             #$emailSection += '<thead><tr><th align="left" style="border: 1px solid #CCCCCC; background-color: #1D6097; color: #FFFFFF" colspan="' + $output.OutputHeaders.Keys.Count + '">' + $groupOutputValue.GroupName + '</th></tr><tr>'
             $emailSection += '<thead><tr><th align="left" style="border: 1px solid #CCCCCC; background-color: #1D6097; color: #FFFFFF" colspan="2">' + $groupOutputValue.GroupName + '</th></tr></thead>'
-            $emailSection += '<tbody><tr><td>&nbsp</td><td><table style="border-collapse: collapse;" cellpadding="3"><thead><tr>'
+            $emailSection += '<tbody><tr><td style="padding-left: 25px">&nbsp</td><td><table style="border-collapse: collapse;" cellpadding="3"><thead><tr>'
 
             $emailSection += (New-OutputHeadersEmailBody -outputHeaders $output.OutputHeaders) + '</tr></thead><tbody>'
 
