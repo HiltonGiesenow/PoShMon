@@ -8,6 +8,7 @@ Function New-EmailFooter
 
     $emailSection = ''
 
+    $emailSection += '<br/>'
     $emailSection += '<table width="100%" style="border-collapse: collapse">'
     $emailSection += '<tr><td style="background-color: #000000; color: #FFFFFF; padding: 20px; font-size: 12px">'
 

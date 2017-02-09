@@ -12,7 +12,8 @@ Function New-TestOutputEmailBody
         { $title += $(" ({0:F2} Seconds)" -f $output["ElapsedTime"].TotalSeconds) }
 
     #$emailSection += "<p><h2>$title</h2>"
-    $emailSection += '<p style="padding-left: 15px; padding-right: 15px;"><table style="border-collapse: collapse; min-width: 500px; " cellpadding="3">'
+    $emailSection += "<br/>"
+    $emailSection += '<p style="margin: 15px; "><table style="border-collapse: collapse; min-width: 500px; " cellpadding="3">'
     $emailSection += "<thead><tr><th align=""left"" style=""border: 1px solid CCCCCC; background-color: #1D6097;"" colspan=""$($output.OutputHeaders.Keys.Count)"">"
     $emailSection +=    "<h2 style=""font-size: 16px; color: #FFFFFF"">$title</h2>"
     $emailSection += "</th></tr></thead>"
@@ -28,7 +29,7 @@ Function New-TestOutputEmailBody
         {    
             #$emailSection += '<thead><tr><th align="left" style="border: 1px solid #CCCCCC; background-color: #1D6097; color: #FFFFFF" colspan="' + $output.OutputHeaders.Keys.Count + '">' + $groupOutputValue.GroupName + '</th></tr><tr>'
             $emailSection += '<thead><tr><th align="left" style="border: 1px solid #CCCCCC; background-color: #1D6097; color: #FFFFFF" colspan="2">' + $groupOutputValue.GroupName + '</th></tr></thead>'
-            $emailSection += '<tbody><tr><td style="padding-left: 25px">&nbsp</td><td><table style="border-collapse: collapse;" cellpadding="3"><thead><tr>'
+            $emailSection += '<tbody><tr><td style="padding-left: 25px">&nbsp;</td><td><table style="border-collapse: collapse;" cellpadding="3"><thead><tr>'
 
             $emailSection += (New-OutputHeadersEmailBody -outputHeaders $output.OutputHeaders) + '</tr></thead><tbody>'
 
