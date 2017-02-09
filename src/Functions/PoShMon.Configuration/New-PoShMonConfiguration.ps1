@@ -31,5 +31,10 @@ Function New-PoShMonConfiguration
                 $newConfiguration.Notifications += $configurationItem }
     }
 
+    if ($newConfiguration.General -eq $null)
+        { $newConfiguration.General = General -ServerNames $Env:COMPUTERNAME }
+    if ($newConfiguration.OperatingSystem -eq $null)
+        { $newConfiguration.OperatingSystem = OperatingSystem }
+
     return $newConfiguration
 }
