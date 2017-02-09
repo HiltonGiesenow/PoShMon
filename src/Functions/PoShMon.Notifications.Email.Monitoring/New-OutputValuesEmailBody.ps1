@@ -35,7 +35,7 @@ Function New-OutputValuesEmailBody
 
             $fieldValue = [System.Web.HttpUtility]::HtmlEncode($fieldValue)
 
-            $tempRow += '<td valign="top" style="border: 1px solid black;' + $style + '" align="' + $align +'">' + $fieldValue + '</td>'
+            $tempRow += '<td valign="top" style="border: 1px solid #CCCCCC;' + $style + '" align="' + $align +'">' + $fieldValue + '</td>'
         }
 
         $emailSection += "<tr style=""$rowStyle"">"
