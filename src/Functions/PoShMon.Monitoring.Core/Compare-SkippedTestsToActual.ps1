@@ -6,6 +6,9 @@ Function Compare-SkippedTestsToActual
         [string[]]$TestList
     )
 
+    if (($PoShMonConfiguration.General.TestsToSkip -join '') -eq '')
+        { $PoShMonConfiguration.General.TestsToSkip = @() }
+
     foreach ($skippedTest in $poShMonConfiguration.General.TestsToSkip)
     {
         if (!$TestList.Contains($skippedTest))
