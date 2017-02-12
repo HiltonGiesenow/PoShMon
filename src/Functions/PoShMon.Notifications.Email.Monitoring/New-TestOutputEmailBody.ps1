@@ -38,7 +38,7 @@ Function New-TestOutputEmailBody
             $emailSection += (New-OutputValuesEmailBody -outputHeaders $output.OutputHeaders -outputValues $groupOutputValue.GroupOutputValues) + '</tbody>'
 
             #$emailSection += '<tr style="border: 0px;"><td style="font-size: 6px;" colspan="' + $output.OutputHeaders.Keys.Count + '">&nbsp</td></tr>'
-            $emailSection += '</table></td></tbody></tr>'
+            $emailSection += '</table></td></tr></tbody>'
         }
     # if ($output.ContainsKey("GroupBy")) {
     #     $groups = $output.OutputValues | Group $output["GroupBy"]
