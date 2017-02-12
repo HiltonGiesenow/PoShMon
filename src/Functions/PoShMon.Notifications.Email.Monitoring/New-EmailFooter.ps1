@@ -29,7 +29,7 @@ Function New-EmailFooter
     $emailSection += '<tr><td>&nbsp;</td><td style="background-color: #1D6097; color: #FFFFFF; padding: 20px" align="center">'
     $emailSection += "PoShMon Version $($currentVersion.Version.ToString()) ($(Get-VersionUpgradeInformation $PoShMonConfiguration))"
     $emailSection += '</td><td>&nbsp;</td></tr>'
-    $emailSection += '</table>'
+    $emailSection += '</table><br/>'
     $emailSection += '</body>'
 
     return $emailSection;
