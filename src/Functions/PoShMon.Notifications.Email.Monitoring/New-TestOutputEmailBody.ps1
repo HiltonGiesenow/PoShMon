@@ -12,8 +12,10 @@ Function New-TestOutputEmailBody
         { $title += $(" ({0:F2} Seconds)" -f $output["ElapsedTime"].TotalSeconds) }
 
     #$emailSection += "<p><h2>$title</h2>"
-    $emailSection += "<br/>"
-    $emailSection += '<p style="margin: 15px; "><table style="border-collapse: collapse; min-width: 500px; " cellpadding="3">'
+    #$emailSection += "<br/>"
+    #$emailSection += '<p style="margin: 15px;"><table style="border-collapse: collapse; min-width: 500px; " cellpadding="3">'
+    $emailSection += '<p style="width:100%; background-color: #FFFFFF;">'
+    $emailSection += '<table style="border-collapse: collapse; min-width: 500px; " cellpadding="3">'
     $emailSection += "<thead><tr><th align=""left"" style=""border: 1px solid CCCCCC; background-color: #1D6097;"" colspan=""$($output.OutputHeaders.Keys.Count)"">"
     $emailSection +=    "<h2 style=""font-size: 16px; color: #FFFFFF"">$title</h2>"
     $emailSection += "</th></tr></thead>"
