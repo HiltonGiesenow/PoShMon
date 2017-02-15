@@ -13,6 +13,7 @@ Describe "Send-MonitoringNotifications" {
                             -MinutesToScanHistory 60 `
                             -PrimaryServerName 'APPServer1' `
                             -ConfigurationName SpFarmPosh `
+                            -SkipVersionUpdateCheck `
                             -TestsToSkip 'SPServerStatus','WindowsServiceState','SPFailingTimerJobs','SPDatabaseHealth','SPSearchHealth','SPDistributedCacheHealth','WebTests'
                         Notifications -When All {
                             Email -ToAddress "hilton@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
@@ -97,6 +98,7 @@ Describe "Send-MonitoringNotifications" {
                             -MinutesToScanHistory 60 `
                             -PrimaryServerName 'APPServer1' `
                             -ConfigurationName SpFarmPosh `
+                            -SkipVersionUpdateCheck `
                             -TestsToSkip 'SPServerStatus','WindowsServiceState','SPFailingTimerJobs','SPDatabaseHealth','SPSearchHealth','SPDistributedCacheHealth','WebTests'
                         Notifications -When All {
                             Email -ToAddress "hilton@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"

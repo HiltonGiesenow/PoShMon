@@ -1,9 +1,6 @@
-$rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPath ('..\..\') -Resolve
-$sutFileName = (Split-Path -Leaf $MyInvocation.MyCommand.Path).Replace(".Tests", "")
-$sutFilePath = Join-Path $rootPath -ChildPath "Functions\PoShMon.Web\$sutFileName" 
-. $sutFilePath
-$depFilePath = Join-Path $rootPath -ChildPath "Functions\PoShMon.Web\Invoke-RemoteWebRequest.ps1"
-. $depFilePath
+$rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPath ('..\..\..\') -Resolve
+Remove-Module PoShMon -ErrorAction SilentlyContinue
+Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 
 class WebRequestMock {
     [int]$StatusCode
