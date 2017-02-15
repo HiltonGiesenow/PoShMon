@@ -8,9 +8,9 @@ Function New-EmailFooter
 
     $emailSection = ''
 
-    $emailSection += '</td><td>&nbsp;</td></tr>' #end main body
+    $emailSection += '</td><td style="background-color: lightgray">&nbsp;</td></tr>' #end main body
 
-    $emailSection += '<tr><td>&nbsp;</td><td style="background-color: #000000; color: #FFFFFF; padding: 20px">'
+    $emailSection += '<tr><td style="background-color: lightgray">&nbsp;</td><td style="background-color: #000000; color: #FFFFFF; padding: 20px">'
 
     $SkippedTests = $PoShMonConfiguration.General.TestsToSkip
 
@@ -25,10 +25,11 @@ Function New-EmailFooter
 
     $currentVersion = Get-Module PoShMon -ListAvailable | Select -First 1 | Sort Version 
 
-    $emailSection += '</td><td>&nbsp;</td></tr>' #end main body
-    $emailSection += '<tr><td>&nbsp;</td><td style="background-color: #1D6097; color: #FFFFFF; padding: 20px" align="center">'
+    $emailSection += '</td><td style="background-color: lightgray">&nbsp;</td></tr>' #end main body
+    $emailSection += '<tr><td style="background-color: lightgray">&nbsp;</td><td style="background-color: #1D6097; color: #FFFFFF; padding: 20px" align="center">'
     $emailSection += "PoShMon Version $($currentVersion.Version.ToString()) ($(Get-VersionUpgradeInformation $PoShMonConfiguration))"
-    $emailSection += '</td><td>&nbsp;</td></tr>'
+    $emailSection += '</td><td style="background-color: lightgray">&nbsp;</td></tr>'
+    $emailSection += '<tr><td colspan="3" style="background-color: lightgray">&nbsp;</td></tr>'
     $emailSection += '</table><br/>'
     $emailSection += '</body>'
 
