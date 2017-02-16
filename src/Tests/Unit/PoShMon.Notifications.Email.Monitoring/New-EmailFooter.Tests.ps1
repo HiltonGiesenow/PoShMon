@@ -72,7 +72,7 @@ Describe "New-EmailFooter" {
         $actual.IndexOf("<b>Skipped Tests:</b> None") -gt 0 | Should Be $true
     }
 
-    It "Should Show 'None' for non-skipped tests as empty item" -Skip { #this is not handled higher up in the stack
+    It "Should Show 'None' for non-skipped tests as empty item" -Skip { #this is now handled higher up in the stack
 
         Mock -CommandName Get-Module -MockWith {
             return [ModuleMock]::new("1.2.3")
