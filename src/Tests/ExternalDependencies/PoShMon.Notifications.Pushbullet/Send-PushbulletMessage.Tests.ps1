@@ -1,17 +1,15 @@
 $rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPath ('..\..\..\') -Resolve
-Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1") -Verbose
-$sutFileName = (Split-Path -Leaf $MyInvocation.MyCommand.Path).Replace(".Tests", "")
-$sutFilePath = Join-Path $rootPath -ChildPath "Functions\PoShMon.Notifications.O365Teams\$sutFileName" 
-. $sutFilePath
+Remove-Module PoShMon -ErrorAction SilentlyContinue
+Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 
-$o365TeamsConfigPath = [Environment]::GetFolderPath("MyDocuments") + "\o365TeamsConfig.json"
+$pushbulletConfigPath = [Environment]::GetFolderPath("MyDocuments") + "\pushbulletconfig.json"
 
-if (Test-Path $o365TeamsConfigPath) # only run this test if there's a config to send notifications
+if (Test-Path $pushbulletConfigPath) # only run this test if there's a config to send notifications
 {
-    Describe "Send-O365TeamsMessage" {
-        It "Should send an O365 Teams message" {
+    Describe "Send-PushbulletMessage" {
+        It "Should send a Pushbullet message" {
 
-            $o365TeamsConfig = Get-Content -Raw -Path $o365TeamsConfigPath | ConvertFrom-Json
+            $pushbulletConfig = Get-Content -Raw -Path $pushbulletConfigPath | ConvertFrom-Json
 
             $poShMonConfiguration = New-PoShMonConfiguration {
                             General `
@@ -21,7 +19,9 @@ if (Test-Path $o365TeamsConfigPath) # only run this test if there's a config to 
                                 -ConfigurationName SpFarmPosh `
                                 -TestsToSkip 'SPServerStatus','WindowsServiceState','SPFailingTimerJobs','SPDatabaseHealth','SPSearchHealth','SPDistributedCacheHealth','WebTests'
                             Notifications -When All {
-                                O365Teams -TeamsWebHookUrl $o365TeamsConfig.TeamsWebHookUrl
+                                Pushbullet `
+                                    -AccessToken $pushbulletConfig.AccessToken `
+                                    -DeviceId $pushbulletConfig.DeviceId
                             }               
                         }
 
@@ -76,7 +76,9 @@ if (Test-Path $o365TeamsConfigPath) # only run this test if there's a config to 
 
             $totalElapsedTime = (Get-Date).Subtract((Get-Date).AddMinutes(-3))
 
-            $actual = Send-O365TeamsMessage $poShMonConfiguration $poShMonConfiguration.Notifications.Sinks "All" $testMonitoringOutput $totalElapsedTime -Verbose
+            $actual = Send-PushbulletMessage $poShMonConfiguration $poShMonConfiguration.Notifications.Sinks "subject" "body message"
+
         }
+
     }
 }

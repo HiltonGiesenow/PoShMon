@@ -11,7 +11,7 @@ Describe "Invoke-SPMonitoring" {
                             -MinutesToScanHistory 60 `
                             -PrimaryServerName 'AppServer01' `
                             -ConfigurationName SpFarmPosh `
-                            -TestsToSkip 'SPServerStatus','SPFailingTimerJobs','SPDatabaseHealth','SPSearchHealth','SPDistributedCacheHealth','WebTests'
+                            -TestsToSkip 'SPServerStatus','SPDatabaseHealth','SPSearchHealth','SPDistributedCacheHealth'
                         Notifications -When All {
                             Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
                             Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
