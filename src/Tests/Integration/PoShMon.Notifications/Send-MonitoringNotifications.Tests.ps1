@@ -13,6 +13,7 @@ Describe "Send-MonitoringNotifications" {
                             -MinutesToScanHistory 60 `
                             -PrimaryServerName 'APPServer1' `
                             -ConfigurationName SpFarmPosh `
+                            -SkipVersionUpdateCheck `
                             -TestsToSkip 'SPServerStatus','WindowsServiceState','SPFailingTimerJobs','SPDatabaseHealth','SPSearchHealth','SPDistributedCacheHealth','WebTests'
                         Notifications -When All {
                             Email -ToAddress "hilton@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
@@ -82,7 +83,7 @@ Describe "Send-MonitoringNotifications" {
             return
         }
 
-        $actual = Send-MonitoringNotifications $poShMonConfiguration $poShMonConfiguration.Notifications.Sinks "All" $testMonitoringOutput $totalElapsedTime -Verbose
+        $actual = Send-MonitoringNotifications $poShMonConfiguration $poShMonConfiguration.Notifications.Sinks "All" $testMonitoringOutput $totalElapsedTime
 
         Assert-VerifiableMocks
     }
@@ -97,6 +98,7 @@ Describe "Send-MonitoringNotifications" {
                             -MinutesToScanHistory 60 `
                             -PrimaryServerName 'APPServer1' `
                             -ConfigurationName SpFarmPosh `
+                            -SkipVersionUpdateCheck `
                             -TestsToSkip 'SPServerStatus','WindowsServiceState','SPFailingTimerJobs','SPDatabaseHealth','SPSearchHealth','SPDistributedCacheHealth','WebTests'
                         Notifications -When All {
                             Email -ToAddress "hilton@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
@@ -162,7 +164,7 @@ Describe "Send-MonitoringNotifications" {
             return
         }
 
-        $actual = Send-MonitoringNotifications $poShMonConfiguration $poShMonConfiguration.Notifications.Sinks "All" $testMonitoringOutput $totalElapsedTime -Verbose
+        $actual = Send-MonitoringNotifications $poShMonConfiguration $poShMonConfiguration.Notifications.Sinks "All" $testMonitoringOutput $totalElapsedTime
         
         Assert-VerifiableMocks
     }
@@ -177,6 +179,7 @@ Describe "Send-MonitoringNotifications" {
                             -MinutesToScanHistory 60 `
                             -PrimaryServerName 'APPServer1' `
                             -ConfigurationName SpFarmPosh `
+                            -SkipVersionUpdateCheck `
                             -TestsToSkip 'SPServerStatus','WindowsServiceState','SPFailingTimerJobs','SPDatabaseHealth','SPSearchHealth','SPDistributedCacheHealth','WebTests'
                         Notifications -When OnlyOnFailure {
                             Email -ToAddress "hilton@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
@@ -206,7 +209,7 @@ Describe "Send-MonitoringNotifications" {
         Mock -CommandName Send-PoShMonEmail -ModuleName PoShMon -Verifiable -MockWith { return } -ParameterFilter { $Critical -eq $true }
         Mock -CommandName Send-PushbulletMessage -ModuleName PoShMon -Verifiable -MockWith { return } -ParameterFilter { $Critical -eq $true }
 
-        $actual = Send-MonitoringNotifications $poShMonConfiguration $poShMonConfiguration.Notifications.Sinks $poShMonConfiguration.Notifications.When $testMonitoringOutput $totalElapsedTime -Verbose
+        $actual = Send-MonitoringNotifications $poShMonConfiguration $poShMonConfiguration.Notifications.Sinks $poShMonConfiguration.Notifications.When $testMonitoringOutput $totalElapsedTime
         
         Assert-VerifiableMocks
     }
@@ -221,6 +224,7 @@ Describe "Send-MonitoringNotifications" {
                             -MinutesToScanHistory 60 `
                             -PrimaryServerName 'APPServer1' `
                             -ConfigurationName SpFarmPosh `
+                            -SkipVersionUpdateCheck `
                             -TestsToSkip 'SPServerStatus','WindowsServiceState','SPFailingTimerJobs','SPDatabaseHealth','SPSearchHealth','SPDistributedCacheHealth','WebTests'
                         Notifications -When OnlyOnFailure {
                             Email -ToAddress "hilton@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
@@ -250,7 +254,7 @@ Describe "Send-MonitoringNotifications" {
         Mock -CommandName Send-PoShMonEmail -ModuleName PoShMon -Verifiable -MockWith { return } -ParameterFilter { $Critical -eq $false }
         Mock -CommandName Send-PushbulletMessage -ModuleName PoShMon -Verifiable -MockWith { return } -ParameterFilter { $Critical -eq $false }
 
-        $actual = Send-MonitoringNotifications $poShMonConfiguration $poShMonConfiguration.Notifications.Sinks $poShMonConfiguration.Notifications.When $testMonitoringOutput $totalElapsedTime -Verbose
+        $actual = Send-MonitoringNotifications $poShMonConfiguration $poShMonConfiguration.Notifications.Sinks $poShMonConfiguration.Notifications.When $testMonitoringOutput $totalElapsedTime
         
         Assert-VerifiableMocks
     }
@@ -265,6 +269,7 @@ Describe "Send-MonitoringNotifications" {
                             -MinutesToScanHistory 60 `
                             -PrimaryServerName 'APPServer1' `
                             -ConfigurationName SpFarmPosh `
+                            -SkipVersionUpdateCheck `
                             -TestsToSkip 'SPServerStatus','WindowsServiceState','SPFailingTimerJobs','SPDatabaseHealth','SPSearchHealth','SPDistributedCacheHealth','WebTests'
                         Notifications -When All {
                             Email -ToAddress "hilton@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
@@ -294,7 +299,7 @@ Describe "Send-MonitoringNotifications" {
         Mock -CommandName Send-PoShMonEmail -ModuleName PoShMon -Verifiable -MockWith { return } -ParameterFilter { $Critical -eq $false }
         Mock -CommandName Send-PushbulletMessage -ModuleName PoShMon -Verifiable -MockWith { return } -ParameterFilter { $Critical -eq $false }
 
-        $actual = Send-MonitoringNotifications $poShMonConfiguration $poShMonConfiguration.Notifications.Sinks $poShMonConfiguration.Notifications.When $testMonitoringOutput $totalElapsedTime -Verbose
+        $actual = Send-MonitoringNotifications $poShMonConfiguration $poShMonConfiguration.Notifications.Sinks $poShMonConfiguration.Notifications.When $testMonitoringOutput $totalElapsedTime
         
         Assert-VerifiableMocks
     }

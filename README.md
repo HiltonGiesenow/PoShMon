@@ -94,6 +94,12 @@ Of course there are loads of monitoring systems and tools out there, both paid a
 ---
 
 ## Release Notes
+0.12.0
+* Added Office Web Apps / Office Online Server monitoring
+* Added some style to Email output
+* Changed display to Hard Drive and Memory output
+* Fixed bug in email footer for skipped tests
+
 0.11.0
 * Created 'Self-Healing' Framework into which custom scripts can be injected
 * Added ability to skip auto-discovered Windows services
@@ -134,14 +140,5 @@ Of course there are loads of monitoring systems and tools out there, both paid a
 * For Exception notifications,  set Email Priority to High
 * Convert all Tests that used a PSSession parameter to using PoShMonConfiguration - improves testability
 * Added Unit Tests for every main Test-* function
-
-0.8.2
-* Added date to UserProfileSync output
-* Added a function to initialise output for all Test methods
-* Added PoShMon version to email output
-* Added Farm Health Test (SharePoint) - not active
-
-0.8.1
-* Fixing a bug in the SharePoint UPS sync query for datetime
 
 See [here](https://github.com/HiltonGiesenow/PoShMon/wiki/Changelog) for full Changelog

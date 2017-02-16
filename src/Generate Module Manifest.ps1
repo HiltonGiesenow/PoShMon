@@ -1,4 +1,4 @@
-﻿$version = "0.11.0"
+﻿$version = "0.12.0"
 $manifestPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPath "\PoShMon.psd1"
 
 Remove-Item -Path $manifestPath -ErrorAction SilentlyContinue
@@ -17,6 +17,12 @@ Some of the key features / benefits of PoShMon are:
 For more information, documentation etc. visit https://github.com/HiltonGiesenow/PoShMon as well as the Samples folder within the module itself."
 
 $releaseNotes = "
+0.12.0
+* Added Office Web Apps / Office Online Server monitoring
+* Added some style to Email output
+* Changed display to Hard Drive and Memory output
+* Fixed bug in email footer for skipped tests
+
 0.11.0
 * Created 'Self-Healing' Framework into which custom scripts can be injected
 * Added ability to skip auto-discovered Windows services
