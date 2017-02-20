@@ -3,7 +3,7 @@ Remove-Module PoShMon -ErrorAction SilentlyContinue
 Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 
 Describe "New-EmailBody" {
-    It "Should return a the correct html for given test output" {
+    It "Should return a the correct html for given test output" -skip {
 
         $poShMonConfiguration = New-PoShMonConfiguration {
                         General `
@@ -75,7 +75,7 @@ Describe "New-EmailBody" {
         $actual | Should Be $expected
     }
 
-    It "Should return a the correct html for given test output [if the output structure changes]" -Skip {
+    It "Should return a the correct html for given test output [if the output structure changes]" {
 
         $poShMonConfiguration = New-PoShMonConfiguration {
                         General `

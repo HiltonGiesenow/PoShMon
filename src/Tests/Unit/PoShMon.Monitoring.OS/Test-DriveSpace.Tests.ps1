@@ -153,8 +153,8 @@ Describe "Test-DriveSpace" {
         
         $actual.NoIssuesFound | Should Be $false
 
-        $actual.OutputValues.GroupOutputValues.Highlight.Count | Should Be 1
-        $actual.OutputValues.GroupOutputValues.Highlight[0] | Should Be 'FreeSpace'
+        $actual.OutputValues.Highlight.Count | Should Be 1
+        $actual.OutputValues.Highlight | Should Be 'FreeSpace'
     }
 
     It "Should warn on space below specified threshold (fixed)" {
@@ -172,14 +172,17 @@ Describe "Test-DriveSpace" {
         
         $actual.NoIssuesFound | Should Be $false
 
-        $actual.OutputValues.GroupOutputValues.Highlight.Count | Should Be 1
-        $actual.OutputValues.GroupOutputValues.Highlight[0] | Should Be 'FreeSpace'
+        $actual.OutputValues.Highlight.Count | Should Be 1
+        $actual.OutputValues.Highlight | Should Be 'FreeSpace'
     }
 
     It "Should warn on space above specified threshold (percent)" {
 
         Mock -CommandName Get-WmiObject -MockWith {
-            return [DiskMock]::new('C:', 3, "", [UInt64]50GB, [UInt64]21GB, "MyCDrive")
+            return @(
+                    [DiskMock]::new('C:', 3, "", [UInt64]50GB, [UInt64]21GB, "MyCDrive")
+                    [DiskMock]::new('D:', 3, "", [UInt64]50GB, [UInt64]44GB, "MyEDrive")
+                    )
         }
 
         $poShMonConfiguration = New-PoShMonConfiguration {
@@ -191,8 +194,8 @@ Describe "Test-DriveSpace" {
         
         $actual.NoIssuesFound | Should Be $false
 
-        $actual.OutputValues.GroupOutputValues.Highlight.Count | Should Be 1
-        $actual.OutputValues.GroupOutputValues.Highlight[0] | Should Be 'FreeSpace'
+        $actual.OutputValues.Highlight.Count | Should Be 1
+        $actual.OutputValues.Highlight | Should Be 'FreeSpace'
     }
 
     It "Should not warn on space below specified threshold (percent)" {

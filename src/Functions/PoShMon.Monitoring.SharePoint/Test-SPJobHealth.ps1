@@ -30,7 +30,7 @@ Function Test-SPJobHealth
         {
             Write-Warning ("`t" + $jobHistoryEntry.JobDefinitionTitle + " at " + $jobHistoryEntry.EndTime + " on " + $jobHistoryEntry.ServerName + " for " + $jobHistoryEntry.WebApplicationName + " : " + $jobHistoryEntry.ErrorMessage)
             
-            $mainOutput.OutputValues += @{
+            $mainOutput.OutputValues += [pscustomobject]@{
                 'JobDefinitionTitle' = $jobHistoryEntry.JobDefinitionTitle;
                 'EndTime' = $jobHistoryEntry.EndTime;
                 'ServerName' = $jobHistoryEntry.ServerName;

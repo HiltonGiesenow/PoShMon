@@ -49,7 +49,7 @@ Function Test-SPUPSSyncHealth
                         
                         Write-Warning "`tStep $stepNumber has status of $stepResult : $($errors.InnerXml)"
 
-                        $mainOutput.OutputValues += @{
+                        $mainOutput.OutputValues += [pscustomobject]@{
                             'ManagementAgent' = $maName;
                             'RunProfile' = $runprofileName;
                             'RunStartTime' = [DateTime]::Parse($failedRun.RunStartTime).ToString("yyyy-MM-dd HH:mm:ss")
