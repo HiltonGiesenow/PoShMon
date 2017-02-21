@@ -20,16 +20,17 @@ Describe "Test-ServiceState" {
         Mock -CommandName Test-ServiceStatePartial -ModuleName PoShMon -Verifiable -MockWith {
             return @(
                         @{
-                            'GroupName' = $ServerName
                             'NoIssuesFound' = $true
                             'GroupOutputValues' = @(
-                                                    @{
+                                                    [pscustomobject]@{
+                                                        'ServerName' = 'Server1'
                                                         'DisplayName' = 'Service 1 DisplayName';
                                                         'Name' = 'Svc1';
                                                         'Status' = "Running";
                                                         'Highlight' = @()
                                                     },
-                                                    @{
+                                                    [pscustomobject]@{
+                                                        'ServerName' = 'Server1'
                                                         'DisplayName' = 'Service 2 DisplayName';
                                                         'Name' = 'Svc2';
                                                         'Status' = "Running";
@@ -49,20 +50,26 @@ Describe "Test-ServiceState" {
 
         $headerKeyCount = 3
 
-        $actual.Keys.Count | Should Be 5
+        $actual.Keys.Count | Should Be 6
         $actual.ContainsKey("NoIssuesFound") | Should Be $true
         $actual.ContainsKey("OutputHeaders") | Should Be $true
         $actual.ContainsKey("OutputValues") | Should Be $true
         $actual.ContainsKey("SectionHeader") | Should Be $true
         $actual.ContainsKey("ElapsedTime") | Should Be $true
-        $valuesGroup1 = $actual.OutputValues[0]
-        $valuesGroup1.Keys.Count | Should Be $headerKeyCount
-        $values1 = $valuesGroup1.GroupOutputValues[0]
-        $values1.Keys.Count | Should Be ($headerKeyCount + 1)
-        $values1.ContainsKey("DisplayName") | Should Be $true
-        $values1.ContainsKey("Name") | Should Be $true
-        $values1.ContainsKey("Status") | Should Be $true
-        $values1.ContainsKey("Highlight") | Should Be $true
+        $actual.ContainsKey("GroupBy") | Should Be $true
+        $actual.OutputValues[1].ServerName | Should Be 'Server1'
+        $actual.OutputValues[1].DisplayName | Should Be 'Service 2 DisplayName'
+        $actual.OutputValues[1].Name | Should Be 'Svc2'
+        $actual.OutputValues[1].Status | Should Be 'Running'
+        $actual.OutputValues[1].Highlight | Should Be @()
+        #$valuesGroup1 = $actual.OutputValues[0]
+        #$valuesGroup1.Keys.Count | Should Be $headerKeyCount
+        #$values1 = $valuesGroup1.GroupOutputValues[0]
+        #$values1.Keys.Count | Should Be ($headerKeyCount + 1)
+        #$values1.ContainsKey("DisplayName") | Should Be $true
+        #$values1.ContainsKey("Name") | Should Be $true
+        #$values1.ContainsKey("Status") | Should Be $true
+        #$values1.ContainsKey("Highlight") | Should Be $true
 
     }
 
@@ -74,11 +81,12 @@ Describe "Test-ServiceState" {
                             'GroupName' = $ServerName
                             'NoIssuesFound' = $true
                             'GroupOutputValues' = @(
-                                                    @{
-                                                        'DisplayName' = 'Service 2 DisplayName';
-                                                        'Name' = $Services;
-                                                        'Status' = "Started";
-                                                        'Highlight' = @('Status')
+                                                    [pscustomobject]@{
+                                                        'ServerName' = 'Server1'
+                                                        'DisplayName' = 'Service 1 DisplayName';
+                                                        'Name' = 'Svc1';
+                                                        'Status' = "Running";
+                                                        'Highlight' = @()
                                                     }
                                                    )
                         }
@@ -103,14 +111,14 @@ Describe "Test-ServiceState" {
         Mock -CommandName Test-ServiceStatePartial -ModuleName PoShMon -Verifiable -MockWith {
             return @(
                         @{
-                            'GroupName' = $ServerName
                             'NoIssuesFound' = $true
                             'GroupOutputValues' = @(
-                                                    @{
+                                                    [pscustomobject]@{
+                                                        'ServerName' = 'Server1'
                                                         'DisplayName' = 'Service 2 DisplayName';
                                                         'Name' = $Services;
                                                         'Status' = "Started";
-                                                        'Highlight' = @('Status')
+                                                        'Highlight' = @()
                                                     }
                                                    )
                         }
@@ -127,8 +135,7 @@ Describe "Test-ServiceState" {
         Assert-VerifiableMocks
 
         $actual.OutputValues.Count | Should Be 1
-        $actual.OutputValues[0].GroupOutputValues.Count | Should Be 1
-        $actual.OutputValues[0].GroupOutputValues[0].Name | Should Be "ABC"
+        $actual.OutputValues.Highlight.Count | Should Be 0
     }
 
     It "Should fail for any service in the wrong state" {
@@ -142,10 +149,10 @@ Describe "Test-ServiceState" {
         Mock -CommandName Test-ServiceStatePartial -ModuleName PoShMon -Verifiable -MockWith {
             return @(
                         @{
-                            'GroupName' = $ServerName
                             'NoIssuesFound' = $false
                             'GroupOutputValues' = @(
-                                                    @{
+                                                    [pscustomobject]@{
+                                                        'ServerName' = 'Server1'
                                                         'DisplayName' = 'Service 2 DisplayName';
                                                         'Name' = 'Svc2';
                                                         'Status' = "Stopped";

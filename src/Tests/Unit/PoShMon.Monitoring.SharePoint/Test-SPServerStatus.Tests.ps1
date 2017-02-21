@@ -39,13 +39,18 @@ Describe "Test-SPServerStatus" {
         $actual.ContainsKey("ElapsedTime") | Should Be $true
         $headers = $actual.OutputHeaders
         $headers.Keys.Count | Should Be $headerKeyCount
-        $values1 = $actual.OutputValues[0]
-        $values1.Keys.Count | Should Be ($headerKeyCount + 1)
-        $values1.ContainsKey("ServerName") | Should Be $true
-        $values1.ContainsKey("Role") | Should Be $true
-        $values1.ContainsKey("NeedsUpgrade") | Should Be $true
-        $values1.ContainsKey("Status") | Should Be $true
-        $values1.ContainsKey("Highlight") | Should Be $true
+        $actual.OutputValues[1].ServerName | Should Be 'Server2'
+        $actual.OutputValues[1].Role | Should Be 'Application'
+        $actual.OutputValues[1].NeedsUpgrade | Should Be 'No'
+        $actual.OutputValues[1].Status | Should Be 'Online'
+        $actual.OutputValues[1].Highlight | Should Be @()
+        #$values1 = $actual.OutputValues[0]
+        #$values1.Keys.Count | Should Be ($headerKeyCount + 1)
+        #$values1.ContainsKey("ServerName") | Should Be $true
+        #$values1.ContainsKey("Role") | Should Be $true
+        #$values1.ContainsKey("NeedsUpgrade") | Should Be $true
+        #$values1.ContainsKey("Status") | Should Be $true
+        #$values1.ContainsKey("Highlight") | Should Be $true
     }
 
     It "Should write the expected Verbose output" {

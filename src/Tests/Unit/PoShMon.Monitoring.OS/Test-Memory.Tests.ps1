@@ -43,16 +43,16 @@ Describe "Test-Memory" {
         $actual.ContainsKey("ElapsedTime") | Should Be $true
         $headers = $actual.OutputHeaders
         $headers.Keys.Count | Should Be 3
-        $values1 = $actual.OutputValues[0]
-        $values1.Keys.Count | Should Be 4
-        $values1.ContainsKey("ServerName") | Should Be $true
-        $values1.ContainsKey("TotalMemory") | Should Be $true
-        $values1.ContainsKey("FreeMemory") | Should Be $true
-        $values1.ContainsKey("Highlight") | Should Be $true
-        $values1["ServerName"] | Should Be "Server1"
-        $values1["TotalMemory"] | Should Be "7.93"
-        $values1["FreeMemory"] | Should Be "2.71 (34%)"
-        $values1["Highlight"].Count | Should Be 0
+        #$values1 = $actual.OutputValues[0]
+        #$values1.Keys.Count | Should Be 4
+        #$values1.ContainsKey("ServerName") | Should Be $true
+        #$values1.ContainsKey("TotalMemory") | Should Be $true
+        #$values1.ContainsKey("FreeMemory") | Should Be $true
+        #$values1.ContainsKey("Highlight") | Should Be $true
+        $actual.OutputValues[0].ServerName | Should Be "Server1"
+        $actual.OutputValues[0].TotalMemory | Should Be "7.93"
+        $actual.OutputValues[0].FreeMemory | Should Be "2.71 (34%)"
+        $actual.OutputValues[0].Highlight.Count | Should Be 0
     }
 
     It "Should write the expected Verbose output" {

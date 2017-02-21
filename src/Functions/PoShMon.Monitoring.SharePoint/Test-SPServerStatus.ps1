@@ -35,7 +35,7 @@ Function Test-SPServerStatus
             Write-Warning "`t$($server.DisplayName) is not listed as Online. Status: $($server.Status)"
         }
 
-        $mainOutput.OutputValues += @{
+        $mainOutput.OutputValues += [pscustomobject]@{
             'ServerName' = $server.DisplayName;
             'NeedsUpgrade' = $needsUpgradeValue;
             'Status' = $server.Status.ToString();

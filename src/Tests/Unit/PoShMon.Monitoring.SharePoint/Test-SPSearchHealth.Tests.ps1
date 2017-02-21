@@ -42,12 +42,16 @@ Describe "Test-SPSearchHealth" {
         $actual.ContainsKey("ElapsedTime") | Should Be $true
         $headers = $actual.OutputHeaders
         $headers.Keys.Count | Should Be $headerKeyCount
-        $values1 = $actual.OutputValues[0]
-        $values1.Keys.Count | Should Be ($headerKeyCount + 1)
-        $values1.ContainsKey("ComponentName") | Should Be $true
-        $values1.ContainsKey("ServerName") | Should Be $true
-        $values1.ContainsKey("State") | Should Be $true
-        $values1.ContainsKey("Highlight") | Should Be $true
+        $actual.OutputValues[1].ServerName | Should Be 'Server1'
+        $actual.OutputValues[1].ComponentName | Should Be 'Component2'
+        $actual.OutputValues[1].State | Should Be 'Active'
+        $actual.OutputValues[1].Highlight | Should Be @()
+        #$values1 = $actual.OutputValues[0]
+        #$values1.Keys.Count | Should Be ($headerKeyCount + 1)
+        #$values1.ContainsKey("ComponentName") | Should Be $true
+        #$values1.ContainsKey("ServerName") | Should Be $true
+        #$values1.ContainsKey("State") | Should Be $true
+        #$values1.ContainsKey("Highlight") | Should Be $true
     }
 
     It "Should write the expected Verbose output" {

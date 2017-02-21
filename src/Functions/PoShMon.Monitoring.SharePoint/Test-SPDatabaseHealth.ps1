@@ -28,7 +28,7 @@ Function Test-SPDatabaseHealth
             Write-Warning ("`t" + $spDatabase.DisplayName + " (" + $spDatabase.ApplicationName + ") is listed as Needing Upgrade")
         }
 
-        $mainOutput.OutputValues += @{
+        $mainOutput.OutputValues += [pscustomobject]@{
             'DatabaseName' = $spDatabase.DisplayName;
             'NeedsUpgrade' = $needsUpgradeText
             'Size' = $SizeText;

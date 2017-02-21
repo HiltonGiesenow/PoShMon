@@ -26,16 +26,17 @@ Describe "Test-SPWindowsServiceState" {
         Mock -CommandName Test-ServiceStatePartial -ModuleName PoShMon -Verifiable -MockWith {
             return @(
                         @{
-                            'GroupName' = $ServerName
                             'NoIssuesFound' = $true
                             'GroupOutputValues' = @(
-                                                    @{
+                                                    [pscustomobject]@{
+                                                        'ServerName' = 'Server1'
                                                         'DisplayName' = 'Service 1 DisplayName';
                                                         'Name' = 'Svc1';
                                                         'Status' = "Running";
                                                         'Highlight' = @()
                                                     },
-                                                    @{
+                                                    [pscustomobject]@{
+                                                        'ServerName' = 'Server1'
                                                         'DisplayName' = 'Service 2 DisplayName';
                                                         'Name' = 'Svc2';
                                                         'Status' = "Running";
@@ -54,21 +55,24 @@ Describe "Test-SPWindowsServiceState" {
 
         $headerKeyCount = 3
 
-        $actual.Keys.Count | Should Be 5
+        $actual.Keys.Count | Should Be 6
         $actual.ContainsKey("NoIssuesFound") | Should Be $true
         $actual.ContainsKey("OutputHeaders") | Should Be $true
         $actual.ContainsKey("OutputValues") | Should Be $true
         $actual.ContainsKey("SectionHeader") | Should Be $true
         $actual.ContainsKey("ElapsedTime") | Should Be $true
-        $valuesGroup1 = $actual.OutputValues[0]
-        $valuesGroup1.Keys.Count | Should Be 3
-        $values1 = $valuesGroup1.GroupOutputValues[0]
-        $values1.Keys.Count | Should Be ($headerKeyCount + 1)
-        $values1.ContainsKey("DisplayName") | Should Be $true
-        $values1.ContainsKey("Name") | Should Be $true
-        $values1.ContainsKey("Status") | Should Be $true
-        $values1.ContainsKey("Highlight") | Should Be $true
-
+        $actual.ContainsKey("GroupBy") | Should Be $true
+        $actual.OutputValues[1].ServerName | Should Be 'Server1'
+        $actual.OutputValues[1].DisplayName | Should Be 'Service 2 DisplayName'
+        $actual.OutputValues[1].Name | Should Be 'Svc2'
+        $actual.OutputValues[1].Status | Should Be 'Running'
+        $actual.OutputValues[1].Highlight | Should Be @()
+        #$values1 = $valuesGroup1.GroupOutputValues[0]
+        #$values1.Keys.Count | Should Be ($headerKeyCount + 1)
+        #$values1.ContainsKey("DisplayName") | Should Be $true
+        #$values1.ContainsKey("Name") | Should Be $true
+        #$values1.ContainsKey("Status") | Should Be $true
+        #$values1.ContainsKey("Highlight") | Should Be $true
     }
 
     It "Should write the expected Verbose output" {
@@ -82,16 +86,17 @@ Describe "Test-SPWindowsServiceState" {
         Mock -CommandName Test-ServiceStatePartial -ModuleName PoShMon -Verifiable -MockWith {
             return @(
                         @{
-                            'GroupName' = $ServerName
                             'NoIssuesFound' = $true
                             'GroupOutputValues' = @(
-                                                    @{
+                                                    [pscustomobject]@{
+                                                        'ServerName' = 'Server1'
                                                         'DisplayName' = 'Service 1 DisplayName';
                                                         'Name' = 'Svc1';
                                                         'Status' = "Running";
                                                         'Highlight' = @()
                                                     },
-                                                    @{
+                                                    [pscustomobject]@{
+                                                        'ServerName' = 'Server1'
                                                         'DisplayName' = 'Service 2 DisplayName';
                                                         'Name' = 'Svc2';
                                                         'Status' = "Running";
@@ -127,10 +132,10 @@ Describe "Test-SPWindowsServiceState" {
         Mock -CommandName Test-ServiceStatePartial -ModuleName PoShMon -Verifiable -MockWith {
             return @(
                         @{
-                            'GroupName' = $ServerName
                             'NoIssuesFound' = $false
                             'GroupOutputValues' = @(
-                                                    @{
+                                                    [pscustomobject]@{
+                                                        'ServerName' = 'Server1'
                                                         'DisplayName' = 'Service 2 DisplayName';
                                                         'Name' = 'Svc2';
                                                         'Status' = "Stopped";
@@ -166,10 +171,10 @@ Describe "Test-SPWindowsServiceState" {
 
             return @(
                         @{
-                            'GroupName' = $ServerName
                             'NoIssuesFound' = $false
                             'GroupOutputValues' = @(
-                                                    @{
+                                                    [pscustomobject]@{
+                                                        'ServerName' = 'Server1'
                                                         'DisplayName' = 'Service 2 DisplayName';
                                                         'Name' = 'Svc2';
                                                         'Status' = "Stopped";
@@ -206,10 +211,10 @@ Describe "Test-SPWindowsServiceState" {
             
             return @(
                         @{
-                            'GroupName' = $ServerName
                             'NoIssuesFound' = $false
                             'GroupOutputValues' = @(
-                                                    @{
+                                                    [pscustomobject]@{
+                                                        'ServerName' = 'Server1'
                                                         'DisplayName' = 'Service 2 DisplayName';
                                                         'Name' = 'Svc2';
                                                         'Status' = "Stopped";

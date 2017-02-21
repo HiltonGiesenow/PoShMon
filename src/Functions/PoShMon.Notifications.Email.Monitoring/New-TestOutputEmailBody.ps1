@@ -24,7 +24,7 @@ Function New-TestOutputEmailBody
     {
         $emailSection += "<tbody><tr><td style=""background-color: #FCCFC5"">An Exception Occurred: $($output.Exception.ToString())</td></tr></tbody>"
     }
-    elseif ($output.OutputValues -ne $null -and $output.OutputValues.Count -gt 0 -and `
+<#    elseif ($output.OutputValues -ne $null -and $output.OutputValues.Count -gt 0 -and `
         $output.OutputValues[0].ContainsKey("GroupName")) #grouped output
     {
         foreach ($groupOutputValue in $output.OutputValues)
@@ -39,18 +39,21 @@ Function New-TestOutputEmailBody
 
             #$emailSection += '<tr style="border: 0px;"><td style="font-size: 6px;" colspan="' + $output.OutputHeaders.Keys.Count + '">&nbsp</td></tr>'
             $emailSection += '</table></td></tr></tbody>'
-        }
-    # if ($output.ContainsKey("GroupBy")) {
-    #     $groups = $output.OutputValues | Group $output["GroupBy"]
+        }#>
+     elseif ($output.ContainsKey("GroupBy")) {
+         $groups = $output.OutputValues | Group $output["GroupBy"]
 
-    #     foreach ($group in $groups)
-    #     {
-    #          $emailSection += '<thead><tr><th align="left" colspan="' + $output.OutputHeaders.Keys.Count + '"><h2>' + $group.Name + '</h2></th></tr><tr>'
+         foreach ($group in $groups)
+         {
+            $emailSection += '<thead><tr><th align="left" style="border: 1px solid #CCCCCC; background-color: #1D6097; color: #FFFFFF" colspan="2">' + $group.Name + '</th></tr></thead>'
+            $emailSection += '<tbody><tr><td style="padding-left: 25px">&nbsp;</td><td><table style="border-collapse: collapse;" cellpadding="3"><thead><tr>'
 
-    #          $emailSection += (New-OutputHeadersEmailBody -outputHeaders $output.OutputHeaders) + '</tr></thead><tbody>'
+            $emailSection += (New-OutputHeadersEmailBody -outputHeaders $output.OutputHeaders) + '</tr></thead><tbody>'
 
-    #          $emailSection += (New-OutputValuesEmailBody -outputHeaders $output.OutputHeaders -outputValues $group.Group) + '</tbody>'
-    #     }
+            $emailSection += (New-OutputValuesEmailBody -outputHeaders $output.OutputHeaders -outputValues $group.Group) + '</tbody>'
+
+            $emailSection += '</table></td></tr></tbody>'
+         }
     } else { #non-grouped output
         $emailSection += '<thead><tr>' + (New-OutputHeadersEmailBody -outputHeaders $output.OutputHeaders) + '</tr></thead><tbody>'
 

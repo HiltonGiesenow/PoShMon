@@ -3,7 +3,7 @@ Remove-Module PoShMon -ErrorAction SilentlyContinue
 Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 
 Describe "New-EmailBody" {
-    It "Should return a the correct html for given test output" {
+    It "Should return a the correct html for given test output" -skip {
 
         $poShMonConfiguration = New-PoShMonConfiguration {
                         General `
@@ -75,7 +75,7 @@ Describe "New-EmailBody" {
         $actual | Should Be $expected
     }
 
-    It "Should return a the correct html for given test output [if the output structure changes]" -Skip {
+    It "Should return a the correct html for given test output [if the output structure changes]" {
 
         $poShMonConfiguration = New-PoShMonConfiguration {
                         General `
@@ -134,7 +134,7 @@ Describe "New-EmailBody" {
         $totalElapsedTime = (Get-Date).Subtract((Get-Date).AddMinutes(-3))
 
         $currentVersion = (Get-Module PoShmon).Version.ToString()
-        $expected = '<head><title>SharePoint Monitoring Report</title></head><body><h1>SharePoint Monitoring Report</h1><p><h1>Grouped Test (60.00 Seconds)</h1><table border="1"><thead><tr><th align="left" colspan="2"><h2>Server 1</h2></th></tr><tr><th align="left">Message</th><th align="left">Event ID</th></tr></thead><tbody><tr><td valign="top" align="left">Message 1</td><td valign="top" align="right">123</td></tr><tr><td valign="top" align="left">Message 2</td><td valign="top" align="right">456</td></tr></tbody><thead><tr><th align="left" colspan="2"><h2>Server 2</h2></th></tr><tr><th align="left">Message</th><th align="left">Event ID</th></tr></thead><tbody><tr><td valign="top" align="left">Message 3</td><td valign="top" align="right">789</td></tr></tbody></table><p><h1>Ungrouped Test (60.00 Seconds)</h1><table border="1"><thead><tr><th align="left">State</th><th align="left">Component</th></tr></thead><tbody><tr><td valign="top" align="left">State 1</td><td valign="top" align="right">123</td></tr><tr><td valign="top" align="left">State 2</td><td valign="top" align="right">456</td></tr></tbody></table><p>Skipped Tests: SPServerStatus, WindowsServiceState, SPFailingTimerJobs, SPDatabaseHealth, SPSearchHealth, SPDistributedCacheHealth, WebTests</p><p>Total Elapsed Time (Seconds): 180.00 (3.00 Minutes)</p><p>PoShMon Version: ' + $currentVersion + '</p></body>'
+        $expected = '<head><title></title></head><body style="font-family: verdana; font-size: 12px;"><table width="100%" style="border-collapse: collapse; "><tr><td colspan="3" style="background-color: lightgray">&nbsp;</td></tr><tr><td style="background-color: lightgray">&nbsp;</td><td style="background-color: #1D6097; color: #FFFFFF; Padding: 20px;"><h1>PoShMon Monitoring Report</h1></td><td style="background-color: lightgray">&nbsp;</td></tr><tr><td style="background-color: lightgray">&nbsp;</td><td style="background-color: #000000; color: #FFFFFF; padding: 10px; padding-left: 20px">SharePoint Environment</td><td style="background-color: lightgray">&nbsp;</td></tr><tr><td style="background-color: lightgray">&nbsp;</td><td style="background-color: lightgray; padding-top: 20px;"><div style="width:100%; background-color: #FFFFFF;"><table style="border-collapse: collapse; min-width: 500px; " cellpadding="3"><thead><tr><th align="left" style="border: 1px solid CCCCCC; background-color: #1D6097;" colspan="2"><h2 style="font-size: 16px; color: #FFFFFF">Grouped Test (60.00 Seconds)</h2></th></tr></thead><thead><tr><th align="left" style="border: 1px solid #CCCCCC; background-color: #1D6097; color: #FFFFFF" colspan="2">Server 1</th></tr></thead><tbody><tr><td style="padding-left: 25px">&nbsp;</td><td><table style="border-collapse: collapse;" cellpadding="3"><thead><tr><th align="left" style="border: 1px solid #CCCCCC; background-color: #C7DAE9; color: #126AB0">Message</th><th align="left" style="border: 1px solid #CCCCCC; background-color: #C7DAE9; color: #126AB0">Event ID</th></tr></thead><tbody><tr style=""><td valign="top" style="border: 1px solid #CCCCCC;" align="left">Message 1</td><td valign="top" style="border: 1px solid #CCCCCC;" align="right">123</td></tr><tr style="background-color: #e1e3e8"><td valign="top" style="border: 1px solid #CCCCCC;" align="left">Message 2</td><td valign="top" style="border: 1px solid #CCCCCC;" align="right">456</td></tr></tbody></table></td></tr></tbody><thead><tr><th align="left" style="border: 1px solid #CCCCCC; background-color: #1D6097; color: #FFFFFF" colspan="2">Server 2</th></tr></thead><tbody><tr><td style="padding-left: 25px">&nbsp;</td><td><table style="border-collapse: collapse;" cellpadding="3"><thead><tr><th align="left" style="border: 1px solid #CCCCCC; background-color: #C7DAE9; color: #126AB0">Message</th><th align="left" style="border: 1px solid #CCCCCC; background-color: #C7DAE9; color: #126AB0">Event ID</th></tr></thead><tbody><tr style=""><td valign="top" style="border: 1px solid #CCCCCC;" align="left">Message 3</td><td valign="top" style="border: 1px solid #CCCCCC;" align="right">789</td></tr></tbody></table></td></tr></tbody></table></div><br/><div style="width:100%; background-color: #FFFFFF;"><table style="border-collapse: collapse; min-width: 500px; " cellpadding="3"><thead><tr><th align="left" style="border: 1px solid CCCCCC; background-color: #1D6097;" colspan="2"><h2 style="font-size: 16px; color: #FFFFFF">Ungrouped Test (60.00 Seconds)</h2></th></tr></thead><thead><tr><th align="left" style="border: 1px solid #CCCCCC; background-color: #C7DAE9; color: #126AB0">State</th><th align="left" style="border: 1px solid #CCCCCC; background-color: #C7DAE9; color: #126AB0">Component</th></tr></thead><tbody><tr style=""><td valign="top" style="border: 1px solid #CCCCCC;" align="left">State 1</td><td valign="top" style="border: 1px solid #CCCCCC;" align="right">123</td></tr><tr style="background-color: #e1e3e8"><td valign="top" style="border: 1px solid #CCCCCC;" align="left">State 2</td><td valign="top" style="border: 1px solid #CCCCCC;" align="right">456</td></tr></tbody></table></div><br/></td><td style="background-color: lightgray">&nbsp;</td></tr><tr><td style="background-color: lightgray">&nbsp;</td><td style="background-color: #000000; color: #FFFFFF; padding: 20px"><b>Skipped Tests:</b> SPServerStatus, WindowsServiceState, SPFailingTimerJobs, SPDatabaseHealth, SPSearchHealth, SPDistributedCacheHealth, WebTests<br/><b>Total Elapsed Time (Seconds):</b> 180.00 (3.00 Minutes)</td><td style="background-color: lightgray">&nbsp;</td></tr><tr><td style="background-color: lightgray">&nbsp;</td><td style="background-color: #1D6097; color: #FFFFFF; padding: 20px" align="center">PoShMon Version ' + $currentVersion + ' (Version check skipped)</td><td style="background-color: lightgray">&nbsp;</td></tr><tr><td colspan="3" style="background-color: lightgray">&nbsp;</td></tr></table><br/></body>'
 
         $actual = New-EmailBody $poShMonConfiguration "All" $testMonitoringOutput $totalElapsedTime
 
@@ -161,11 +161,11 @@ Describe "New-EmailBody" {
                 "NoIssuesFound" = $false
                 "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
                 "OutputValues" = @(
-                                    @{
+                                    [PSCustomObject]@{
                                         "ComponentName" = 123
                                         "State" = "State 1"
                                     },
-                                    @{
+                                    [PSCustomObject]@{
                                         "ComponentName" = 456
                                         "State" = "State 2"
                                     }

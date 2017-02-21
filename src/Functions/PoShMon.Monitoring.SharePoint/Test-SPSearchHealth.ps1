@@ -38,7 +38,7 @@ Function Test-SPSearchHealth
                     Write-Warning ("`t" + $componentTopologyItem.Name + " is not listed as 'Active'. State: " + $searchComponentState.State)
                 }
 
-                $mainOutput.OutputValues += @{
+                $mainOutput.OutputValues += [pscustomobject]@{
                     'ComponentName' = $componentTopologyItem.Name;
                     'ServerName' = $componentTopologyItem.ServerName;
                     'State' = $searchComponentState.State;
