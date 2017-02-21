@@ -1,14 +1,21 @@
 version: 1.0.{build}
+
 image: WMF 5
+
+install:
+  - cinst pester
+
 build: false
+
+test_script:
+# Test with native PS version
+  - ps: . .\src\Tests\PoShMon.Tests.ps1
+
 notifications:
-- provider: Email
-  to:
-  - hilton@giesenow.com
+  - provider: Email
+    to:
+    - hilton@giesenow.com
   subject: AppVeyor PoShMon Notification
   on_build_success: true
   on_build_failure: true
   on_build_status_changed: false
-test_script:
-# Test with native PS version
-  - ps: . .\src\Tests\PoShMon.Tests.ps1
