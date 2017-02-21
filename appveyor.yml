@@ -12,9 +12,9 @@ test_script:
   - ps: . .\src\Tests\PoShMon.Tests.ps1
 
 notifications:
-  - provider: Email
-    to:
-    - hilton@giesenow.com
+- provider: Email
+  to:
+  - hilton@giesenow.com
   subject: AppVeyor PoShMon Notification
   on_build_success: true
   on_build_failure: true
