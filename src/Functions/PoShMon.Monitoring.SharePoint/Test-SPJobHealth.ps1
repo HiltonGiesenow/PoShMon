@@ -7,7 +7,7 @@ Function Test-SPJobHealth
     )
 
 
-    $mainOutput = Get-InitialOutputWithTimer -SectionHeader "Failing Timer Jobs" -OutputHeaders ([ordered]@{ 'JobDefinitionTitle' = 'Job Definition Title'; 'EndTime' = 'End Time'; 'ServerName' = 'Server Name'; 'WebApplicationName' = 'Web Application Name'; 'ErrorMessage' ='Error Message' })
+    $mainOutput = Get-InitialOutputWithTimer -SectionHeader "Failing Timer Jobs" -OutputHeaders ([ordered]@{ 'JobDefinitionTitle' = 'Job Definition Title'; 'EndTime' = 'End Time'; 'ServerName' = 'Server Name'; 'ErrorMessage' ='Error Message' }) #'WebApplicationName' = 'Web Application Name'; 
 
     $startDate = (Get-Date).AddMinutes(-$PoShMonConfiguration.General.MinutesToScanHistory) #.ToUniversalTime()
 
@@ -34,7 +34,7 @@ Function Test-SPJobHealth
                 'JobDefinitionTitle' = $jobHistoryEntry.JobDefinitionTitle;
                 'EndTime' = $jobHistoryEntry.EndTime;
                 'ServerName' = $jobHistoryEntry.ServerName;
-                'WebApplicationName' = $jobHistoryEntry.WebApplicationName;
+                #'WebApplicationName' = $jobHistoryEntry.WebApplicationName;
                 'ErrorMessage' = $jobHistoryEntry.ErrorMessage
             }
         }
@@ -42,6 +42,3 @@ Function Test-SPJobHealth
 
     return (Complete-TimedOutput $mainOutput)
 }
-<#
-    $output = Test-SPJobHealth -RemoteSession $remoteSession -MinutesToScanHistory 2000 -Verbose
-#>
