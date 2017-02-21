@@ -9,8 +9,7 @@ Function Test-EventLogs
 
     foreach ($SeverityCode in $PoShMonConfiguration.OperatingSystem.EventLogCodes)
     {   
-        $mainOutput = Get-InitialOutputWithTimer -SectionHeader "$SeverityCode Event Log Issues" -OutputHeaders ([ordered]@{ 'EventID' = 'Event ID'; 'InstanceCount' = 'Count'; 'Source' = 'Source'; 'User' = 'User'; 'Timestamp' = 'Timestamp'; 'Message' ='Message' })
-        $mainOutput.GroupBy = 'ServerName'
+        $mainOutput = Get-InitialOutputWithTimer -SectionHeader "$SeverityCode Event Log Issues" -GroupBy 'ServerName' -OutputHeaders ([ordered]@{ 'EventID' = 'Event ID'; 'InstanceCount' = 'Count'; 'Source' = 'Source'; 'User' = 'User'; 'Timestamp' = 'Timestamp'; 'Message' ='Message' })
 
         $wmiStartDate = (Get-Date).AddMinutes(-$PoShMonConfiguration.General.MinutesToScanHistory)
         $wmidate = new-object -com Wbemscripting.swbemdatetime

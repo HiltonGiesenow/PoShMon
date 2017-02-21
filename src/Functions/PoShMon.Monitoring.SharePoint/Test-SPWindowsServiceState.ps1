@@ -6,8 +6,7 @@ Function Test-SPWindowsServiceState
         [hashtable]$PoShMonConfiguration
     )
 
-    $mainOutput = Get-InitialOutputWithTimer -SectionHeader "Windows Service State" -OutputHeaders ([ordered]@{ 'DisplayName' = 'Display Name'; 'Name' = 'Name'; 'Status' = 'Status' })
-    $mainOutput.GroupBy = 'ServerName'
+    $mainOutput = Get-InitialOutputWithTimer -SectionHeader "Windows Service State" -GroupBy 'ServerName' -OutputHeaders ([ordered]@{ 'DisplayName' = 'Display Name'; 'Name' = 'Name'; 'Status' = 'Status' })
 
     Write-Verbose "`tGetting SharePoint service list..."
     $spServiceInstances = Invoke-RemoteCommand -PoShMonConfiguration $PoShMonConfiguration -ScriptBlock {

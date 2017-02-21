@@ -3,6 +3,7 @@ Function Get-InitialOutputWithTimer
     [CmdletBinding()]
     param (
         [string]$SectionHeader,
+        [string]$GroupBy = $null,
         [System.Collections.Specialized.OrderedDictionary]$OutputHeaders
     )
 
