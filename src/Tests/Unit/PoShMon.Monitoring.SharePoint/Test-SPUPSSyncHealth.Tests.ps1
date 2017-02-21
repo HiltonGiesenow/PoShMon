@@ -190,12 +190,16 @@ Describe "Test-SPUPSSyncHealth" {
         $actual.ContainsKey("ElapsedTime") | Should Be $true
         $headers = $actual.OutputHeaders
         $headers.Keys.Count | Should Be $headerKeyCount
-        $values1 = $actual.OutputValues[0]
-        $values1.Keys.Count | Should Be $headerKeyCount
-        $values1.ContainsKey("ManagementAgent") | Should Be $true
-        $values1.ContainsKey("RunProfile") | Should Be $true
-        $values1.ContainsKey("RunStartTime") | Should Be $true
-        $values1.ContainsKey("ErrorDetail") | Should Be $true
+        $actual.OutputValues[1].ManagementAgent | Should Be @()
+        $actual.OutputValues[1].RunProfile | Should Be @()
+        $actual.OutputValues[1].RunStartTime | Should Be @()
+        $actual.OutputValues[1].ErrorDetail | Should Be @()
+        #$values1 = $actual.OutputValues[0]
+        #$values1.Keys.Count | Should Be $headerKeyCount
+        #$values1.ContainsKey("ManagementAgent") | Should Be $true
+        #$values1.ContainsKey("RunProfile") | Should Be $true
+        #$values1.ContainsKey("RunStartTime") | Should Be $true
+        #$values1.ContainsKey("ErrorDetail") | Should Be $true
     }
 
     It "Should write the expected Verbose output" {

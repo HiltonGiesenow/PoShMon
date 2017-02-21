@@ -40,7 +40,7 @@ Function New-TestOutputEmailBody
             #$emailSection += '<tr style="border: 0px;"><td style="font-size: 6px;" colspan="' + $output.OutputHeaders.Keys.Count + '">&nbsp</td></tr>'
             $emailSection += '</table></td></tr></tbody>'
         }#>
-     if ($output.ContainsKey("GroupBy")) {
+     elseif ($output.ContainsKey("GroupBy")) {
          $groups = $output.OutputValues | Group $output["GroupBy"]
 
          foreach ($group in $groups)

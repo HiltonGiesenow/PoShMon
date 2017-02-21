@@ -59,12 +59,16 @@ Describe "Test-Website" {
         $actual.ContainsKey("ElapsedTime") | Should Be $true
         $headers = $actual.OutputHeaders
         $headers.Keys.Count | Should Be 3
-        $values1 = $actual.OutputValues[0]
-        $values1.Keys.Count | Should Be 4
-        $values1.ContainsKey("ServerName") | Should Be $true
-        $values1.ContainsKey("StatusCode") | Should Be $true
-        $values1.ContainsKey("Outcome") | Should Be $true
-        $values1.ContainsKey("Highlight") | Should Be $true
+        $actual.OutputValues[1].ServerName | Should Be 'Server1'
+        $actual.OutputValues[1].StatusCode | Should Be 200
+        $actual.OutputValues[1].Outcome | Should Be 'Specified Page Content Found'
+        $actual.OutputValues[1].Highlight | Should Be @()
+        #$values1 = $actual.OutputValues[0]
+        #$values1.Keys.Count | Should Be 4
+        #$values1.ContainsKey("ServerName") | Should Be $true
+        #$values1.ContainsKey("StatusCode") | Should Be $true
+        #$values1.ContainsKey("Outcome") | Should Be $true
+        #$values1.ContainsKey("Highlight") | Should Be $true
     }
 
     It "Should write the expected Verbose output" {

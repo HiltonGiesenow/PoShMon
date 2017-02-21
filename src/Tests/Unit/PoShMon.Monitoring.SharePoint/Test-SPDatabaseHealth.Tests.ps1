@@ -41,11 +41,15 @@ Describe "Test-SPDatabaseHealth" {
         $headers = $actual.OutputHeaders
         $headers.Keys.Count | Should Be $headerKeyCount
         $values1 = $actual.OutputValues[0]
-        $values1.Keys.Count | Should Be ($headerKeyCount+1)
-        $values1.ContainsKey("DatabaseName") | Should Be $true
-        $values1.ContainsKey("NeedsUpgrade") | Should Be $true
-        $values1.ContainsKey("Size") | Should Be $true
-        $values1.ContainsKey("Highlight") | Should Be $true
+        $actual.OutputValues[0].DatabaseName | Should Be 'Database1'
+        $actual.OutputValues[0].NeedsUpgrade | Should Be 'No'
+        $actual.OutputValues[0].Size | Should Be '50.00'
+        $actual.OutputValues[0].Highlight | Should Be @()
+        #$values1.Keys.Count | Should Be ($headerKeyCount+1)
+        #$values1.ContainsKey("DatabaseName") | Should Be $true
+        #$values1.ContainsKey("NeedsUpgrade") | Should Be $true
+        #$values1.ContainsKey("Size") | Should Be $true
+        #$values1.ContainsKey("Highlight") | Should Be $true
     }
 
     It "Should write the expected Verbose output" {

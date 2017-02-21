@@ -23,7 +23,7 @@ Describe "Test-SPJobHealth" {
     
         Mock -CommandName Invoke-RemoteCommand -ModuleName PoShMon -MockWith {
             return @(
-                [SPJobHealthMock]::new('Job 123', (get-date).AddMinutes(-145), "Server1", "Web App1", "Something went wrong...")
+                [SPJobHealthMock]::new('Job 123', [datetime]::new(2017, 1, 1, 10, 15, 0), "Server1", "Web App1", "Something went wrong...")
             )
         }
 
@@ -42,13 +42,19 @@ Describe "Test-SPJobHealth" {
         $actual.ContainsKey("ElapsedTime") | Should Be $true
         $headers = $actual.OutputHeaders
         $headers.Keys.Count | Should Be $headerKeyCount
-        $values1 = $actual.OutputValues[0]
-        $values1.Keys.Count | Should Be $headerKeyCount
-        $values1.ContainsKey("JobDefinitionTitle") | Should Be $true
-        $values1.ContainsKey("EndTime") | Should Be $true
-        $values1.ContainsKey("ServerName") | Should Be $true
-        $values1.ContainsKey("WebApplicationName") | Should Be $true
-        $values1.ContainsKey("ErrorMessage") | Should Be $true
+        $actual.OutputValues[0].JobDefinitionTitle | Should Be 'Job 123'
+        $actual.OutputValues[0].EndTime | Should Be ([datetime]::new(2017, 1, 1, 10, 15, 0)).ToString()
+        $actual.OutputValues[0].ServerName | Should Be "Server1"
+        $actual.OutputValues[0].WebApplicationName | Should Be "Web App1"
+        $actual.OutputValues[0].ErrorMessage | Should Be "Something went wrong..."
+        $actual.OutputValues[0].Highlight | Should Be @()
+        #$values1 = $actual.OutputValues[0]
+        #$values1.Keys.Count | Should Be $headerKeyCount
+        #$values1.ContainsKey("JobDefinitionTitle") | Should Be $true
+        #$values1.ContainsKey("EndTime") | Should Be $true
+        #$values1.ContainsKey("ServerName") | Should Be $true
+        #$values1.ContainsKey("WebApplicationName") | Should Be $true
+        #$values1.ContainsKey("ErrorMessage") | Should Be $true
         #$values1.ContainsKey("Highlight") | Should Be $true
     }
 

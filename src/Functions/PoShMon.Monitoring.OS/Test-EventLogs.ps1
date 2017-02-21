@@ -66,7 +66,7 @@ Function Test-EventLogs
                 #                     'GroupName' = $serverName
                 #                     'GroupOutputValues' = @()
                 #                 }
-                $mainOutput.OutputValues += [psscustomobject]@{
+                $mainOutput.OutputValues += [pscustomobject]@{
                                 'ServerName' = $serverName;
                 }
             }
