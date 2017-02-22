@@ -2,22 +2,22 @@ $rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPa
 Remove-Module PoShMon -ErrorAction SilentlyContinue
 Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 
-class SearchItemsMock {
-    [object[]]$SearchComponentStates
-    [object[]]$ComponentTopology
-
-    SearchItemsMock () {
-    }
-
-    AddComponentWithState([string]$name, [string]$serverName, [string]$state) {
-        $this.SearchComponentStates += [PSCustomObject]@{ Name = $name; State = $state }
-        $this.ComponentTopology += [PSCustomObject]@{ Name = $name; ServerName = $serverName}
-
-    }
-}
-
 Describe "Test-SPSearchHealth" {
     InModuleScope PoShMon {
+
+        class SearchItemsMock {
+            [object[]]$SearchComponentStates
+            [object[]]$ComponentTopology
+
+            SearchItemsMock () {
+            }
+
+            AddComponentWithState([string]$name, [string]$serverName, [string]$state) {
+                $this.SearchComponentStates += [PSCustomObject]@{ Name = $name; State = $state }
+                $this.ComponentTopology += [PSCustomObject]@{ Name = $name; ServerName = $serverName}
+
+            }
+        }
 
         It "Should return a matching output structure" {
     

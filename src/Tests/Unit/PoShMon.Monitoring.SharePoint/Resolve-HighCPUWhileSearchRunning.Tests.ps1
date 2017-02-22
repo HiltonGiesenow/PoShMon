@@ -2,28 +2,28 @@ $rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPa
 Remove-Module PoShMon -ErrorAction SilentlyContinue
 Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 
-class ContentSourceMock {
-     [string]$Name
-     [string]$CrawlState
- 
-     ContentSourceMock ([string]$NewName, [string]$NewCrawlState) {
-         $this.Name = $NewName;
-         $this.CrawlState = $NewCrawlState;
-    }
-}
-
-class SearchComponentMock {
-     [string]$Name
-     [string]$ServerName
- 
-     SearchComponentMock ([string]$NewName, [string]$NewServerName) {
-         $this.Name = $NewName;
-         $this.ServerName = $NewServerName;
-    }
-}
-
 Describe "Resolve-HighCPUWhileSearchRunning" {
     InModuleScope PoShMon {
+
+        class ContentSourceMock {
+            [string]$Name
+            [string]$CrawlState
+        
+            ContentSourceMock ([string]$NewName, [string]$NewCrawlState) {
+                $this.Name = $NewName;
+                $this.CrawlState = $NewCrawlState;
+            }
+        }
+
+        class SearchComponentMock {
+            [string]$Name
+            [string]$ServerName
+        
+            SearchComponentMock ([string]$NewName, [string]$NewServerName) {
+                $this.Name = $NewName;
+                $this.ServerName = $NewServerName;
+            }
+        }
 
         It "Should not change output for non-Search activity" {
 

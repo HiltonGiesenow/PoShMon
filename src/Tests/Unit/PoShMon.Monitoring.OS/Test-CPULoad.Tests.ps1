@@ -2,28 +2,29 @@ $rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPa
 Remove-Module PoShMon -ErrorAction SilentlyContinue
 Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 
-class CounterSampleMock {
-    [string]$Path
-    [double]$CookedValue
-
-    CounterSampleMock ([string]$NewPath, [double]$NewCookedValue) {
-        $this.Path = $NewPath;
-        $this.CookedValue = $NewCookedValue;
-    }
-}
-
-class CounterResultsMock {
-    [datetime]$Timestamp
-    [CounterSampleMock[]]$CounterSamples
-
-    CounterResultsMock ([datetime]$NewTimestamp, [CounterSampleMock[]]$NewCounterSamples) {
-        $this.Timestamp = $NewTimestamp;
-        $this.CounterSamples = $NewCounterSamples;
-    }
-}
-
 Describe "Test-CPULoad" {
     InModuleScope PoShMon {
+
+        class CounterSampleMock {
+            [string]$Path
+            [double]$CookedValue
+
+            CounterSampleMock ([string]$NewPath, [double]$NewCookedValue) {
+                $this.Path = $NewPath;
+                $this.CookedValue = $NewCookedValue;
+            }
+        }
+
+        class CounterResultsMock {
+            [datetime]$Timestamp
+            [CounterSampleMock[]]$CounterSamples
+
+            CounterResultsMock ([datetime]$NewTimestamp, [CounterSampleMock[]]$NewCounterSamples) {
+                $this.Timestamp = $NewTimestamp;
+                $this.CounterSamples = $NewCounterSamples;
+            }
+        }
+        
         #It "Should throw an exception if no OperatingSystem configuration is set" {
         #
         #    $poShMonConfiguration = New-PoShMonConfiguration { }

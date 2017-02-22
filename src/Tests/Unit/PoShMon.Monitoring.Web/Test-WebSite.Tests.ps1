@@ -2,34 +2,34 @@ $rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPa
 Remove-Module PoShMon -ErrorAction SilentlyContinue
 Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 
-class WebRequestMock {
-    [int]$StatusCode
-    [string]$StatusDescription
-    [string]$Content
-
-    WebRequestMock ([int]$NewStatusCode, [String]$NewStatusDescription, [String]$NewContent) {
-        $this.StatusCode = $NewStatusCode;
-        $this.StatusDescription = $NewStatusDescription;
-        $this.Content = $NewContent;
-    }
-}
-
-class RemoteWebRequestMock {
-    [int]$StatusCode
-    [string]$StatusDescription
-    [string]$Content
-    [string]$ServerName
-
-    RemoteWebRequestMock ([int]$NewStatusCode, [String]$NewStatusDescription, [String]$NewContent, [String]$NewServerName) {
-        $this.StatusCode = $NewStatusCode;
-        $this.StatusDescription = $NewStatusDescription;
-        $this.Content = $NewContent;
-        $this.ServerName = $NewServerName;
-    }
-}
-
 Describe "Test-Website" {
     InModuleScope PoShMon {
+
+        class WebRequestMock {
+            [int]$StatusCode
+            [string]$StatusDescription
+            [string]$Content
+
+            WebRequestMock ([int]$NewStatusCode, [String]$NewStatusDescription, [String]$NewContent) {
+                $this.StatusCode = $NewStatusCode;
+                $this.StatusDescription = $NewStatusDescription;
+                $this.Content = $NewContent;
+            }
+        }
+
+        class RemoteWebRequestMock {
+            [int]$StatusCode
+            [string]$StatusDescription
+            [string]$Content
+            [string]$ServerName
+
+            RemoteWebRequestMock ([int]$NewStatusCode, [String]$NewStatusDescription, [String]$NewContent, [String]$NewServerName) {
+                $this.StatusCode = $NewStatusCode;
+                $this.StatusDescription = $NewStatusDescription;
+                $this.Content = $NewContent;
+                $this.ServerName = $NewServerName;
+            }
+        }
 
         It "Should return a matching output structure" {
     

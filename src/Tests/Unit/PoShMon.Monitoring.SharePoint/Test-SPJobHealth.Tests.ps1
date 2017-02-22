@@ -2,24 +2,24 @@ $rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPa
 Remove-Module PoShMon -ErrorAction SilentlyContinue
 Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 
-class SPJobHealthMock {
-    [string]$JobDefinitionTitle
-    [string]$EndTime
-    [string]$ServerName
-    [string]$WebApplicationName
-    [string]$ErrorMessage
-
-    SPJobHealthMock ([string]$NewJobDefinitionTitle, [string]$NewEndTime, [string]$NewServerName, [string]$NewWebApplicationName, [string]$NewErrorMessage) {
-        $this.JobDefinitionTitle = $NewJobDefinitionTitle;
-        $this.EndTime = $NewEndTime;
-        $this.ServerName = $NewServerName;
-        $this.WebApplicationName = $NewWebApplicationName;
-        $this.ErrorMessage = $NewErrorMessage;
-    }
-}
-
 Describe "Test-SPJobHealth" {
     InModuleScope PoShMon {
+
+        class SPJobHealthMock {
+            [string]$JobDefinitionTitle
+            [string]$EndTime
+            [string]$ServerName
+            [string]$WebApplicationName
+            [string]$ErrorMessage
+
+            SPJobHealthMock ([string]$NewJobDefinitionTitle, [string]$NewEndTime, [string]$NewServerName, [string]$NewWebApplicationName, [string]$NewErrorMessage) {
+                $this.JobDefinitionTitle = $NewJobDefinitionTitle;
+                $this.EndTime = $NewEndTime;
+                $this.ServerName = $NewServerName;
+                $this.WebApplicationName = $NewWebApplicationName;
+                $this.ErrorMessage = $NewErrorMessage;
+            }
+        }
 
         It "Should return a matching output structure" {
     

@@ -2,7 +2,10 @@ $rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPa
 Remove-Module PoShMon -ErrorAction SilentlyContinue
 Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 
-class ServerTimeMock {
+Describe "Test-ComputerTime" {
+    InModuleScope PoShMon {
+
+    class ServerTimeMock {
     [string]$PSComputerName
     [datetime]$DateTime
     [int]$Year
@@ -21,9 +24,6 @@ class ServerTimeMock {
         return $this.DateTime
     }
 }
-
-Describe "Test-ComputerTime" {
-    InModuleScope PoShMon {
 
         #It "Should throw an exception if no OperatingSystem configuration is set" {
         #

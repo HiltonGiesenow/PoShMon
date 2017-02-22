@@ -2,26 +2,26 @@ $rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPa
 Remove-Module PoShMon -ErrorAction SilentlyContinue
 Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 
-class DiskMock {
-    [string]$DeviceID
-    [int]$DriveType
-    [string]$ProviderName
-    [UInt64]$Size
-    [UInt64]$FreeSpace
-    [string]$VolumeName
-
-    DiskMock ([string]$NewDeviceID, [int]$NewDriveType, [String]$NewProviderName, [UInt64]$NewSize, [UInt64]$NewFreeSpace, [String]$NewVolumeName) {
-        $this.DeviceID = $NewDeviceID;
-        $this.DriveType = $NewDriveType;
-        $this.ProviderName = $NewProviderName;
-        $this.Size = $NewSize;
-        $this.FreeSpace = $NewFreeSpace;
-        $this.VolumeName = $NewVolumeName;
-    }
-}
-
 Describe "Test-DriveSpace" {
     InModuleScope PoShMon {
+
+        class DiskMock {
+            [string]$DeviceID
+            [int]$DriveType
+            [string]$ProviderName
+            [UInt64]$Size
+            [UInt64]$FreeSpace
+            [string]$VolumeName
+
+            DiskMock ([string]$NewDeviceID, [int]$NewDriveType, [String]$NewProviderName, [UInt64]$NewSize, [UInt64]$NewFreeSpace, [String]$NewVolumeName) {
+                $this.DeviceID = $NewDeviceID;
+                $this.DriveType = $NewDriveType;
+                $this.ProviderName = $NewProviderName;
+                $this.Size = $NewSize;
+                $this.FreeSpace = $NewFreeSpace;
+                $this.VolumeName = $NewVolumeName;
+            }
+        }
 
         #It "Should throw an exception if no OperatingSystem configuration is set" {
         #

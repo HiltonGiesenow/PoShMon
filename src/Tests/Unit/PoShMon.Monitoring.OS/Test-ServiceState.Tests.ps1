@@ -2,20 +2,20 @@ $rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPa
 Remove-Module PoShMon -ErrorAction SilentlyContinue
 Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 
-class ServiceInstanceMock {
-    [object]$Status
-    [object]$Service
-    [object]$Server
-
-    ServiceInstanceMock ([string]$NewServerDisplayName, [string]$NewServiceName, [string]$NewStatusValue) {
-        $this.Server = [pscustomobject]@{DisplayName=$NewServerDisplayName};
-        $this.Service = [pscustomobject]@{Name=$NewServiceName};
-        $this.Status = [pscustomobject]@{Value=$NewStatusValue};
-    }
-}
-
 Describe "Test-ServiceState" {
     InModuleScope PoShMon {
+
+        class ServiceInstanceMock {
+            [object]$Status
+            [object]$Service
+            [object]$Server
+
+            ServiceInstanceMock ([string]$NewServerDisplayName, [string]$NewServiceName, [string]$NewStatusValue) {
+                $this.Server = [pscustomobject]@{DisplayName=$NewServerDisplayName};
+                $this.Service = [pscustomobject]@{Name=$NewServiceName};
+                $this.Status = [pscustomobject]@{Value=$NewStatusValue};
+            }
+        }
 
         It "Should return a matching output structure" {
 

@@ -2,28 +2,28 @@ $rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPa
 Remove-Module PoShMon -ErrorAction SilentlyContinue
 Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 
-class EventLogItemMock {
-    [int]$EventCode
-    [string]$SourceName
-    [string]$User
-    [datetime]$TimeGenerated
-    [string]$Message
-
-    EventLogItemMock ([int]$NewEventCode, [String]$NewSourceName, [String]$NewUser, [datetime]$NewTimeGenerated, [String]$NewMessage) {
-        $this.EventCode = $NewEventCode;
-        $this.SourceName = $NewSourceName;
-        $this.User = $NewUser;
-        $this.TimeGenerated = $NewTimeGenerated;
-        $this.Message = $NewMessage;
-    }
-
-    [string] ConvertToDateTime([datetime]$something) {
-        return $something.ToString()
-    }
-}
-
 Describe "Test-EventLogs" {
     InModuleScope PoShMon {
+
+        class EventLogItemMock {
+            [int]$EventCode
+            [string]$SourceName
+            [string]$User
+            [datetime]$TimeGenerated
+            [string]$Message
+
+            EventLogItemMock ([int]$NewEventCode, [String]$NewSourceName, [String]$NewUser, [datetime]$NewTimeGenerated, [String]$NewMessage) {
+                $this.EventCode = $NewEventCode;
+                $this.SourceName = $NewSourceName;
+                $this.User = $NewUser;
+                $this.TimeGenerated = $NewTimeGenerated;
+                $this.Message = $NewMessage;
+            }
+
+            [string] ConvertToDateTime([datetime]$something) {
+                return $something.ToString()
+            }
+        }
 
         It "Should return a matching output structure" {
     

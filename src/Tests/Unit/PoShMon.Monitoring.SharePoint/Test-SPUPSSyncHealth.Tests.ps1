@@ -2,32 +2,32 @@ $rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPa
 Remove-Module PoShMon -ErrorAction SilentlyContinue
 Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 
-class UpsServiceInstanceMock {
-    [object]$Server
-
-    UpsServiceInstanceMock ([string]$NewServerDisplayName) {
-        $this.Server = [pscustomobject]@{DisplayName=$NewServerDisplayName};
-    }
-}
-
-class FimRunHistoryItemMock {
-    [string]$RunStatus
-    [string]$RunStatusReturnValue
-    [string]$RunStartTime
-
-    FimRunHistoryItemMock ([string]$NewRunStatus, [string]$NewRunStartTime, [string]$NewRunStatusReturnValue) {
-        $this.RunStatus = $NewRunStatus;
-        $this.RunStartTime = $NewRunStartTime;
-        $this.RunStatusReturnValue = $NewRunStatusReturnValue;
-    }
-
-    [object] RunDetails() {
-        return [PSCustomObject]@{ "ReturnValue" = $this.RunStatusReturnValue }
-    }
-}
-
 Describe "Test-SPUPSSyncHealth" {
     InModuleScope PoShMon {
+
+        class UpsServiceInstanceMock {
+            [object]$Server
+
+            UpsServiceInstanceMock ([string]$NewServerDisplayName) {
+                $this.Server = [pscustomobject]@{DisplayName=$NewServerDisplayName};
+            }
+        }
+
+        class FimRunHistoryItemMock {
+            [string]$RunStatus
+            [string]$RunStatusReturnValue
+            [string]$RunStartTime
+
+            FimRunHistoryItemMock ([string]$NewRunStatus, [string]$NewRunStartTime, [string]$NewRunStatusReturnValue) {
+                $this.RunStatus = $NewRunStatus;
+                $this.RunStartTime = $NewRunStartTime;
+                $this.RunStatusReturnValue = $NewRunStatusReturnValue;
+            }
+
+            [object] RunDetails() {
+                return [PSCustomObject]@{ "ReturnValue" = $this.RunStatusReturnValue }
+            }
+        }
 
         It "Should return a matching output structure" {
     

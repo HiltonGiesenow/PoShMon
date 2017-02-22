@@ -2,16 +2,16 @@ $rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPa
 Remove-Module PoShMon -ErrorAction SilentlyContinue
 Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 
-class ModuleMock {
-     [string]$Version
- 
-     ModuleMock ([string]$NewVersion) {
-         $this.Version = $NewVersion;
-    }
-}
-
 Describe "New-EmailFooter" {
     InModuleScope PoShMon {
+
+        class ModuleMock {
+            [string]$Version
+        
+            ModuleMock ([string]$NewVersion) {
+                $this.Version = $NewVersion;
+            }
+        }
 
         It "Should Show the Skipped Tests" {
 

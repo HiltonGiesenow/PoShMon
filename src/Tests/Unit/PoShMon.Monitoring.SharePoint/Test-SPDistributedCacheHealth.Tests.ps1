@@ -2,18 +2,18 @@ $rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPa
 Remove-Module PoShMon -ErrorAction SilentlyContinue
 Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 
-class SPDistributedCacheMock {
-    [object]$Server
-    [object]$Status
-
-    SPDistributedCacheMock ([string]$NewServerDisplayName, [string]$NewStatusValue) {
-        $this.Server = [pscustomobject]@{DisplayName=$NewServerDisplayName};
-        $this.Status = [pscustomobject]@{Value=$NewStatusValue};
-    }
-}
-
 Describe "Test-SPDistributedCacheHealth" {
     InModuleScope PoShMon {
+
+        class SPDistributedCacheMock {
+            [object]$Server
+            [object]$Status
+
+            SPDistributedCacheMock ([string]$NewServerDisplayName, [string]$NewStatusValue) {
+                $this.Server = [pscustomobject]@{DisplayName=$NewServerDisplayName};
+                $this.Status = [pscustomobject]@{Value=$NewStatusValue};
+            }
+        }
 
         It "Should return a matching output structure" {
     

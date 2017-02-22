@@ -2,22 +2,22 @@ $rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPa
 Remove-Module PoShMon -ErrorAction SilentlyContinue
 Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 
-class SPServerMock {
-    [string]$DisplayName
-    [string]$Status
-    [bool]$NeedsUpgrade
-    [string]$Role
-
-    SPServerMock ([string]$NewDisplayName, [string]$NewStatus, [bool]$NewNeedsUpgrade, [string]$NewRole) {
-        $this.DisplayName = $NewDisplayName
-        $this.Status = $NewStatus
-        $this.NeedsUpgrade = $NewNeedsUpgrade
-        $this.Role = $NewRole
-    }
-}
-
 Describe "Test-SPServerStatus" {
     InModuleScope PoShMon {
+
+        class SPServerMock {
+            [string]$DisplayName
+            [string]$Status
+            [bool]$NeedsUpgrade
+            [string]$Role
+
+            SPServerMock ([string]$NewDisplayName, [string]$NewStatus, [bool]$NewNeedsUpgrade, [string]$NewRole) {
+                $this.DisplayName = $NewDisplayName
+                $this.Status = $NewStatus
+                $this.NeedsUpgrade = $NewNeedsUpgrade
+                $this.Role = $NewRole
+            }
+        }
 
         It "Should return a matching output structure" {
 

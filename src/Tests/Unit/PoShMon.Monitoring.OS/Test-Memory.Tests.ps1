@@ -2,20 +2,20 @@ $rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPa
 Remove-Module PoShMon -ErrorAction SilentlyContinue
 Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 
-class ServerMemoryMock {
-    [string]$PSComputerName
-    [UInt64]$TotalVisibleMemorySize
-    [UInt64]$FreePhysicalMemory
-
-    ServerMemoryMock ([string]$NewPSComputerName, [UInt64]$NewTotalVisibleMemorySize, [UInt64]$NewFreePhysicalMemory) {
-        $this.PSComputerName = $NewPSComputerName;
-        $this.TotalVisibleMemorySize = $NewTotalVisibleMemorySize;
-        $this.FreePhysicalMemory = $NewFreePhysicalMemory;
-    }
-}
-
 Describe "Test-Memory" {
     InModuleScope PoShMon {
+
+        class ServerMemoryMock {
+            [string]$PSComputerName
+            [UInt64]$TotalVisibleMemorySize
+            [UInt64]$FreePhysicalMemory
+
+            ServerMemoryMock ([string]$NewPSComputerName, [UInt64]$NewTotalVisibleMemorySize, [UInt64]$NewFreePhysicalMemory) {
+                $this.PSComputerName = $NewPSComputerName;
+                $this.TotalVisibleMemorySize = $NewTotalVisibleMemorySize;
+                $this.FreePhysicalMemory = $NewFreePhysicalMemory;
+            }
+        }
 
         #It "Should throw an exception if no OperatingSystem configuration is set" {
         #
