@@ -39,7 +39,7 @@ Describe "Test-SPDistributedCacheHealth" {
         $actual.OutputValues[0].Server | Should Be 'Server1'
         $actual.OutputValues[0].Status | Should Be 'Online'
         $actual.OutputValues[0].Status | Should Be 'Online'
-        $actual.OutputValues[0].Highlight | Should Be @()
+        $actual.OutputValues[0].Highlight.Count | Should Be 0
         #$values1 = $actual.OutputValues[0]
         #$values1.Keys.Count | Should Be ($headerKeyCount+1)
         #$values1.ContainsKey("Server") | Should Be $true

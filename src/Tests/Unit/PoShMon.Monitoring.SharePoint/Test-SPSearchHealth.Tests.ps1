@@ -45,7 +45,7 @@ Describe "Test-SPSearchHealth" {
         $actual.OutputValues[1].ServerName | Should Be 'Server1'
         $actual.OutputValues[1].ComponentName | Should Be 'Component2'
         $actual.OutputValues[1].State | Should Be 'Active'
-        $actual.OutputValues[1].Highlight | Should Be @()
+        $actual.OutputValues[1].Highlight.Count | Should Be 0
         #$values1 = $actual.OutputValues[0]
         #$values1.Keys.Count | Should Be ($headerKeyCount + 1)
         #$values1.ContainsKey("ComponentName") | Should Be $true

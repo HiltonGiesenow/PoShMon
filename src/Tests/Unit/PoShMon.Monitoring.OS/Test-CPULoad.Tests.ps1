@@ -57,7 +57,7 @@ Describe "Test-CPULoad" {
         $headers.Keys.Count | Should Be 2
         $actual.OutputValues[1].ServerName | Should Be 'Server1'
         $actual.OutputValues[1].CPULoad | Should Be '57%'
-        $actual.OutputValues[1].Highlight | Should Be @()
+        $actual.OutputValues[1].Highlight.Count | Should Be 0
         #$values1 = $actual.OutputValues[0]
         #$values1.Keys.Count | Should Be 3
         #$values1.ContainsKey("ServerName") | Should Be $true

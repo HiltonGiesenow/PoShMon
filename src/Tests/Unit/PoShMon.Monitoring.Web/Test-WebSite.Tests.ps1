@@ -62,7 +62,7 @@ Describe "Test-Website" {
         $actual.OutputValues[1].ServerName | Should Be 'Server1'
         $actual.OutputValues[1].StatusCode | Should Be 200
         $actual.OutputValues[1].Outcome | Should Be 'Specified Page Content Found'
-        $actual.OutputValues[1].Highlight | Should Be @()
+        $actual.OutputValues[1].Highlight.Count | Should Be 0
         #$values1 = $actual.OutputValues[0]
         #$values1.Keys.Count | Should Be 4
         #$values1.ContainsKey("ServerName") | Should Be $true

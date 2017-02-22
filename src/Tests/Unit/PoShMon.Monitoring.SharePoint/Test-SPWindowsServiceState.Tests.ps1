@@ -66,7 +66,7 @@ Describe "Test-SPWindowsServiceState" {
         $actual.OutputValues[1].DisplayName | Should Be 'Service 2 DisplayName'
         $actual.OutputValues[1].Name | Should Be 'Svc2'
         $actual.OutputValues[1].Status | Should Be 'Running'
-        $actual.OutputValues[1].Highlight | Should Be @()
+        $actual.OutputValues[1].Highlight.Count | Should Be 0
         #$values1 = $valuesGroup1.GroupOutputValues[0]
         #$values1.Keys.Count | Should Be ($headerKeyCount + 1)
         #$values1.ContainsKey("DisplayName") | Should Be $true

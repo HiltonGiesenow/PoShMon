@@ -43,7 +43,7 @@ Describe "Test-SPServerStatus" {
         $actual.OutputValues[1].Role | Should Be 'Application'
         $actual.OutputValues[1].NeedsUpgrade | Should Be 'No'
         $actual.OutputValues[1].Status | Should Be 'Online'
-        $actual.OutputValues[1].Highlight | Should Be @()
+        $actual.OutputValues[1].Highlight.Count | Should Be 0
         #$values1 = $actual.OutputValues[0]
         #$values1.Keys.Count | Should Be ($headerKeyCount + 1)
         #$values1.ContainsKey("ServerName") | Should Be $true

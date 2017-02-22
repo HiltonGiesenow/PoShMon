@@ -61,7 +61,7 @@ Describe "Test-ServiceState" {
         $actual.OutputValues[1].DisplayName | Should Be 'Service 2 DisplayName'
         $actual.OutputValues[1].Name | Should Be 'Svc2'
         $actual.OutputValues[1].Status | Should Be 'Running'
-        $actual.OutputValues[1].Highlight | Should Be @()
+        $actual.OutputValues[1].Highlight.Count | Should Be 0
         #$valuesGroup1 = $actual.OutputValues[0]
         #$valuesGroup1.Keys.Count | Should Be $headerKeyCount
         #$values1 = $valuesGroup1.GroupOutputValues[0]

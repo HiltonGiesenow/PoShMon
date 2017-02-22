@@ -44,7 +44,7 @@ Describe "Test-SPDatabaseHealth" {
         $actual.OutputValues[0].DatabaseName | Should Be 'Database1'
         $actual.OutputValues[0].NeedsUpgrade | Should Be 'No'
         $actual.OutputValues[0].Size | Should Be '50.00'
-        $actual.OutputValues[0].Highlight | Should Be @()
+        $actual.OutputValues[0].Highlight.Count | Should Be 0
         #$values1.Keys.Count | Should Be ($headerKeyCount+1)
         #$values1.ContainsKey("DatabaseName") | Should Be $true
         #$values1.ContainsKey("NeedsUpgrade") | Should Be $true
