@@ -190,7 +190,7 @@ Describe "Test-SPUPSSyncHealth" {
         $actual.ContainsKey("ElapsedTime") | Should Be $true
         $headers = $actual.OutputHeaders
         $headers.Keys.Count | Should Be $headerKeyCount
-        $actual.OutputValues[1].ManagementAgent | Should Be @()
+        $actual.OutputValues[1].ManagementAgent.Count | Should Be 0
         $actual.OutputValues[1].RunProfile | Should Be @()
         $actual.OutputValues[1].RunStartTime | Should Be @()
         $actual.OutputValues[1].ErrorDetail | Should Be @()
