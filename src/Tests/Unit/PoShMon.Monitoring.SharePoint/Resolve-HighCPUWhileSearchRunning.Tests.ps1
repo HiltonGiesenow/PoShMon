@@ -23,203 +23,205 @@ class SearchComponentMock {
 }
 
 Describe "Resolve-HighCPUWhileSearchRunning" {
+    InModuleScope PoShMon {
 
-    It "Should not change output for non-Search activity" {
+        It "Should not change output for non-Search activity" {
 
-        Mock -CommandName Invoke-RemoteCommand -ModuleName PoShMon -Verifiable -MockWith {
+            Mock -CommandName Invoke-RemoteCommand -ModuleName PoShMon -Verifiable -MockWith {
             
-            $contentSources = @(
-                                [ContentSourceMock]::new("ContentSource1", "Idle")
-                            )
+                $contentSources = @(
+                                    [ContentSourceMock]::new("ContentSource1", "Idle")
+                                )
             
-            $componentTopology = @(
-                                [SearchComponentMock]::new("IndexComponent1", "Svr123")
-                                [SearchComponentMock]::new("QueryProcessingComponent1", "Svr123")
-                            )
+                $componentTopology = @(
+                                    [SearchComponentMock]::new("IndexComponent1", "Svr123")
+                                    [SearchComponentMock]::new("QueryProcessingComponent1", "Svr123")
+                                )
             
-            return @{
-                "ContentSources" = $contentSources;
-                "ComponentTopology" = $componentTopology
+                return @{
+                    "ContentSources" = $contentSources;
+                    "ComponentTopology" = $componentTopology
+                }
             }
+
+            $poShMonConfiguration = New-PoShMonConfiguration {}
+
+            $testMonitoringOutput = @(
+                @{
+                    "SectionHeader" = "Server CPU Load Review"
+                    "OutputHeaders" =[ordered]@{ 'ServerName' = 'Server Name'; 'CPULoad' = 'CPU Load (%)' }
+                    "NoIssuesFound" = $false
+                    "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
+                    "OutputValues" = @(
+                                        @{
+                                            "ServerName" = "Svr123"
+                                            "CPULoad" = 5
+                                            "Highlight" = @()
+                                        },
+                                        @{
+                                            "ServerName" = "Svr456"
+                                            "CPULoad" = 99
+                                            "Highlight" = @("CPULoad")
+                                        }
+                                    )
+                }
+                @{
+                    "SectionHeader" = "Another Test Test"
+                    "OutputHeaders" = @{ 'ComponentName' = 'Component'; 'State' = 'State' }
+                    "NoIssuesFound" = $true
+                    "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
+                    "OutputValues" = @(
+                                        @{
+                                            "Component" = 123
+                                            "State" = "State 1"
+                                        },
+                                        @{
+                                            "Component" = 456
+                                            "State" = "State 2"
+                                        }
+                                    )
+                }
+            )
+
+            $actual = Resolve-HighCPUWhileSearchRunning $poShMonConfiguration $testMonitoringOutput
+        
+            Assert-VerifiableMocks
+
+            $testMonitoringOutput.Count | Should Be 2
+            $testMonitoringOutput[0].OutputValues[1].Highlight[0] | Should Be "CPULoad"
         }
 
-        $poShMonConfiguration = New-PoShMonConfiguration {}
+        It "Should not change output for Search Query activity" {
 
-        $testMonitoringOutput = @(
-            @{
-                "SectionHeader" = "Server CPU Load Review"
-                "OutputHeaders" =[ordered]@{ 'ServerName' = 'Server Name'; 'CPULoad' = 'CPU Load (%)' }
-                "NoIssuesFound" = $false
-                "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
-                "OutputValues" = @(
-                                    @{
-                                        "ServerName" = "Svr123"
-                                        "CPULoad" = 5
-                                        "Highlight" = @()
-                                    },
-                                    @{
-                                        "ServerName" = "Svr456"
-                                        "CPULoad" = 99
-                                        "Highlight" = @("CPULoad")
-                                    }
+            Mock -CommandName Invoke-RemoteCommand -ModuleName PoShMon -Verifiable -MockWith {
+            
+                $contentSources = @(
+                                    [ContentSourceMock]::new("ContentSource1", "Idle")
                                 )
-            }
-            @{
-                "SectionHeader" = "Another Test Test"
-                "OutputHeaders" = @{ 'ComponentName' = 'Component'; 'State' = 'State' }
-                "NoIssuesFound" = $true
-                "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
-                "OutputValues" = @(
-                                    @{
-                                        "Component" = 123
-                                        "State" = "State 1"
-                                    },
-                                    @{
-                                        "Component" = 456
-                                        "State" = "State 2"
-                                    }
+            
+                $componentTopology = @(
+                                    [SearchComponentMock]::new("IndexComponent1", "Svr123")
+                                    [SearchComponentMock]::new("QueryProcessingComponent1", "Svr456")
                                 )
+            
+                return @{
+                    "ContentSources" = $contentSources;
+                    "ComponentTopology" = $componentTopology
+                }
             }
-        )
 
-        $actual = Resolve-HighCPUWhileSearchRunning $poShMonConfiguration $testMonitoringOutput
+            $poShMonConfiguration = New-PoShMonConfiguration {}
+
+            $testMonitoringOutput = @(
+                @{
+                    "SectionHeader" = "Server CPU Load Review"
+                    "OutputHeaders" =[ordered]@{ 'ServerName' = 'Server Name'; 'CPULoad' = 'CPU Load (%)' }
+                    "NoIssuesFound" = $false
+                    "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
+                    "OutputValues" = @(
+                                        @{
+                                            "ServerName" = "Svr123"
+                                            "CPULoad" = 5
+                                            "Highlight" = @()
+                                        },
+                                        @{
+                                            "ServerName" = "Svr456"
+                                            "CPULoad" = 99
+                                            "Highlight" = @("CPULoad")
+                                        }
+                                    )
+                }
+                @{
+                    "SectionHeader" = "Another Test Test"
+                    "OutputHeaders" = @{ 'ComponentName' = 'Component'; 'State' = 'State' }
+                    "NoIssuesFound" = $true
+                    "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
+                    "OutputValues" = @(
+                                        @{
+                                            "Component" = 123
+                                            "State" = "State 1"
+                                        },
+                                        @{
+                                            "Component" = 456
+                                            "State" = "State 2"
+                                        }
+                                    )
+                }
+            )
+
+            $actual = Resolve-HighCPUWhileSearchRunning $poShMonConfiguration $testMonitoringOutput
         
-        Assert-VerifiableMocks
+            Assert-VerifiableMocks
 
-        $testMonitoringOutput.Count | Should Be 2
-        $testMonitoringOutput[0].OutputValues[1].Highlight[0] | Should Be "CPULoad"
-    }
-
-    It "Should not change output for Search Query activity" {
-
-        Mock -CommandName Invoke-RemoteCommand -ModuleName PoShMon -Verifiable -MockWith {
-            
-            $contentSources = @(
-                                [ContentSourceMock]::new("ContentSource1", "Idle")
-                            )
-            
-            $componentTopology = @(
-                                [SearchComponentMock]::new("IndexComponent1", "Svr123")
-                                [SearchComponentMock]::new("QueryProcessingComponent1", "Svr456")
-                            )
-            
-            return @{
-                "ContentSources" = $contentSources;
-                "ComponentTopology" = $componentTopology
-            }
+            $testMonitoringOutput.Count | Should Be 2
+            $testMonitoringOutput[0].OutputValues[1].Highlight[0] | Should Be "CPULoad"
         }
 
-        $poShMonConfiguration = New-PoShMonConfiguration {}
+        It "Should change output for non-Query Search activity" {
 
-        $testMonitoringOutput = @(
-            @{
-                "SectionHeader" = "Server CPU Load Review"
-                "OutputHeaders" =[ordered]@{ 'ServerName' = 'Server Name'; 'CPULoad' = 'CPU Load (%)' }
-                "NoIssuesFound" = $false
-                "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
-                "OutputValues" = @(
-                                    @{
-                                        "ServerName" = "Svr123"
-                                        "CPULoad" = 5
-                                        "Highlight" = @()
-                                    },
-                                    @{
-                                        "ServerName" = "Svr456"
-                                        "CPULoad" = 99
-                                        "Highlight" = @("CPULoad")
-                                    }
+            Mock -CommandName Invoke-RemoteCommand -ModuleName PoShMon -Verifiable -MockWith {
+            
+                $contentSources = @(
+                                    [ContentSourceMock]::new("ContentSource1", "Idle")
                                 )
-            }
-            @{
-                "SectionHeader" = "Another Test Test"
-                "OutputHeaders" = @{ 'ComponentName' = 'Component'; 'State' = 'State' }
-                "NoIssuesFound" = $true
-                "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
-                "OutputValues" = @(
-                                    @{
-                                        "Component" = 123
-                                        "State" = "State 1"
-                                    },
-                                    @{
-                                        "Component" = 456
-                                        "State" = "State 2"
-                                    }
+            
+                $componentTopology = @(
+                                    [SearchComponentMock]::new("IndexComponent1", "Svr456")
+                                    [SearchComponentMock]::new("QueryProcessingComponent1", "Svr123")
                                 )
+            
+                return @{
+                    "ContentSources" = $contentSources;
+                    "ComponentTopology" = $componentTopology
+                }
             }
-        )
 
-        $actual = Resolve-HighCPUWhileSearchRunning $poShMonConfiguration $testMonitoringOutput
+            $poShMonConfiguration = New-PoShMonConfiguration {}
+
+            $testMonitoringOutput = @(
+                @{
+                    "SectionHeader" = "Server CPU Load Review"
+                    "OutputHeaders" =[ordered]@{ 'ServerName' = 'Server Name'; 'CPULoad' = 'CPU Load (%)' }
+                    "NoIssuesFound" = $false
+                    "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
+                    "OutputValues" = @(
+                                        @{
+                                            "ServerName" = "Svr123"
+                                            "CPULoad" = 5
+                                            "Highlight" = @()
+                                        },
+                                        @{
+                                            "ServerName" = "Svr456"
+                                            "CPULoad" = 99
+                                            "Highlight" = @("CPULoad")
+                                        }
+                                    )
+                }
+                @{
+                    "SectionHeader" = "Another Test Test"
+                    "OutputHeaders" = @{ 'ComponentName' = 'Component'; 'State' = 'State' }
+                    "NoIssuesFound" = $true
+                    "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
+                    "OutputValues" = @(
+                                        @{
+                                            "Component" = 123
+                                            "State" = "State 1"
+                                        },
+                                        @{
+                                            "Component" = 456
+                                            "State" = "State 2"
+                                        }
+                                    )
+                }
+            )
+
+            $actual = Resolve-HighCPUWhileSearchRunning $poShMonConfiguration $testMonitoringOutput
         
-        Assert-VerifiableMocks
+            Assert-VerifiableMocks
 
-        $testMonitoringOutput.Count | Should Be 2
-        $testMonitoringOutput[0].OutputValues[1].Highlight[0] | Should Be "CPULoad"
-    }
-
-    It "Should change output for non-Query Search activity" {
-
-        Mock -CommandName Invoke-RemoteCommand -ModuleName PoShMon -Verifiable -MockWith {
-            
-            $contentSources = @(
-                                [ContentSourceMock]::new("ContentSource1", "Idle")
-                            )
-            
-            $componentTopology = @(
-                                [SearchComponentMock]::new("IndexComponent1", "Svr456")
-                                [SearchComponentMock]::new("QueryProcessingComponent1", "Svr123")
-                            )
-            
-            return @{
-                "ContentSources" = $contentSources;
-                "ComponentTopology" = $componentTopology
-            }
+            $testMonitoringOutput.Count | Should Be 2
+            $testMonitoringOutput[0].OutputValues[1].Highlight.Count | Should Be 0
+            $testMonitoringOutput[0].NoIssuesFound | Should Be $true
         }
-
-        $poShMonConfiguration = New-PoShMonConfiguration {}
-
-        $testMonitoringOutput = @(
-            @{
-                "SectionHeader" = "Server CPU Load Review"
-                "OutputHeaders" =[ordered]@{ 'ServerName' = 'Server Name'; 'CPULoad' = 'CPU Load (%)' }
-                "NoIssuesFound" = $false
-                "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
-                "OutputValues" = @(
-                                    @{
-                                        "ServerName" = "Svr123"
-                                        "CPULoad" = 5
-                                        "Highlight" = @()
-                                    },
-                                    @{
-                                        "ServerName" = "Svr456"
-                                        "CPULoad" = 99
-                                        "Highlight" = @("CPULoad")
-                                    }
-                                )
-            }
-            @{
-                "SectionHeader" = "Another Test Test"
-                "OutputHeaders" = @{ 'ComponentName' = 'Component'; 'State' = 'State' }
-                "NoIssuesFound" = $true
-                "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
-                "OutputValues" = @(
-                                    @{
-                                        "Component" = 123
-                                        "State" = "State 1"
-                                    },
-                                    @{
-                                        "Component" = 456
-                                        "State" = "State 2"
-                                    }
-                                )
-            }
-        )
-
-        $actual = Resolve-HighCPUWhileSearchRunning $poShMonConfiguration $testMonitoringOutput
-        
-        Assert-VerifiableMocks
-
-        $testMonitoringOutput.Count | Should Be 2
-        $testMonitoringOutput[0].OutputValues[1].Highlight.Count | Should Be 0
-        $testMonitoringOutput[0].NoIssuesFound | Should Be $true
     }
 }

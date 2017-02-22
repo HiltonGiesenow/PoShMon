@@ -11,85 +11,87 @@ class ModuleMock {
 }
 
 Describe "New-EmailFooter" {
-    It "Should Show the Skipped Tests" {
+    InModuleScope PoShMon {
 
-        Mock -CommandName Get-Module -MockWith {
-            return [ModuleMock]::new("1.2.3")
+        It "Should Show the Skipped Tests" {
+
+            Mock -CommandName Get-Module -MockWith {
+                return [ModuleMock]::new("1.2.3")
+            }
+
+            $poShMonConfiguration = New-PoShMonConfiguration {
+                                        General `
+                                            -ServerNames 'Foo' `
+                                            -SkipVersionUpdateCheck `
+                                            -TestsToSkip 'ABC','DEF'
+                                    }
+
+            $totalElapsedTime = (Get-Date).Subtract((Get-Date).AddMinutes(-3))
+
+            $actual = New-EmailFooter $poShMonConfiguration $totalElapsedTime
+
+            $actual.IndexOf("<b>Skipped Tests:</b> ABC, DEF") -gt 0 | Should Be $true
         }
 
-        $poShMonConfiguration = New-PoShMonConfiguration {
-                                    General `
-                                        -ServerNames 'Foo' `
-                                        -SkipVersionUpdateCheck `
-                                        -TestsToSkip 'ABC','DEF'
-                                }
+        It "Should Show 'None' for non-skipped tests" {
 
-        $totalElapsedTime = (Get-Date).Subtract((Get-Date).AddMinutes(-3))
+            Mock -CommandName Get-Module -MockWith {
+                return [ModuleMock]::new("1.2.3")
+            }
 
-        $actual = New-EmailFooter $poShMonConfiguration $totalElapsedTime
+            $poShMonConfiguration = New-PoShMonConfiguration {
+                                        General `
+                                            -ServerNames 'Foo' `
+                                            -SkipVersionUpdateCheck
+                                    }
 
-        $actual.IndexOf("<b>Skipped Tests:</b> ABC, DEF") -gt 0 | Should Be $true
-    }
+            $totalElapsedTime = (Get-Date).Subtract((Get-Date).AddMinutes(-3))
 
-    It "Should Show 'None' for non-skipped tests" {
+            $actual = New-EmailFooter $poShMonConfiguration $totalElapsedTime
 
-        Mock -CommandName Get-Module -MockWith {
-            return [ModuleMock]::new("1.2.3")
+            #Write-Host $actual
+
+            $actual.IndexOf("<b>Skipped Tests:</b> None") -gt 0 | Should Be $true
         }
 
-        $poShMonConfiguration = New-PoShMonConfiguration {
-                                    General `
-                                        -ServerNames 'Foo' `
-                                        -SkipVersionUpdateCheck
-                                }
+        It "Should Show 'None' for non-skipped tests as empty array" {
 
-        $totalElapsedTime = (Get-Date).Subtract((Get-Date).AddMinutes(-3))
+            Mock -CommandName Get-Module -MockWith {
+                return [ModuleMock]::new("1.2.3")
+            }
 
-        $actual = New-EmailFooter $poShMonConfiguration $totalElapsedTime
+            $poShMonConfiguration = New-PoShMonConfiguration {
+                                        General `
+                                            -ServerNames 'Foo' `
+                                            -SkipVersionUpdateCheck `
+                                            -TestsToSkip @()
+                                    }
 
-        #Write-Host $actual
+            $totalElapsedTime = (Get-Date).Subtract((Get-Date).AddMinutes(-3))
 
-        $actual.IndexOf("<b>Skipped Tests:</b> None") -gt 0 | Should Be $true
-    }
+            $actual = New-EmailFooter $poShMonConfiguration $totalElapsedTime
 
-    It "Should Show 'None' for non-skipped tests as empty array" {
-
-        Mock -CommandName Get-Module -MockWith {
-            return [ModuleMock]::new("1.2.3")
+            $actual.IndexOf("<b>Skipped Tests:</b> None") -gt 0 | Should Be $true
         }
 
-        $poShMonConfiguration = New-PoShMonConfiguration {
-                                    General `
-                                        -ServerNames 'Foo' `
-                                        -SkipVersionUpdateCheck `
-                                        -TestsToSkip @()
-                                }
+        It "Should Show 'None' for non-skipped tests as empty item" -Skip { #this is now handled higher up in the stack
 
-        $totalElapsedTime = (Get-Date).Subtract((Get-Date).AddMinutes(-3))
+            Mock -CommandName Get-Module -MockWith {
+                return [ModuleMock]::new("1.2.3")
+            }
 
-        $actual = New-EmailFooter $poShMonConfiguration $totalElapsedTime
+            $poShMonConfiguration = New-PoShMonConfiguration {
+                                        General `
+                                            -ServerNames 'Foo' `
+                                            -SkipVersionUpdateCheck `
+                                            -TestsToSkip ''
+                                    }
 
-        $actual.IndexOf("<b>Skipped Tests:</b> None") -gt 0 | Should Be $true
-    }
+            $totalElapsedTime = (Get-Date).Subtract((Get-Date).AddMinutes(-3))
 
-    It "Should Show 'None' for non-skipped tests as empty item" -Skip { #this is now handled higher up in the stack
+            $actual = New-EmailFooter $poShMonConfiguration $totalElapsedTime
 
-        Mock -CommandName Get-Module -MockWith {
-            return [ModuleMock]::new("1.2.3")
+            $actual.IndexOf("<b>Skipped Tests:</b> None") -gt 0 | Should Be $true
         }
-
-        $poShMonConfiguration = New-PoShMonConfiguration {
-                                    General `
-                                        -ServerNames 'Foo' `
-                                        -SkipVersionUpdateCheck `
-                                        -TestsToSkip ''
-                                }
-
-        $totalElapsedTime = (Get-Date).Subtract((Get-Date).AddMinutes(-3))
-
-        $actual = New-EmailFooter $poShMonConfiguration $totalElapsedTime
-
-        $actual.IndexOf("<b>Skipped Tests:</b> None") -gt 0 | Should Be $true
     }
 }
-    
