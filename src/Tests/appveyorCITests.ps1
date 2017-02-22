@@ -17,7 +17,7 @@ $AllFiles = Get-ChildItem -Path $ProjectRoot\*Results.xml | Select -ExpandProper
 "COLLATING FILES:`n$($AllFiles | Out-String)"
 
 #Upload results for test page
-Get-ChildItem -Path "$ProjectRoot\Raw*TestResults.xml" | Foreach-Object {
+Get-ChildItem -Path $ProjectRoot\Raw*TestResults.xml | Foreach-Object {
     $Address = "https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)"
     $Source = $_.FullName
 
