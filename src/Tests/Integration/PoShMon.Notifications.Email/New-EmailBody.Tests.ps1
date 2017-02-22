@@ -3,6 +3,15 @@ Remove-Module PoShMon -ErrorAction SilentlyContinue
 Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 
 Describe "New-EmailBody" {
+
+    Mock -CommandName Get-Module -Verifiable -MockWith {
+        return @(
+                    [pscustomobject]@{
+                        Version = "1.2.3"
+                    }
+                )
+    }
+
     It "Should return a the correct html for given test output" -skip {
 
         $poShMonConfiguration = New-PoShMonConfiguration {

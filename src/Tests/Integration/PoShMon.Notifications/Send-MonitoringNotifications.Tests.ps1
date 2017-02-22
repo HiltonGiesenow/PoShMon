@@ -5,6 +5,15 @@ Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 $o365TeamsConfigPath = [Environment]::GetFolderPath("MyDocuments") + "\o365TeamsConfig.json"
 
 Describe "Send-MonitoringNotifications" {
+
+    Mock -CommandName Get-Module -Verifiable -MockWith {
+        return @(
+                    [pscustomobject]@{
+                        Version = "1.2.3"
+                    }
+                )
+    }
+
     It "Should send notifications to the specified channels (email, Pushbullet, O365 Teams)" {
 
         $poShMonConfiguration = New-PoShMonConfiguration {
