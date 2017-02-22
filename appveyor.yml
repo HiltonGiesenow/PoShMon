@@ -9,4 +9,4 @@ build: false
 
 test_script:
 # Test with native PS version
-  - ps: . .\src\Tests\PoShMon.Tests.ps1
+  - ps: . .\src\Tests\appveyorCITests.ps1
