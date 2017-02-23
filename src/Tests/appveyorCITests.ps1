@@ -6,11 +6,11 @@ Set-Location $ProjectRoot
 
 Import-Module Pester
 
-Invoke-Pester -Path "$ProjectRoot\src\Tests\Unit" -OutputFormat NUnitXml -OutputFile "$ProjectRoot\RawUnitTestResults.xml" -PassThru | `
-            Export-Clixml -Path "$ProjectRoot\PesterUnitTestResults.xml"
+Invoke-Pester -Path "$ProjectRoot\src\Tests\CI" -CodeCoverage "$ProjectRoot\src\Functions\*\*.ps1" -OutputFormat NUnitXml -OutputFile "$ProjectRoot\RawTestResults.xml" -PassThru | `
+            Export-Clixml -Path "$ProjectRoot\PesterTestResults.xml"
 
-Invoke-Pester -Path "$ProjectRoot\src\Tests\Integration" -OutputFormat NUnitXml -OutputFile "$ProjectRoot\RawIntegrationTestResults.xml" -PassThru | `
-            Export-Clixml -Path "$ProjectRoot\PesterIntegrationTestResults.xml"
+#Invoke-Pester -Path "$ProjectRoot\src\Tests\Integration" -OutputFormat NUnitXml -OutputFile "$ProjectRoot\RawIntegrationTestResults.xml" -PassThru | `
+#            Export-Clixml -Path "$ProjectRoot\PesterIntegrationTestResults.xml"
 
 #Show status...
 $AllFiles = Get-ChildItem -Path $ProjectRoot\*Results.xml | Select -ExpandProperty FullName
