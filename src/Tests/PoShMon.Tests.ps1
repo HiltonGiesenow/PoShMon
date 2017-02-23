@@ -10,9 +10,8 @@ $testResultSettings = @{ }
 
 Foreach($import in $scriptFiles)
 {
-    #Invoke-Pester -Script $import # -PassThru $testResultSettings
-    #$import
-    . $import
+    Invoke-Pester -Script $import # -PassThru $testResultSettings
+    #. $import
 }
 
 # $testResultSettings

@@ -57,7 +57,7 @@ Describe "Test-ComputerTime" {
             #$values1.Keys.Count | Should Be 3
             $actual.OutputValues[0].ServerName | Should Be 'Server1'
             $actual.OutputValues[0].CurrentTime | Should Be ([datetime]::new(2017, 1, 1, 10, 15, 0)).ToString()
-            $actual.OutputValues[0].Highlight | Should Be 'CurrentTime'
+            $actual.OutputValues[0].Highlight[0] | Should Be 'CurrentTime'
         }
 
         It "Should write the expected Verbose output" {
