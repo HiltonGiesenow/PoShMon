@@ -36,12 +36,13 @@ Describe "Test-SPSearchHealth" {
 
             $headerKeyCount = 3
 
-            $actual.Keys.Count | Should Be 5
+            $actual.Keys.Count | Should Be 6
             $actual.ContainsKey("NoIssuesFound") | Should Be $true
             $actual.ContainsKey("OutputHeaders") | Should Be $true
             $actual.ContainsKey("OutputValues") | Should Be $true
             $actual.ContainsKey("SectionHeader") | Should Be $true
             $actual.ContainsKey("ElapsedTime") | Should Be $true
+            $actual.ContainsKey("HeaderUrl") | Should Be $true
             $headers = $actual.OutputHeaders
             $headers.Keys.Count | Should Be $headerKeyCount
             $actual.OutputValues[1].ServerName | Should Be 'Server1'
@@ -72,11 +73,12 @@ Describe "Test-SPSearchHealth" {
             $actual = Test-SPSearchHealth $poShMonConfiguration -Verbose
             $output = $($actual = Test-SPSearchHealth $poShMonConfiguration -Verbose) 4>&1
 
-            $output.Count | Should Be 4
-            $output[0].ToString() | Should Be "Initiating 'Search Status' Test..."
-            $output[1].ToString() | Should Be "`tComponent1 is in the following state: Active"
-            $output[2].ToString() | Should Be "`tComponent2 is in the following state: Active"
-            $output[3].ToString() | Should Be "Complete 'Search Status' Test, Issues Found: No"
+            $output.Count | Should Be 5
+            $output[0].ToString() | Should Be "Getting Search Service App..."
+            $output[1].ToString() | Should Be "Initiating 'Search Status' Test..."
+            $output[2].ToString() | Should Be "`tComponent1 is in the following state: Active"
+            $output[3].ToString() | Should Be "`tComponent2 is in the following state: Active"
+            $output[4].ToString() | Should Be "Complete 'Search Status' Test, Issues Found: No"
         }
 
         It "Should write the expected Warning output" {

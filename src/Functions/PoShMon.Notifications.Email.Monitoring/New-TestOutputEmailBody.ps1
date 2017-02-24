@@ -16,8 +16,11 @@ Function New-TestOutputEmailBody
     #$emailSection += '<p style="margin: 15px;"><table style="border-collapse: collapse; min-width: 500px; " cellpadding="3">'
     $emailSection += '<div style="width:100%; background-color: #FFFFFF;">'
     $emailSection += '<table style="border-collapse: collapse; min-width: 500px; " cellpadding="3">'
-    $emailSection += "<thead><tr><th align=""left"" style=""border: 1px solid CCCCCC; background-color: #1D6097;"" colspan=""$($output.OutputHeaders.Keys.Count)"">"
+    $emailSection += "<thead><tr><th align=""left"" style=""border: 1px solid CCCCCC; background-color: #1D6097;"" colspan=""$($output.OutputHeaders.Keys.Count - 1)"">"
     $emailSection +=    "<h2 style=""font-size: 16px; color: #FFFFFF"">$title</h2>"
+    $emailSection += "<th align=""right"" style=""border: 1px solid CCCCCC; background-color: #1D6097;"">"
+    if ($output.ContainsKey("HeaderUrl"))
+        { $emailSection += "<a href=""$($output.HeaderUrl)"">[link]</a>" }
     $emailSection += "</th></tr></thead>"
 
     if ($output.ContainsKey("Exception"))
@@ -50,14 +53,14 @@ Function New-TestOutputEmailBody
 
             $emailSection += (New-OutputHeadersEmailBody -outputHeaders $output.OutputHeaders) + '</tr></thead><tbody>'
 
-            $emailSection += (New-OutputValuesEmailBody -outputHeaders $output.OutputHeaders -outputValues $group.Group) + '</tbody>'
+            $emailSection += (New-OutputValuesEmailBody -outputHeaders $output.OutputHeaders -outputValues $group.Group -LinkColumn $output.LinkColumn) + '</tbody>'
 
             $emailSection += '</table></td></tr></tbody>'
          }
     } else { #non-grouped output
         $emailSection += '<thead><tr>' + (New-OutputHeadersEmailBody -outputHeaders $output.OutputHeaders) + '</tr></thead><tbody>'
 
-        $emailSection += (New-OutputValuesEmailBody -outputHeaders $output.OutputHeaders -outputValues $output.OutputValues) + '</tbody>'
+        $emailSection += (New-OutputValuesEmailBody -outputHeaders $output.OutputHeaders -outputValues $output.OutputValues -LinkColumn $output.LinkColumn) + '</tbody>'
     }
 
     $emailSection += '</table></div><br/>'

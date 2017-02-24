@@ -2,7 +2,9 @@ Import-Module Pester
 
 $path = (Split-Path -Parent $MyInvocation.MyCommand.Path)
 
-$testsPath = "$path\CI\Unit"
+$testsPath = "$path\CI"
+#$testsPath = "$path\CI\Unit"
+$testsPath = "$path\CI\Integration"
 
 Invoke-Pester -Path $testsPath -CodeCoverage "$sutPath\*\*.ps1"
 
@@ -13,8 +15,6 @@ Invoke-Pester -Path $testsPath -CodeCoverage "$sutPath\*\*.ps1"
 
 #$testResultSettings = @{ }
 
-#$testsPath = "$path\CI"
-#$testsPath = "$path\CI\Integration"
 
 <#
 $filesToTest = @()

@@ -5,10 +5,10 @@ Function Test-SPServerStatus
         [hashtable]$PoShMonConfiguration
     )
 
-    $mainOutput = Get-InitialOutputWithTimer -SectionHeader "Farm Server Status" -OutputHeaders ([ordered]@{ 'ServerName' = 'Server Name'; 'Role' = 'Role'; 'NeedsUpgrade' = 'Needs Upgrade?'; 'Status' ='Status' })
-
-    #$farm = Get-SPFarm
-    #$farm.BuildVersion
+    $mainOutput = Get-InitialOutputWithTimer `
+                                        -SectionHeader "Farm Server Status" `
+                                        -OutputHeaders ([ordered]@{ 'ServerName' = 'Server Name'; 'Role' = 'Role'; 'NeedsUpgrade' = 'Needs Upgrade?'; 'Status' ='Status' }) `
+                                        -HeaderUrl ($PoShMonConfiguration.SharePoint.CentralAdminUrl + "/_admin/FarmServers.aspx")
 
     foreach ($ServerName in $PoShMonConfiguration.General.ServerNames) # $farm.Servers
     {

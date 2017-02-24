@@ -6,7 +6,16 @@ Function Test-SPUPSSyncHealth
         [hashtable]$PoShMonConfiguration
     )
      
-    $mainOutput = Get-InitialOutputWithTimer -SectionHeader "User Profile Sync State" -OutputHeaders ([ordered]@{ 'ManagementAgent' = 'Management Agent'; 'RunProfile' = 'Run Profile'; 'RunStartTime' = 'Run Start Time'; 'ErrorDetail' = 'ErrorDetail' })
+    Write-Verbose "Getting UPS Service App..."
+
+    $upsApp = Invoke-RemoteCommand -PoShMonConfiguration $PoShMonConfiguration -ScriptBlock {
+                            Get-SPServiceApplication | Where TypeName -eq 'User Profile Service Application'
+                        }
+    
+    $mainOutput = Get-InitialOutputWithTimer `
+                                        -SectionHeader "User Profile Sync State" `
+                                        -OutputHeaders ([ordered]@{ 'ManagementAgent' = 'Management Agent'; 'RunProfile' = 'Run Profile'; 'RunStartTime' = 'Run Start Time'; 'ErrorDetail' = 'ErrorDetail' }) `
+                                        -HeaderUrl ($PoShMonConfiguration.SharePoint.CentralAdminUrl + "/_layouts/15/ManageUserProfileServiceApplication.aspx?ApplicationID=" + $upsApp.Id)
 
     Write-Verbose "`tGetting SharePoint service list to locate UPS Sync server..."
     
