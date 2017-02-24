@@ -6,7 +6,7 @@ Function Test-SPUPSSyncHealth
         [hashtable]$PoShMonConfiguration
     )
      
-    Write-Verbose "`tGetting UPS Service App..."
+    Write-Verbose "Getting UPS Service App..."
 
     $upsApp = Invoke-RemoteCommand -PoShMonConfiguration $PoShMonConfiguration -ScriptBlock {
                             Get-SPServiceApplication | Where TypeName -eq 'User Profile Service Application'

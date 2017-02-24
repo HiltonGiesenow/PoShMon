@@ -184,12 +184,13 @@ Describe "Test-SPUPSSyncHealth" {
 
             $headerKeyCount = 4
 
-            $actual.Keys.Count | Should Be 5
+            $actual.Keys.Count | Should Be 6
             $actual.ContainsKey("NoIssuesFound") | Should Be $true
             $actual.ContainsKey("OutputHeaders") | Should Be $true
             $actual.ContainsKey("OutputValues") | Should Be $true
             $actual.ContainsKey("SectionHeader") | Should Be $true
             $actual.ContainsKey("ElapsedTime") | Should Be $true
+            $actual.ContainsKey("HeaderUrl") | Should Be $true
             $headers = $actual.OutputHeaders
             $headers.Keys.Count | Should Be $headerKeyCount
             $actual.OutputValues[1].ManagementAgent.Count | Should Be 0
@@ -356,10 +357,11 @@ Describe "Test-SPUPSSyncHealth" {
             $actual = Test-SPUPSSyncHealth $poShMonConfiguration -Verbose
             $output = $($actual = Test-SPUPSSyncHealth $poShMonConfiguration -Verbose) 4>&1
 
-            $output.Count | Should Be 3
-            $output[0].ToString() | Should Be "Initiating 'User Profile Sync State' Test..."
-            $output[1].ToString() | Should Be "`tGetting SharePoint service list to locate UPS Sync server..."
-            $output[2].ToString() | Should Be "Complete 'User Profile Sync State' Test, Issues Found: No"
+            $output.Count | Should Be 4
+            $output[0].ToString() | Should Be "Getting UPS Service App..."
+            $output[1].ToString() | Should Be "Initiating 'User Profile Sync State' Test..."
+            $output[2].ToString() | Should Be "`tGetting SharePoint service list to locate UPS Sync server..."
+            $output[3].ToString() | Should Be "Complete 'User Profile Sync State' Test, Issues Found: No"
         }
 
         It "Should write the expected Warning output" {

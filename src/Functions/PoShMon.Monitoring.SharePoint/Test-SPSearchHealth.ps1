@@ -6,7 +6,7 @@ Function Test-SPSearchHealth
         [hashtable]$PoShMonConfiguration
     )
 
-    Write-Verbose "`tGetting Search Service App..."
+    Write-Verbose "Getting Search Service App..."
 
     $searchApp = Invoke-RemoteCommand -PoShMonConfiguration $PoShMonConfiguration -ScriptBlock {
                             Get-SPServiceApplication | Where TypeName -eq 'Search Service Application'
