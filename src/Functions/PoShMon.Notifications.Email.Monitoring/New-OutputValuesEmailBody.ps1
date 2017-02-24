@@ -3,7 +3,8 @@ Function New-OutputValuesEmailBody
     [cmdletbinding()]
     param(
         $outputHeaders,
-        $outputValues
+        $outputValues,
+        $LinkColumn = $null
     )
     
     $emailSection = ''
@@ -35,6 +36,13 @@ Function New-OutputValuesEmailBody
                 { $align = 'right' }
 
             $fieldValue = [System.Web.HttpUtility]::HtmlEncode($fieldValue)
+
+            if ($LinkColumn -ne $null -and $LinkColumn -ne '' -and $headerKey -eq $LinkColumn)
+            {
+                $linkValue = $outputValue.psobject.Properties['ItemLink'].Value
+                if ($linkValue -ne $null -and $linkValue -ne '')
+                    { $fieldValue = "<a href=""$linkValue"">$fieldValue</a>" }
+            }
 
             $tempRow += '<td valign="top" style="border: 1px solid #CCCCCC;' + $style + '" align="' + $align +'">' + $fieldValue + '</td>'
         }

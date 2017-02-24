@@ -7,7 +7,11 @@ Function Test-SPJobHealth
     )
 
 
-    $mainOutput = Get-InitialOutputWithTimer -SectionHeader "Failing Timer Jobs" -OutputHeaders ([ordered]@{ 'JobDefinitionTitle' = 'Job Definition Title'; 'EndTime' = 'End Time'; 'ServerName' = 'Server Name'; 'ErrorMessage' ='Error Message' }) #'WebApplicationName' = 'Web Application Name'; 
+    #'WebApplicationName' = 'Web Application Name'; 
+    $mainOutput = Get-InitialOutputWithTimer `
+                                        -SectionHeader "Failing Timer Jobs" `
+                                        -OutputHeaders ([ordered]@{ 'JobDefinitionTitle' = 'Job Definition Title'; 'EndTime' = 'End Time'; 'ServerName' = 'Server Name'; 'ErrorMessage' ='Error Message' }) `
+                                        -HeaderUrl ($PoShMonConfiguration.SharePoint.CentralAdminUrl + "/_admin/TimerJobHistory.aspx?View=5")
 
     $startDate = (Get-Date).AddMinutes(-$PoShMonConfiguration.General.MinutesToScanHistory) #.ToUniversalTime()
 

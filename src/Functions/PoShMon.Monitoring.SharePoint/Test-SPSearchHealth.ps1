@@ -6,7 +6,16 @@ Function Test-SPSearchHealth
         [hashtable]$PoShMonConfiguration
     )
 
-    $mainOutput = Get-InitialOutputWithTimer -SectionHeader "Search Status" -OutputHeaders ([ordered]@{ 'ComponentName' = 'Component'; 'ServerName' = 'Server Name'; 'State' = 'State' })
+    Write-Verbose "`tGetting Search Service App..."
+
+    $searchApp = Invoke-RemoteCommand -PoShMonConfiguration $PoShMonConfiguration -ScriptBlock {
+                            Get-SPServiceApplication | Where TypeName -eq 'Search Service Application'
+                        }
+
+    $mainOutput = Get-InitialOutputWithTimer `
+                                        -SectionHeader "Search Status" `
+                                        -OutputHeaders ([ordered]@{ 'ComponentName' = 'Component'; 'ServerName' = 'Server Name'; 'State' = 'State' }) `
+                                        -HeaderUrl ($PoShMonConfiguration.SharePoint.CentralAdminUrl + "/SearchAdministration.aspx?appid=" + $searchApp.Id)
 
     $remoteComponents = Invoke-RemoteCommand -PoShMonConfiguration $PoShMonConfiguration -ScriptBlock {
         $ssa = Get-SPEnterpriseSearchServiceApplication
