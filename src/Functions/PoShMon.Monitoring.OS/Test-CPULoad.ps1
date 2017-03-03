@@ -33,7 +33,7 @@ Function Test-CPULoad
             Write-Warning "`tCPU Load ($cpuPercentValue) is above variance threshold ($($PoShMonConfiguration.OperatingSystem.CPULoadThresholdPercent)%)"
         }
 
-        $mainOutput.OutputValues += @{
+        $mainOutput.OutputValues += [pscustomobject]@{
             'ServerName' = $serverName
             'CPULoad' = $cpuPercentValue
             'Highlight' = $highlight

@@ -26,6 +26,8 @@ Function New-PoShMonConfiguration
             { $newConfiguration.OperatingSystem = $configurationItem }
         if ($configurationItem.TypeName -eq "PoShMon.ConfigurationItems.WebSite")
             { $newConfiguration.WebSite = $configurationItem }
+        if ($configurationItem.TypeName -eq "PoShMon.ConfigurationItems.SharePoint")
+            { $newConfiguration.SharePoint = $configurationItem }
         elseif ($configurationItem.TypeName.StartsWith("PoShMon.ConfigurationItems.NotificationCollection"))
             { 
                 $newConfiguration.Notifications += $configurationItem }
