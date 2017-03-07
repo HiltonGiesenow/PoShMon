@@ -2,7 +2,7 @@ Function Test-ServiceStatePartial
 {
     [CmdletBinding()]
     param (
-        [string]$ServerName,
+        [string[]]$ServerName,
         [string[]]$Services,
         [string]$ServiceState = "Running"
     )
@@ -45,8 +45,7 @@ Function Test-ServiceStatePartial
                 Write-Verbose "`t`t'$service' found and in correct state"
             }
 
-            $outputItem = [pscustomobject]@{
-                'ServerName' = $ServerName;
+            $outputItem = @{
                 'DisplayName' = $serviceFound.DisplayName;
                 'Name' = $serviceFound.Name;
                 'Status' = $serviceFound.Status;
@@ -58,7 +57,7 @@ Function Test-ServiceStatePartial
     }
 
     $groupedoutputItem = @{
-            #'GroupName' = $serverName
+            'GroupName' = $serverName
             'GroupOutputValues' = $itemOutputValues
             'NoIssuesFound' = $NoIssuesFound
         }

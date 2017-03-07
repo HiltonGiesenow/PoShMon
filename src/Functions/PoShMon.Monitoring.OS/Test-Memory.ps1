@@ -28,7 +28,7 @@ Function Test-Memory
             Write-Warning "`t`tFree memory ($($freeMemoryPercent.ToString("0") + "%")) is below variance threshold ($($PoShMonConfiguration.OperatingSystem.FreeMemoryThresholdPercent))"
         }
 
-        $mainOutput.OutputValues += [pscustomobject]@{
+        $mainOutput.OutputValues += @{
             'ServerName' = $serverResult.PSComputerName
             'TotalMemory' = $totalSpace.ToString(".00");
             'FreeMemory' = $freeSpace.ToString(".00") + " (" + $freeMemoryPercent.ToString("00") + "%)";

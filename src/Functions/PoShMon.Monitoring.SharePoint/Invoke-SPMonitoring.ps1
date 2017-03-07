@@ -6,8 +6,6 @@ Function Invoke-SPMonitoring
         [hashtable]$PoShMonConfiguration
     )
 
-    if ($PoShMonConfiguration.SharePoint -eq $null) { $PoShMonConfiguration.SharePoint = SharePoint }
-
     $outputValues = Invoke-MonitoringCore `
                         -PoShMonConfiguration $PoShMonConfiguration `
                         -TestList (Get-SPTests) `

@@ -9,7 +9,7 @@ Function Test-EventLogs
 
     foreach ($SeverityCode in $PoShMonConfiguration.OperatingSystem.EventLogCodes)
     {   
-        $mainOutput = Get-InitialOutputWithTimer -SectionHeader "$SeverityCode Event Log Issues" -GroupBy 'ServerName' -OutputHeaders ([ordered]@{ 'EventID' = 'Event ID'; 'InstanceCount' = 'Count'; 'Source' = 'Source'; 'User' = 'User'; 'Timestamp' = 'Timestamp'; 'Message' ='Message' })
+        $mainOutput = Get-InitialOutputWithTimer -SectionHeader "$SeverityCode Event Log Issues" -OutputHeaders ([ordered]@{ 'EventID' = 'Event ID'; 'InstanceCount' = 'Count'; 'Source' = 'Source'; 'User' = 'User'; 'Timestamp' = 'Timestamp'; 'Message' ='Message' })
 
         $wmiStartDate = (Get-Date).AddMinutes(-$PoShMonConfiguration.General.MinutesToScanHistory)
         $wmidate = new-object -com Wbemscripting.swbemdatetime
@@ -36,9 +36,7 @@ Function Test-EventLogs
 
                         Write-Warning ("`t`t" + $currentEntry.EventCode.ToString() + ' : ' + $eventLogEntryGroup.Count + ' : ' + $currentEntry.SourceName + ' : ' + $currentEntry.User + ' : ' + $currentEntry.ConvertToDateTime($currentEntry.TimeGenerated) + ' - ' + $currentEntry.Message)
                 
-                        # $outputItem = @{
-                        $mainOutput.OutputValues += [pscustomobject]@{
-                                        'ServerName' = $serverName;
+                        $outputItem = @{
                                         'EventID' = $currentEntry.EventCode;
                                         'InstanceCount' = $eventLogEntryGroup.Count;
                                         'Source' = $currentEntry.SourceName;
@@ -47,27 +45,24 @@ Function Test-EventLogs
                                         'Message' = $currentEntry.Message
                                     }
 
-                        # $itemOutputValues += $outputItem
+                        $itemOutputValues += $outputItem
                     }
                 }
 
-                # $mainOutput.OutputValues += @{
-                #                     'GroupName' = $serverName
-                #                     'GroupOutputValues' = $itemOutputValues
-                #                 }
+                $mainOutput.OutputValues += @{
+                                    'GroupName' = $serverName
+                                    'GroupOutputValues' = $itemOutputValues
+                                }
             }
 
             if ($mainOutput.NoIssuesFound)
             {
                 Write-Verbose "`t`tNo Entries Found In Time Specified"
 
-                # $mainOutput.OutputValues += @{
-                #                     'GroupName' = $serverName
-                #                     'GroupOutputValues' = @()
-                #                 }
-                $mainOutput.OutputValues += [pscustomobject]@{
-                                'ServerName' = $serverName;
-                }
+                $mainOutput.OutputValues += @{
+                                    'GroupName' = $serverName
+                                    'GroupOutputValues' = @()
+                                }
             }
         }
 
