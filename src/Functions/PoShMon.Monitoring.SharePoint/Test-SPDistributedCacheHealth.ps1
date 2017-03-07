@@ -34,7 +34,7 @@ Function Test-SPDistributedCacheHealth
             $highlight += 'Status'
         }
 
-        $mainOutput.OutputValues += [pscustomobject]@{
+        $mainOutput.OutputValues += @{
             'Server' = $cacheServer.Server.DisplayName;
             'Status' = $cacheServer.Status.Value;
             'Highlight' = $highlight

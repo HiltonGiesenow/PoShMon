@@ -16,18 +16,15 @@ Function New-TestOutputEmailBody
     #$emailSection += '<p style="margin: 15px;"><table style="border-collapse: collapse; min-width: 500px; " cellpadding="3">'
     $emailSection += '<div style="width:100%; background-color: #FFFFFF;">'
     $emailSection += '<table style="border-collapse: collapse; min-width: 500px; " cellpadding="3">'
-    $emailSection += "<thead><tr><th align=""left"" style=""border: 1px solid CCCCCC; background-color: #1D6097;"" colspan=""$($output.OutputHeaders.Keys.Count - 1)"">"
+    $emailSection += "<thead><tr><th align=""left"" style=""border: 1px solid CCCCCC; background-color: #1D6097;"" colspan=""$($output.OutputHeaders.Keys.Count)"">"
     $emailSection +=    "<h2 style=""font-size: 16px; color: #FFFFFF"">$title</h2>"
-    $emailSection += "<th align=""right"" style=""border: 1px solid CCCCCC; background-color: #1D6097;"">"
-    if ($output.ContainsKey("HeaderUrl"))
-        { $emailSection += "<a href=""$($output.HeaderUrl)"">[link]</a>" }
     $emailSection += "</th></tr></thead>"
 
     if ($output.ContainsKey("Exception"))
     {
         $emailSection += "<tbody><tr><td style=""background-color: #FCCFC5"">An Exception Occurred: $($output.Exception.ToString())</td></tr></tbody>"
     }
-<#    elseif ($output.OutputValues -ne $null -and $output.OutputValues.Count -gt 0 -and `
+    elseif ($output.OutputValues -ne $null -and $output.OutputValues.Count -gt 0 -and `
         $output.OutputValues[0].ContainsKey("GroupName")) #grouped output
     {
         foreach ($groupOutputValue in $output.OutputValues)
@@ -42,25 +39,22 @@ Function New-TestOutputEmailBody
 
             #$emailSection += '<tr style="border: 0px;"><td style="font-size: 6px;" colspan="' + $output.OutputHeaders.Keys.Count + '">&nbsp</td></tr>'
             $emailSection += '</table></td></tr></tbody>'
-        }#>
-     elseif ($output.ContainsKey("GroupBy")) {
-         $groups = $output.OutputValues | Group $output["GroupBy"]
+        }
+    # if ($output.ContainsKey("GroupBy")) {
+    #     $groups = $output.OutputValues | Group $output["GroupBy"]
 
-         foreach ($group in $groups)
-         {
-            $emailSection += '<thead><tr><th align="left" style="border: 1px solid #CCCCCC; background-color: #1D6097; color: #FFFFFF" colspan="2">' + $group.Name + '</th></tr></thead>'
-            $emailSection += '<tbody><tr><td style="padding-left: 25px">&nbsp;</td><td><table style="border-collapse: collapse;" cellpadding="3"><thead><tr>'
+    #     foreach ($group in $groups)
+    #     {
+    #          $emailSection += '<thead><tr><th align="left" colspan="' + $output.OutputHeaders.Keys.Count + '"><h2>' + $group.Name + '</h2></th></tr><tr>'
 
-            $emailSection += (New-OutputHeadersEmailBody -outputHeaders $output.OutputHeaders) + '</tr></thead><tbody>'
+    #          $emailSection += (New-OutputHeadersEmailBody -outputHeaders $output.OutputHeaders) + '</tr></thead><tbody>'
 
-            $emailSection += (New-OutputValuesEmailBody -outputHeaders $output.OutputHeaders -outputValues $group.Group -LinkColumn $output.LinkColumn) + '</tbody>'
-
-            $emailSection += '</table></td></tr></tbody>'
-         }
+    #          $emailSection += (New-OutputValuesEmailBody -outputHeaders $output.OutputHeaders -outputValues $group.Group) + '</tbody>'
+    #     }
     } else { #non-grouped output
         $emailSection += '<thead><tr>' + (New-OutputHeadersEmailBody -outputHeaders $output.OutputHeaders) + '</tr></thead><tbody>'
 
-        $emailSection += (New-OutputValuesEmailBody -outputHeaders $output.OutputHeaders -outputValues $output.OutputValues -LinkColumn $output.LinkColumn) + '</tbody>'
+        $emailSection += (New-OutputValuesEmailBody -outputHeaders $output.OutputHeaders -outputValues $output.OutputValues) + '</tbody>'
     }
 
     $emailSection += '</table></div><br/>'

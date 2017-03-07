@@ -7,14 +7,13 @@ Function Test-ComputerTime
 
     #if ($PoShMonConfiguration.OperatingSystem -eq $null) { throw "'OperatingSystem' configuration not set properly on PoShMonConfiguration parameter." }
 
-    $mainOutput = Get-InitialOutputWithTimer -SectionHeader "Server Clock Review" -OutputHeaders ([ordered]@{ 'ServerName' = 'Server Name'; 'CurrentTime' = 'Current Time'; 'LastBootUptime' = 'Last Boot Time'; })
+    $mainOutput = Get-InitialOutputWithTimer -SectionHeader "Server Clock Review" -OutputHeaders ([ordered]@{ 'ServerName' = 'Server Name'; 'CurrentTime' = 'Current Time' })
 
     $results = Get-WmiObject Win32_OperatingSystem -Computername $PoShMonConfiguration.General.ServerNames | `
                     ForEach {
                         return [pscustomobject]@{
                             "PSComputerName" = $_.PSComputerName
                             "DateTime" = $_.ConvertToDateTime($_.LocalDateTime)
-                            "LastBootUptime" = $_.ConvertToDateTime($_.LastBootUptime) 
                         }
                     } | Sort "DateTime" -Descending
     
@@ -43,17 +42,17 @@ Function Test-ComputerTime
         }
 
         $startDateTime = (Get-Date).AddMinutes(-$PoShMonConfiguration.General.MinutesToScanHistory)
+        
         if ($serverResult.LastBootUptime -ge $startDateTime)
         {
             $mainOutput.NoIssuesFound = $false
             $highlight += "LastBootUptime"
             Write-Warning "`tLastBootUptime ($($serverResult.LastBootUptime)) is within the last $($PoShMonConfiguration.General.MinutesToScanHistory) minutes"
-        }
+        } 
 
         $mainOutput.OutputValues += [pscustomobject]@{
             'ServerName' = $serverResult.PSComputerName
             'CurrentTime' = $serverResult.DateTime.ToString()
-            'LastBootUptime' = $serverResult.LastBootUptime.ToString()
             'Highlight' = $highlight
         }
     }

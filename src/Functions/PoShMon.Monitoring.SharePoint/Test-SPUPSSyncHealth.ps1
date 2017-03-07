@@ -6,16 +6,7 @@ Function Test-SPUPSSyncHealth
         [hashtable]$PoShMonConfiguration
     )
      
-    Write-Verbose "Getting UPS Service App..."
-
-    $upsApp = Invoke-RemoteCommand -PoShMonConfiguration $PoShMonConfiguration -ScriptBlock {
-                            Get-SPServiceApplication | Where TypeName -eq 'User Profile Service Application'
-                        }
-    
-    $mainOutput = Get-InitialOutputWithTimer `
-                                        -SectionHeader "User Profile Sync State" `
-                                        -OutputHeaders ([ordered]@{ 'ManagementAgent' = 'Management Agent'; 'RunProfile' = 'Run Profile'; 'RunStartTime' = 'Run Start Time'; 'ErrorDetail' = 'ErrorDetail' }) `
-                                        -HeaderUrl ($PoShMonConfiguration.SharePoint.CentralAdminUrl + "/_layouts/15/ManageUserProfileServiceApplication.aspx?ApplicationID=" + $upsApp.Id)
+    $mainOutput = Get-InitialOutputWithTimer -SectionHeader "User Profile Sync State" -OutputHeaders ([ordered]@{ 'ManagementAgent' = 'Management Agent'; 'RunProfile' = 'Run Profile'; 'RunStartTime' = 'Run Start Time'; 'ErrorDetail' = 'ErrorDetail' })
 
     Write-Verbose "`tGetting SharePoint service list to locate UPS Sync server..."
     
@@ -58,7 +49,7 @@ Function Test-SPUPSSyncHealth
                         
                         Write-Warning "`tStep $stepNumber has status of $stepResult : $($errors.InnerXml)"
 
-                        $mainOutput.OutputValues += [pscustomobject]@{
+                        $mainOutput.OutputValues += @{
                             'ManagementAgent' = $maName;
                             'RunProfile' = $runprofileName;
                             'RunStartTime' = [DateTime]::Parse($failedRun.RunStartTime).ToString("yyyy-MM-dd HH:mm:ss")
