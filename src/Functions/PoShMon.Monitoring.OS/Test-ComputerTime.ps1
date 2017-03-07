@@ -48,7 +48,7 @@ Function Test-ComputerTime
             $mainOutput.NoIssuesFound = $false
             $highlight += "LastBootUptime"
             Write-Warning "`tLastBootUptime ($($serverResult.LastBootUptime)) is within the last $($PoShMonConfiguration.General.MinutesToScanHistory) minutes"
-        }
+        } 
 
         $mainOutput.OutputValues += [pscustomobject]@{
             'ServerName' = $serverResult.PSComputerName
