@@ -2,7 +2,7 @@ Import-Module Pester
 
 $path = (Split-Path -Parent $MyInvocation.MyCommand.Path)
 
-$testsPath = "$path\CI\Unit"
+$testsPath = "$path\CI"
 
 Invoke-Pester -Path $testsPath -CodeCoverage "$sutPath\*\*.ps1"
 

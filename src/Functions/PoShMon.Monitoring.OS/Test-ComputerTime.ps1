@@ -43,7 +43,6 @@ Function Test-ComputerTime
         }
 
         $startDateTime = (Get-Date).AddMinutes(-$PoShMonConfiguration.General.MinutesToScanHistory)
-        
         if ($serverResult.LastBootUptime -ge $startDateTime)
         {
             $mainOutput.NoIssuesFound = $false
