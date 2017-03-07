@@ -49,7 +49,7 @@ Function Test-WebSites
 
             Write-Verbose "`t`t$serverName : $($webRequest.StatusCode) : $outcome"
 
-            $mainOutput.OutputValues += [pscustomobject]@{
+            $mainOutput.OutputValues += @{
                 'ServerName' = $serverName;
                 'StatusCode' = $webRequest.StatusCode;
                 'Outcome' = $outcome
