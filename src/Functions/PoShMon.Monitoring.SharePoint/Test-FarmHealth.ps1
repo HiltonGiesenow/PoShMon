@@ -25,7 +25,7 @@ Function Test-FarmHealth
         Write-Host "Farm needs upgrade"  -ForegroundColor Yellow       
     }
     
-    $mainOutput.OutputValues += @{
+    $mainOutput.OutputValues += [pscustomobject]@{
         'ConfigDB' = $farm.Name;
         'BuildVersion' = $farm.BuildVersion;
         'Status' = $farm.Status.Value;

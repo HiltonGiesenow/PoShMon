@@ -3,7 +3,8 @@ Function New-OutputValuesEmailBody
     [cmdletbinding()]
     param(
         $outputHeaders,
-        $outputValues
+        $outputValues,
+        $LinkColumn = $null
     )
     
     $emailSection = ''
@@ -19,9 +20,10 @@ Function New-OutputValuesEmailBody
         $tempRow = ""
         foreach ($headerKey in $outputHeaders.Keys)
         {
-            $fieldValue = $outputValue[$headerKey] #Would need to change to something like $outputValue.psobject.Properties["Message"].Value if this changes to a pscustomobject
-            #$fieldValue = $outputValue.psobject.Properties[$headerKey].Value
-            if ($outputValue['Highlight'] -ne $null -and $outputValue['Highlight'].Contains($headerKey)) {
+            #$fieldValue = $outputValue[$headerKey] #Would need to change to something like $outputValue.psobject.Properties["Message"].Value if this changes to a pscustomobject
+            $fieldValue = $outputValue.psobject.Properties[$headerKey].Value
+            #if ($outputValue['Highlight'] -ne $null -and $outputValue['Highlight'].Contains($headerKey)) {
+            if ($outputValue.psobject.Properties['Highlight'].Value -ne $null -and $outputValue.psobject.Properties['Highlight'].Value.Contains($headerKey)) {
                 $style = 'font-weight: bold; color: red;"'
                 $rowStyle = "background-color: #FCCFC5"
             } else {
@@ -34,6 +36,13 @@ Function New-OutputValuesEmailBody
                 { $align = 'right' }
 
             $fieldValue = [System.Web.HttpUtility]::HtmlEncode($fieldValue)
+
+            if ($LinkColumn -ne $null -and $LinkColumn -ne '' -and $headerKey -eq $LinkColumn)
+            {
+                $linkValue = $outputValue.psobject.Properties['ItemLink'].Value
+                if ($linkValue -ne $null -and $linkValue -ne '')
+                    { $fieldValue = "<a href=""$linkValue"">$fieldValue</a>" }
+            }
 
             $tempRow += '<td valign="top" style="border: 1px solid #CCCCCC;' + $style + '" align="' + $align +'">' + $fieldValue + '</td>'
         }
