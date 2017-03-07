@@ -41,7 +41,16 @@ Function Test-ComputerTime
             Write-Warning "`tDifference ($($difference.Minutes)) is above variance threshold minutes ($($PoShMonConfiguration.OperatingSystem.AllowedMinutesVarianceBetweenServerTimes))"
         }
 
-        $mainOutput.OutputValues += @{
+        $startDateTime = (Get-Date).AddMinutes(-$PoShMonConfiguration.General.MinutesToScanHistory)
+        
+        if ($serverResult.LastBootUptime -ge $startDateTime)
+        {
+            $mainOutput.NoIssuesFound = $false
+            $highlight += "LastBootUptime"
+            Write-Warning "`tLastBootUptime ($($serverResult.LastBootUptime)) is within the last $($PoShMonConfiguration.General.MinutesToScanHistory) minutes"
+        } 
+
+        $mainOutput.OutputValues += [pscustomobject]@{
             'ServerName' = $serverResult.PSComputerName
             'CurrentTime' = $serverResult.DateTime.ToString()
             'Highlight' = $highlight
