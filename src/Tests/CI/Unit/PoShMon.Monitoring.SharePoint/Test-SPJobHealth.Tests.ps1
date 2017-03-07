@@ -36,13 +36,12 @@ Describe "Test-SPJobHealth" {
 
             $headerKeyCount = 4
 
-            $actual.Keys.Count | Should Be 6
+            $actual.Keys.Count | Should Be 5
             $actual.ContainsKey("NoIssuesFound") | Should Be $true
             $actual.ContainsKey("OutputHeaders") | Should Be $true
             $actual.ContainsKey("OutputValues") | Should Be $true
             $actual.ContainsKey("SectionHeader") | Should Be $true
             $actual.ContainsKey("ElapsedTime") | Should Be $true
-            $actual.ContainsKey("HeaderUrl") | Should Be $true
             $headers = $actual.OutputHeaders
             $headers.Keys.Count | Should Be $headerKeyCount
             $actual.OutputValues[0].JobDefinitionTitle | Should Be 'Job 123'

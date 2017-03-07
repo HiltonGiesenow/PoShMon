@@ -8,8 +8,6 @@ Describe "Test-ComputerTime" {
     class ServerTimeMock {
     [string]$PSComputerName
     [datetime]$DateTime
-    [datetime]$LocalDateTime
-    [datetime]$LastBootUptime
     [int]$Year
     [int]$Month
     [int]$Day
@@ -17,15 +15,13 @@ Describe "Test-ComputerTime" {
     [int]$Minute
     [int]$Second
 
-    ServerTimeMock ([string]$NewPSComputerName, [datetime]$NewDateTime, [datetime]$NewLastBootUptime) {
+    ServerTimeMock ([string]$NewPSComputerName, [datetime]$NewDateTime) {
         $this.PSComputerName = $NewPSComputerName;
         $this.DateTime = $NewDateTime
-        $this.LocalDateTime = $NewDateTime
-        $this.LastBootUptime = $NewLastBootUptime
     }
 
-    [datetime] ConvertToDateTime([datetime]$something) {
-        return $something
+    [datetime] ConvertToDateTime([string]$something) {
+        return $this.DateTime
     }
 }
 
@@ -39,7 +35,7 @@ Describe "Test-ComputerTime" {
         It "Should return a matching output structure" {
 
             Mock -ModuleName PoShMon Get-WmiObject {
-                return [ServerTimeMock]::new('Server1', [datetime]::new(2017, 1, 1, 10, 15, 0), [datetime]::new(2017, 1, 1, 10, 15, 0))
+                return [ServerTimeMock]::new('Server1', [datetime]::new(2017, 1, 1, 10, 15, 0))
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
@@ -56,19 +52,18 @@ Describe "Test-ComputerTime" {
             $actual.ContainsKey("SectionHeader") | Should Be $true
             $actual.ContainsKey("ElapsedTime") | Should Be $true
             $headers = $actual.OutputHeaders
-            $headers.Keys.Count | Should Be 3
+            $headers.Keys.Count | Should Be 2
             #$values1 = $actual.OutputValues[0]
             #$values1.Keys.Count | Should Be 3
             $actual.OutputValues[0].ServerName | Should Be 'Server1'
             $actual.OutputValues[0].CurrentTime | Should Be ([datetime]::new(2017, 1, 1, 10, 15, 0)).ToString()
-            $actual.OutputValues[0].LastBootUptime | Should Be ([datetime]::new(2017, 1, 1, 10, 15, 0)).ToString()
             $actual.OutputValues[0].Highlight[0] | Should Be 'CurrentTime'
         }
 
         It "Should write the expected Verbose output" {
     
             Mock -CommandName Get-WmiObject -MockWith {
-                return [ServerTimeMock]::new('Server1', [datetime]::new(2017, 1, 1, 10, 15, 0), [datetime]::new(2016, 1, 1, 10, 15, 0))
+                return [ServerTimeMock]::new('Server1', [datetime]::new(2017, 1, 1, 10, 15, 0))
             }
 
             Mock -CommandName Get-Date -MockWith {
@@ -90,11 +85,11 @@ Describe "Test-ComputerTime" {
 
         }
 
-        It "Should write the expected Warning output for time difference" {
+        It "Should write the expected Warning output" {
     
             Mock -CommandName Get-WmiObject -MockWith {
                 return @(
-                    [ServerTimeMock]::new('Server1', [datetime]::new(2017, 1, 1, 10, 09, 0), [datetime]::new(2016, 1, 1, 10, 09, 0))
+                    [ServerTimeMock]::new('Server1', [datetime]::new(2017, 1, 1, 10, 09, 0))
                 )
             }
 
@@ -114,35 +109,11 @@ Describe "Test-ComputerTime" {
             $output[0].ToString() | Should Be "`tDifference (6) is above variance threshold minutes (1)"
         }
 
-        It "Should write the expected Warning output for recent reboot" {
-    
-            Mock -CommandName Get-WmiObject -MockWith {
-                return @(
-                    [ServerTimeMock]::new('Server1', [datetime]::new(2017, 1, 1, 10, 09, 0), [datetime]::new(2017, 1, 1, 10, 08, 0))
-                )
-            }
-
-            Mock -CommandName Get-Date -MockWith {
-                Return [datetime]::new(2017, 1, 1, 10, 09, 0)
-            }
-
-            $poShMonConfiguration = New-PoShMonConfiguration {
-                            General -ServerNames 'Server1'
-                            OperatingSystem
-                        }
-        
-            $actual = Test-ComputerTime $poShMonConfiguration
-            $output = $($actual = Test-ComputerTime $poShMonConfiguration) 3>&1
-
-            $output.Count | Should Be 1
-            $output[0].ToString() | Should Be "`tLastBootUptime (01/01/2017 10:08:00) is within the last 15 minutes"
-        }
-
         It "Should warn on different server time (to local PoShMon machine)" {
 
             Mock -CommandName Get-WmiObject -MockWith {
                 return @(
-                    [ServerTimeMock]::new('Server1', (Get-Date -Year 2017 -Month 1 -Day 1 -Hour 10 -Minute 15).AddMinutes(-6), [datetime]::new(2016, 1, 1, 10, 15, 0))
+                    [ServerTimeMock]::new('Server1', (Get-Date -Year 2017 -Month 1 -Day 1 -Hour 10 -Minute 15).AddMinutes(-6))
                 )
             }
 
@@ -167,9 +138,9 @@ Describe "Test-ComputerTime" {
 
             Mock -CommandName Get-WmiObject -MockWith {
                 return @(
-                    [ServerTimeMock]::new('Server1', [datetime]::new(2017, 1, 1, 10, 15, 0), [datetime]::new(2016, 1, 1, 10, 15, 0))
-                    [ServerTimeMock]::new('Server2', [datetime]::new(2017, 1, 1, 10, 15, 0), [datetime]::new(2016, 1, 1, 10, 15, 0))
-                    [ServerTimeMock]::new('Server3', [datetime]::new(2017, 1, 1, 10, 15, 0), [datetime]::new(2016, 1, 1, 10, 15, 0))
+                    [ServerTimeMock]::new('Server1', [datetime]::new(2017, 1, 1, 10, 15, 0))
+                    [ServerTimeMock]::new('Server2', [datetime]::new(2017, 1, 1, 10, 15, 0))
+                    [ServerTimeMock]::new('Server3', [datetime]::new(2017, 1, 1, 10, 15, 0))
                 )
             }
 
@@ -189,9 +160,9 @@ Describe "Test-ComputerTime" {
 
             Mock -CommandName Get-WmiObject -MockWith {
                 return @(
-                    [ServerTimeMock]::new('Server1', [datetime]::new(2017, 1, 1, 10, 15, 0), [datetime]::new(2016, 1, 1, 10, 15, 0))
-                    [ServerTimeMock]::new('Server2', [datetime]::new(2017, 1, 1, 10, 14, 30), [datetime]::new(2016, 1, 1, 10, 15, 0))
-                    [ServerTimeMock]::new('Server3', [datetime]::new(2017, 1, 1, 10, 15, 0), [datetime]::new(2016, 1, 1, 10, 15, 0))
+                    [ServerTimeMock]::new('Server1', [datetime]::new(2017, 1, 1, 10, 15, 0))
+                    [ServerTimeMock]::new('Server2', [datetime]::new(2017, 1, 1, 10, 14, 30))
+                    [ServerTimeMock]::new('Server3', [datetime]::new(2017, 1, 1, 10, 15, 0))
                 )
             }
 
@@ -211,9 +182,9 @@ Describe "Test-ComputerTime" {
 
             Mock -CommandName Get-WmiObject -MockWith {
                 return @(
-                    [ServerTimeMock]::new('Server1', [datetime]::new(2017, 1, 1, 10, 15, 0), [datetime]::new(2016, 1, 1, 10, 15, 0))
-                    [ServerTimeMock]::new('Server2', [datetime]::new(2017, 1, 1, 10, 12, 0), [datetime]::new(2016, 1, 1, 10, 15, 0))
-                    [ServerTimeMock]::new('Server3', [datetime]::new(2017, 1, 1, 10, 15, 0), [datetime]::new(2016, 1, 1, 10, 15, 0))
+                    [ServerTimeMock]::new('Server1', [datetime]::new(2017, 1, 1, 10, 15, 0))
+                    [ServerTimeMock]::new('Server2', [datetime]::new(2017, 1, 1, 10, 12, 0))
+                    [ServerTimeMock]::new('Server3', [datetime]::new(2017, 1, 1, 10, 15, 0))
                 )
             }
 
@@ -234,10 +205,10 @@ Describe "Test-ComputerTime" {
 
             Mock -CommandName Get-WmiObject -MockWith {
                 return @(
-                    [ServerTimeMock]::new('Server1', [datetime]::new(2017, 1, 1, 10, 15, 0), [datetime]::new(2016, 1, 1, 10, 15, 0))
-                    [ServerTimeMock]::new('Server2', [datetime]::new(2017, 1, 1, 10, 15, 0), [datetime]::new(2016, 1, 1, 10, 15, 0))
-                    [ServerTimeMock]::new('Server3', [datetime]::new(2017, 1, 1, 09, 48, 0), [datetime]::new(2016, 1, 1, 10, 15, 0))
-                    [ServerTimeMock]::new('Server4', [datetime]::new(2017, 1, 1, 10, 15, 0), [datetime]::new(2016, 1, 1, 10, 15, 0))
+                    [ServerTimeMock]::new('Server1', [datetime]::new(2017, 1, 1, 10, 15, 0))
+                    [ServerTimeMock]::new('Server2', [datetime]::new(2017, 1, 1, 10, 15, 0))
+                    [ServerTimeMock]::new('Server3', [datetime]::new(2017, 1, 1, 09, 48, 0))
+                    [ServerTimeMock]::new('Server4', [datetime]::new(2017, 1, 1, 10, 15, 0))
                 )
             }
 
@@ -257,9 +228,9 @@ Describe "Test-ComputerTime" {
 
             Mock -CommandName Get-WmiObject -MockWith {
                 return @(
-                    [ServerTimeMock]::new('Server1', [datetime]::new(2017, 1, 1, 10, 15, 0), [datetime]::new(2016, 1, 1, 10, 15, 0))
-                    [ServerTimeMock]::new('Server2', [datetime]::new(2017, 1, 1, 10, 12, 0), [datetime]::new(2016, 1, 1, 10, 15, 0))
-                    [ServerTimeMock]::new('Server3', [datetime]::new(2017, 1, 1, 10, 15, 0), [datetime]::new(2016, 1, 1, 10, 15, 0))
+                    [ServerTimeMock]::new('Server1', [datetime]::new(2017, 1, 1, 10, 15, 0))
+                    [ServerTimeMock]::new('Server2', [datetime]::new(2017, 1, 1, 10, 12, 0))
+                    [ServerTimeMock]::new('Server3', [datetime]::new(2017, 1, 1, 10, 15, 0))
                 )
             }
 
@@ -280,9 +251,9 @@ Describe "Test-ComputerTime" {
 
             Mock -CommandName Get-WmiObject -MockWith {
                 return @(
-                    [ServerTimeMock]::new('Server1', [datetime]::new(2017, 1, 1, 11, 01, 0), [datetime]::new(2016, 1, 1, 10, 15, 0))
-                    [ServerTimeMock]::new('Server2', [datetime]::new(2017, 1, 1, 10, 59, 0), [datetime]::new(2016, 1, 1, 10, 15, 0))
-                    [ServerTimeMock]::new('Server3', [datetime]::new(2017, 1, 1, 11, 01, 0), [datetime]::new(2016, 1, 1, 10, 15, 0))
+                    [ServerTimeMock]::new('Server1', [datetime]::new(2017, 1, 1, 11, 01, 0))
+                    [ServerTimeMock]::new('Server2', [datetime]::new(2017, 1, 1, 10, 59, 0))
+                    [ServerTimeMock]::new('Server3', [datetime]::new(2017, 1, 1, 11, 01, 0))
                 )
             }
 
@@ -296,13 +267,13 @@ Describe "Test-ComputerTime" {
             $actual.NoIssuesFound | Should Be $true
         }
 
-        It "Should not warn on server times with differences within default threshold across day boundaries" {
+         It "Should not warn on server times with differences within default threshold across day boundaries" {
 
             Mock -CommandName Get-WmiObject -MockWith {
                 return @(
-                    [ServerTimeMock]::new('Server1', [datetime]::new(2017, 1, 2, 00, 01, 0), [datetime]::new(2016, 1, 1, 10, 15, 0))
-                    [ServerTimeMock]::new('Server2', [datetime]::new(2017, 1, 1, 23, 59, 0), [datetime]::new(2016, 1, 1, 10, 15, 0))
-                    [ServerTimeMock]::new('Server3', [datetime]::new(2017, 1, 2, 00, 01, 0), [datetime]::new(2016, 1, 1, 10, 15, 0))
+                    [ServerTimeMock]::new('Server1', [datetime]::new(2017, 1, 2, 00, 01, 0))
+                    [ServerTimeMock]::new('Server2', [datetime]::new(2017, 1, 1, 23, 59, 0))
+                    [ServerTimeMock]::new('Server3', [datetime]::new(2017, 1, 2, 00, 01, 0))
                 )
             }
 
@@ -314,31 +285,6 @@ Describe "Test-ComputerTime" {
             $actual = Test-ComputerTime $poShMonConfiguration
 
             $actual.NoIssuesFound | Should Be $true
-        }
-
-    It "Should only warn servers recently rebooted" {
-
-            Mock -CommandName Get-WmiObject -MockWith {
-                return @(
-                    [ServerTimeMock]::new('Server1', [datetime]::new(2017, 1, 2, 00, 01, 0), [datetime]::new(2016, 1, 1, 10, 15, 0))
-                    [ServerTimeMock]::new('Server2', [datetime]::new(2017, 1, 1, 23, 59, 0), [datetime]::new(2017, 1, 1, 10, 5, 0))
-                    [ServerTimeMock]::new('Server3', [datetime]::new(2017, 1, 2, 00, 01, 0), [datetime]::new(2016, 1, 1, 10, 15, 0))
-                )
-            }
-
-            Mock -CommandName Get-Date -MockWith {
-                Return [datetime]::new(2017, 1, 1, 10, 15, 0)
-            }
-
-            $poShMonConfiguration = New-PoShMonConfiguration {
-                            General -ServerNames 'Server1'
-                            OperatingSystem -AllowedMinutesVarianceBetweenServerTimes 3
-                        }
-
-            $actual = Test-ComputerTime $poShMonConfiguration -WarningAction SilentlyContinue
-
-            $actual.NoIssuesFound | Should Be $false
-            $actual.OutputValues[2].Highlight | Should Be "LastBootUptime"
         }
     }
 }

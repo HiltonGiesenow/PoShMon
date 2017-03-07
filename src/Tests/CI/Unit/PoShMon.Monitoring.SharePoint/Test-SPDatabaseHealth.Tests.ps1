@@ -34,14 +34,12 @@ Describe "Test-SPDatabaseHealth" {
 
             $headerKeyCount = 3
 
-            $actual.Keys.Count | Should Be 7
+            $actual.Keys.Count | Should Be 5
             $actual.ContainsKey("NoIssuesFound") | Should Be $true
             $actual.ContainsKey("OutputHeaders") | Should Be $true
             $actual.ContainsKey("OutputValues") | Should Be $true
             $actual.ContainsKey("SectionHeader") | Should Be $true
             $actual.ContainsKey("ElapsedTime") | Should Be $true
-            $actual.ContainsKey("HeaderUrl") | Should Be $true
-            $actual.ContainsKey("LinkColumn") | Should Be $true
             $headers = $actual.OutputHeaders
             $headers.Keys.Count | Should Be $headerKeyCount
             $values1 = $actual.OutputValues[0]
