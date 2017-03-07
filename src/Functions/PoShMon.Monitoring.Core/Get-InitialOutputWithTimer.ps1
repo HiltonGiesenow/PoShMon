@@ -3,10 +3,7 @@ Function Get-InitialOutputWithTimer
     [CmdletBinding()]
     param (
         [string]$SectionHeader,
-        [string]$GroupBy = $null,
-        [System.Collections.Specialized.OrderedDictionary]$OutputHeaders,
-        [string]$HeaderUrl = $null,
-        [string]$LinkColumn = $null
+        [System.Collections.Specialized.OrderedDictionary]$OutputHeaders
     )
 
     $initialOutput = Get-InitialOutput @PSBoundParameters

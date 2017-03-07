@@ -6,11 +6,7 @@ Function Test-SPDatabaseHealth
         [hashtable]$PoShMonConfiguration
     )
 
-    $mainOutput = Get-InitialOutputWithTimer `
-                                            -SectionHeader "Database Status" `
-                                            -OutputHeaders ([ordered]@{ 'DatabaseName' = 'Database Name'; 'Size' = 'Size (GB)'; 'NeedsUpgrade' = 'Needs Upgrade?' }) `
-                                            -HeaderUrl ($PoShMonConfiguration.SharePoint.CentralAdminUrl + "/_admin/DatabaseStatus.aspx") `
-                                            -LinkColumn 'DatabaseName'
+    $mainOutput = Get-InitialOutputWithTimer -SectionHeader "Database Status" -OutputHeaders ([ordered]@{ 'DatabaseName' = 'Database Name'; 'Size' = 'Size (GB)'; 'NeedsUpgrade' = 'Needs Upgrade?' })
 
     $spDatabases = Invoke-RemoteCommand -PoShMonConfiguration $PoShMonConfiguration -ScriptBlock {
                         return Get-SPDatabase | Sort DiskSizeRequired -Descending
@@ -32,17 +28,11 @@ Function Test-SPDatabaseHealth
             Write-Warning ("`t" + $spDatabase.DisplayName + " (" + $spDatabase.ApplicationName + ") is listed as Needing Upgrade")
         }
 
-        if ($spDatabase.Type -eq 'Content Database')
-            { $itemLink = ($PoShMonConfiguration.SharePoint.CentralAdminUrl + "/_admin/oldcntdb.aspx?DatabaseId={$($spDatabase.Id)}") }
-        else
-            { $itemLink = '' }
-
-        $mainOutput.OutputValues += [pscustomobject]@{
+        $mainOutput.OutputValues += @{
             'DatabaseName' = $spDatabase.DisplayName;
             'NeedsUpgrade' = $needsUpgradeText
             'Size' = $SizeText;
             'Highlight' = $highlight
-            'ItemLink' = $itemLink
         }
     }
 
