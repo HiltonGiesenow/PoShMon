@@ -7,7 +7,7 @@ Function Test-DriveSpace
 
     if ($PoShMonConfiguration.OperatingSystem -eq $null) { throw "'OperatingSystem' configuration not set properly on PoShMonConfiguration parameter." }
 
-    $mainOutput = Get-InitialOutputWithTimer -SectionHeader "Harddrive Space Review" -GroupBy 'ServerName' -OutputHeaders ([ordered]@{ 'DriveLetter' = 'Drive Letter'; 'TotalSpace' = 'Total Space (GB)'; 'FreeSpace' = 'Free Space (GB) (%)' })
+    $mainOutput = Get-InitialOutputWithTimer -SectionHeader "Harddrive Space Review" -OutputHeaders ([ordered]@{ 'DriveLetter' = 'Drive Letter'; 'TotalSpace' = 'Total Space (GB)'; 'FreeSpace' = 'Free Space (GB) (%)' })
 
     foreach ($serverName in $PoShMonConfiguration.General.ServerNames)
     {
@@ -42,9 +42,7 @@ Function Test-DriveSpace
                 Write-Warning "`t`tFree drive Space ($($freeSpace.ToString(".00"))) is below variance threshold ($($PoShMonConfiguration.OperatingSystem.DriveSpaceThreshold))"
             }
 
-            # $outputItem = @{
-            $mainOutput.OutputValues += [pscustomobject]@{
-                'ServerName' = $serverName;
+            $outputItem = @{
                 'DriveLetter' = $drive.DeviceID;
                 'TotalSpace' = $totalSpace.ToString(".00");
                 'FreeSpace' = $freeSpace.ToString(".00") + " (" + $freeSpacePercent.ToString("00") + "%)";
@@ -54,10 +52,10 @@ Function Test-DriveSpace
             $itemOutputValues += $outputItem
         }
 
-        # $mainOutput.OutputValues += @{
-        #             'GroupName' = $serverName
-        #             'GroupOutputValues' = $itemOutputValues
-        #         }
+        $mainOutput.OutputValues += @{
+                    'GroupName' = $serverName
+                    'GroupOutputValues' = $itemOutputValues
+                }
     }
 
     return (Complete-TimedOutput $mainOutput)
