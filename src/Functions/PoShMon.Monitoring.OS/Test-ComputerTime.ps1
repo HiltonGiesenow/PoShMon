@@ -41,7 +41,7 @@ Function Test-ComputerTime
             Write-Warning "`tDifference ($($difference.Minutes)) is above variance threshold minutes ($($PoShMonConfiguration.OperatingSystem.AllowedMinutesVarianceBetweenServerTimes))"
         }
 
-        $mainOutput.OutputValues += [pscustomobject]@{
+        $mainOutput.OutputValues += @{
             'ServerName' = $serverResult.PSComputerName
             'CurrentTime' = $serverResult.DateTime.ToString()
             'Highlight' = $highlight
