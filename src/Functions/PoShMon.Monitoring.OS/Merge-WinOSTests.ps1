@@ -8,7 +8,7 @@ Function Merge-WinOSTests
 
     $mergableOutputValues = $TestOutputValues | Where SectionHeader -In "Server CPU Load Review", "Memory Review", "Server Clock Review"
 
-    if ($mergableOutputValues.Count -gt 1) #make sure there's enough to merge
+    if ($mergableOutputValues.SectionHeader.Count -gt 1) #make sure there's enough to merge by counting the headers
     {
         $newOutput = Get-InitialOutput -SectionHeader "Server Overview" -OutputHeaders ([ordered]@{ 'ServerName' = 'Server Name' })
 
