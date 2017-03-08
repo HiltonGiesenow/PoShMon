@@ -1,4 +1,4 @@
-Function Get-OSMerges
+Function Get-SPMerges
 {
     [CmdletBinding()]
     Param(
