@@ -4,7 +4,7 @@ Function New-O365TeamsMessageBody
     Param(
         [hashtable]$PoShMonConfiguration,
         [ValidateSet("All","OnlyOnFailure","None")][string]$SendNotificationsWhen,
-        [object[]]$TestOutputValues,
+        [System.Collections.ArrayList]$TestOutputValues,
         [TimeSpan]$TotalElapsedTime
     )
 

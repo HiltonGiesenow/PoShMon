@@ -32,6 +32,8 @@ Function Invoke-MonitoringCore
         if ($OutputOptimizationList.Count -gt 0)
             { $outputValues = Optimize-Output $PoShMonConfiguration $outputValues $OutputOptimizationList }
 
+        $outputValues = Merge-WinOSTests $PoShMonConfiguration $outputValues
+
     } catch {
         Send-ExceptionNotifications -PoShMonConfiguration $PoShMonConfiguration -Exception $_.Exception
     } finally {

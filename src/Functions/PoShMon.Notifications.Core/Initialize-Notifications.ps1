@@ -3,7 +3,7 @@ Function Initialize-Notifications
     [CmdletBinding()]
     Param(
         [hashtable]$PoShMonConfiguration,
-        [object[]]$TestOutputValues,
+        [System.Collections.ArrayList]$TestOutputValues,
         [TimeSpan]$TotalElapsedTime
     )
 

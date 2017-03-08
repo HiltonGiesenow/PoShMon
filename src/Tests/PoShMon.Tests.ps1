@@ -4,7 +4,7 @@ $path = (Split-Path -Parent $MyInvocation.MyCommand.Path)
 
 $testsPath = "$path\CI"
 
-Invoke-Pester -Path $testsPath -CodeCoverage "$sutPath\*\*.ps1"
+Invoke-Pester -Path $testsPath #-CodeCoverage "$sutPath\*\*.ps1"
 
 #$scriptFiles = @( Get-ChildItem -Path "$path\*\*.ps1" -Recurse -ErrorAction SilentlyContinue )
 #$scriptFiles = @( Get-ChildItem -Path "$path\CI\*\*.ps1" -Recurse -ErrorAction SilentlyContinue )

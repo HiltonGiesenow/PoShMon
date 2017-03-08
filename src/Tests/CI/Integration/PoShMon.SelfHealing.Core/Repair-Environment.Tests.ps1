@@ -19,7 +19,7 @@ Describe "Repair-Environment" {
                         }               
                     }
 
-        $monitoringOutput = @(
+        $monitoringOutput = [System.Collections.ArrayList]@(
             @{
                 "SectionHeader" = "AMonitoringTest"
                 "OutputHeaders" = @{ 'ComponentName' = 'Component'; 'State' = 'State' }
@@ -88,7 +88,7 @@ Describe "Repair-Environment" {
                         }               
                     }
 
-        $monitoringOutput = @(
+        $monitoringOutput = [System.Collections.ArrayList]@(
             @{
                 "SectionHeader" = "AMonitoringTest"
                 "OutputHeaders" = @{ 'ComponentName' = 'Component'; 'State' = 'State' }
