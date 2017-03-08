@@ -3,7 +3,7 @@ Function Initialize-RepairNotifications
     [CmdletBinding()]
     Param(
         [hashtable]$PoShMonConfiguration,
-        [object[]]$RepairOutputValues
+        [System.Collections.ArrayList]$RepairOutputValues
     )
 
     if ($RepairOutputValues.Count -gt 0)

@@ -4,7 +4,7 @@ Function Invoke-Repairs
     Param(
         [string[]]$RepairScripts,
         [hashtable]$PoShMonConfiguration,
-        [object[]]$PoShMonOutputValues
+        [System.Collections.ArrayList]$PoShMonOutputValues
     )
 
     Begin

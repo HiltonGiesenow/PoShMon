@@ -3,7 +3,7 @@ Function Dummy-Repair
     [CmdletBinding()]
     Param(
         [hashtable]$PoShMonConfiguration,
-        [object[]]$PoShMonOutputValues
+        [System.Collections.ArrayList]$PoShMonOutputValues
     )
 
     return @{

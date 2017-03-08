@@ -3,7 +3,7 @@ Function New-EmailSubject
     [CmdletBinding()]
     param(
         [hashtable]$PoShMonConfiguration,
-        [object[]]$TestOutputValues
+        [System.Collections.ArrayList]$TestOutputValues
     )
 
     $issueCount = 0

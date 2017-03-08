@@ -9,7 +9,7 @@ Function Invoke-Tests
 
     Begin
     {
-        $outputValues = @()
+        $outputValues = New-Object System.Collections.ArrayList #@();
     }
 
     Process

@@ -3,7 +3,7 @@ Function Resolve-HighCPUWhileSearchRunning
     [CmdletBinding()]
     param (
         [hashtable]$PoShMonConfiguration,
-        [object[]]$TestOutputValues
+        [System.Collections.ArrayList]$TestOutputValues
     )
 
     Write-Verbose "`tResolving High CPU While Search is running"

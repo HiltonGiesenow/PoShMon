@@ -3,7 +3,7 @@ Function New-PushbulletRepairMessageSubject
     [CmdletBinding()]
     Param(
         [hashtable]$PoShMonConfiguration,
-        [object[]]$RepairOutputValues
+        [System.Collections.ArrayList]$RepairOutputValues
     )
 
     return "[PoShMon $($PoShMonConfiguration.General.EnvironmentName) Repair Results]`r`n"

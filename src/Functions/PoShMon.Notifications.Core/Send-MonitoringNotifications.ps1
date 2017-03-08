@@ -5,7 +5,7 @@
         [hashtable]$PoShMonConfiguration,
         [object[]]$NotificationSinks,
         [ValidateSet("All","OnlyOnFailure","None")][string]$SendNotificationsWhen,
-        [object[]]$TestOutputValues,
+        [System.Collections.ArrayList]$TestOutputValues,
         [TimeSpan]$TotalElapsedTime
     )
 

@@ -4,7 +4,7 @@ Function Send-RepairNotifications
     Param(
         [hashtable]$PoShMonConfiguration,
         [object[]]$NotificationSinks,
-        [object[]]$RepairOutputValues
+        [System.Collections.ArrayList]$RepairOutputValues
     )
 
     foreach ($notificationSink in $NotificationSinks)

@@ -3,7 +3,7 @@ Function New-PushbulletRepairMessageBody
     [CmdletBinding()]
     Param(
         [hashtable]$PoShMonConfiguration,
-        [object[]]$RepairOutputValues
+        [System.Collections.ArrayList]$RepairOutputValues
     )
 
     $messageBody = ''

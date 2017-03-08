@@ -3,7 +3,7 @@ Function Failing-Repair
     [CmdletBinding()]
     Param(
         [hashtable]$PoShMonConfiguration,
-        [object[]]$PoShMonOutputValues
+        [System.Collections.ArrayList]$PoShMonOutputValues
     )
 
     throw "Something" 
