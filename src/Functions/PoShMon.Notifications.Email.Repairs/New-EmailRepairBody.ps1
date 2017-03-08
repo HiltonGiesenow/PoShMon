@@ -3,7 +3,7 @@ Function New-EmailRepairBody
     [CmdletBinding()]
     Param(
         [hashtable]$PoShMonConfiguration,
-        [System.Collections.ArrayList]$RepairOutputValues
+        [object[]]$RepairOutputValues
     )
 
     $emailBody = ''

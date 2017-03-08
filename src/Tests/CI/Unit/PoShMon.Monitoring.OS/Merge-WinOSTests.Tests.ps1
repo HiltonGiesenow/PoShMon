@@ -36,6 +36,7 @@ Describe "Merge-WinOSTests" {
                                         "ServerName" = "Server1"
                                         "TotalMemory" = "7.93"
                                         "FreeMemory" = "2.71 (35%)"
+                                        "Highlight" = @()
                                     },
                                     @{
                                         "ServerName" = "Server2"
@@ -65,19 +66,19 @@ Describe "Merge-WinOSTests" {
 
         $actual = Merge-WinOSTests $poShMonConfiguration $testMonitoringOutput
 
-        $actual[1].Keys.Count | Should Be 5
-        $actual[1].ContainsKey("NoIssuesFound") | Should Be $true
-        $actual[1].ContainsKey("OutputHeaders") | Should Be $true
-        $actual[1].ContainsKey("OutputValues") | Should Be $true
-        $actual[1].ContainsKey("SectionHeader") | Should Be $true
-        $actual[1]["SectionHeader"] | Should Be "Server Overview"
-        $actual[1].ContainsKey("ElapsedTime") | Should Be $true
-        $headers = $actual[1].OutputHeaders
+        $actual[0].Keys.Count | Should Be 5
+        $actual[0].ContainsKey("NoIssuesFound") | Should Be $true
+        $actual[0].ContainsKey("OutputHeaders") | Should Be $true
+        $actual[0].ContainsKey("OutputValues") | Should Be $true
+        $actual[0].ContainsKey("SectionHeader") | Should Be $true
+        $actual[0]["SectionHeader"] | Should Be "Server Overview"
+        $actual[0].ContainsKey("ElapsedTime") | Should Be $true
+        $headers = $actual[0].OutputHeaders
         $headers.Keys.Count | Should Be 3
-        $actual[1].OutputValues[1].ServerName | Should Be 'Server2'
-        $actual[1].OutputValues[1].CPULoad | Should Be '13%'
-        $actual[1].OutputValues[1].Memory | Should Be '0.91 / 7.93 (3%)'
-        $actual[1].OutputValues[1].Highlight.Count | Should Be 1
+        $actual[0].OutputValues[1].ServerName | Should Be 'Server2'
+        $actual[0].OutputValues[1].CPULoad | Should Be '13%'
+        $actual[0].OutputValues[1].Memory | Should Be '0.91 / 7.93 (3%)'
+        $actual[0].OutputValues[1].Highlight.Count | Should Be 1
 
     }
 }
