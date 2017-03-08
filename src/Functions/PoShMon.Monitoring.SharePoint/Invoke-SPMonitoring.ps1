@@ -12,7 +12,8 @@ Function Invoke-SPMonitoring
                         -PoShMonConfiguration $PoShMonConfiguration `
                         -TestList (Get-SPTests) `
                         -FarmDiscoveryFunctionName 'Get-ServersInSPFarm' `
-                        -OutputOptimizationList (Get-SPResolutions)
+                        -OutputOptimizationList (Get-SPResolutions) `
+                        -MergesList (Get-SPMerges)
 
     return $outputValues
 }

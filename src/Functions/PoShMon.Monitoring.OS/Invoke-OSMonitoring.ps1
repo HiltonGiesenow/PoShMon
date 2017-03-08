@@ -6,7 +6,10 @@ Function Invoke-OSMonitoring
         [hashtable]$PoShMonConfiguration
     )
 
-    $outputValues = Invoke-MonitoringCore -PoShMonConfiguration $PoShMonConfiguration -TestList (Get-OSTests)
+    $outputValues = Invoke-MonitoringCore `
+                        -PoShMonConfiguration $PoShMonConfiguration `
+                        -TestList (Get-OSTests) `
+                        -MergesList (Get-OSMerges)
 
     return $outputValues
 }

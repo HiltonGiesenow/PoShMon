@@ -8,7 +8,8 @@ Function Invoke-MonitoringCore
         [string[]]$TestList,
         [Parameter(HelpMessage="In the case of a Farm product, such as SharePoint, provide a function to call to auto-discover the remaining servers")]
         [string]$FarmDiscoveryFunctionName = $null,
-        [string[]]$OutputOptimizationList = @()
+        [string[]]$OutputOptimizationList = @(),
+        [string[]]$MergesList = @()
     )
 
     if ($PoShMonConfiguration.TypeName -ne 'PoShMon.Configuration')
@@ -32,7 +33,7 @@ Function Invoke-MonitoringCore
         if ($OutputOptimizationList.Count -gt 0)
             { $outputValues = Optimize-Output $PoShMonConfiguration $outputValues $OutputOptimizationList }
 
-        $outputValues = Merge-WinOSTests $PoShMonConfiguration $outputValues
+        $outputValues = Invoke-Merges $PoShMonConfiguration $outputValues $MergesList
 
     } catch {
         Send-ExceptionNotifications -PoShMonConfiguration $PoShMonConfiguration -Exception $_.Exception
