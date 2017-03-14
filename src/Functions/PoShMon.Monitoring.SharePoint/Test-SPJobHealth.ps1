@@ -7,7 +7,11 @@ Function Test-SPJobHealth
     )
 
 
-    $mainOutput = Get-InitialOutputWithTimer -SectionHeader "Failing Timer Jobs" -OutputHeaders ([ordered]@{ 'JobDefinitionTitle' = 'Job Definition Title'; 'EndTime' = 'End Time'; 'ServerName' = 'Server Name'; 'WebApplicationName' = 'Web Application Name'; 'ErrorMessage' ='Error Message' })
+    #'WebApplicationName' = 'Web Application Name'; 
+    $mainOutput = Get-InitialOutputWithTimer `
+                                        -SectionHeader "Failing Timer Jobs" `
+                                        -OutputHeaders ([ordered]@{ 'JobDefinitionTitle' = 'Job Definition Title'; 'EndTime' = 'End Time'; 'ServerName' = 'Server Name'; 'ErrorMessage' ='Error Message' }) `
+                                        -HeaderUrl ($PoShMonConfiguration.SharePoint.CentralAdminUrl + "/_admin/TimerJobHistory.aspx?View=5")
 
     $startDate = (Get-Date).AddMinutes(-$PoShMonConfiguration.General.MinutesToScanHistory) #.ToUniversalTime()
 
@@ -30,11 +34,11 @@ Function Test-SPJobHealth
         {
             Write-Warning ("`t" + $jobHistoryEntry.JobDefinitionTitle + " at " + $jobHistoryEntry.EndTime + " on " + $jobHistoryEntry.ServerName + " for " + $jobHistoryEntry.WebApplicationName + " : " + $jobHistoryEntry.ErrorMessage)
             
-            $mainOutput.OutputValues += @{
+            $mainOutput.OutputValues += [pscustomobject]@{
                 'JobDefinitionTitle' = $jobHistoryEntry.JobDefinitionTitle;
                 'EndTime' = $jobHistoryEntry.EndTime;
                 'ServerName' = $jobHistoryEntry.ServerName;
-                'WebApplicationName' = $jobHistoryEntry.WebApplicationName;
+                #'WebApplicationName' = $jobHistoryEntry.WebApplicationName;
                 'ErrorMessage' = $jobHistoryEntry.ErrorMessage
             }
         }
@@ -42,6 +46,3 @@ Function Test-SPJobHealth
 
     return (Complete-TimedOutput $mainOutput)
 }
-<#
-    $output = Test-SPJobHealth -RemoteSession $remoteSession -MinutesToScanHistory 2000 -Verbose
-#>

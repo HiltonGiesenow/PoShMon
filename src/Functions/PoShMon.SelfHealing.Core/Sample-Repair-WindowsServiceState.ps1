@@ -6,7 +6,7 @@ Function Repair-WindowsServiceState
     [CmdletBinding()]
     Param(
         [hashtable]$PoShMonConfiguration,
-        [object[]]$PoShMonOutputValues
+        [System.Collections.ArrayList]$PoShMonOutputValues
     )
 
     $stoppedServices = $PoShMonOutputValues | Where { $_.SectionHeader -EQ "Windows Service State" -and $_.NoIssuesFound -eq $false }

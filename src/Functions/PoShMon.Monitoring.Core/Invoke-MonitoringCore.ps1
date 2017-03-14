@@ -8,7 +8,8 @@ Function Invoke-MonitoringCore
         [string[]]$TestList,
         [Parameter(HelpMessage="In the case of a Farm product, such as SharePoint, provide a function to call to auto-discover the remaining servers")]
         [string]$FarmDiscoveryFunctionName = $null,
-        [string[]]$OutputOptimizationList = @()
+        [string[]]$OutputOptimizationList = @(),
+        [string[]]$MergesList = @()
     )
 
     if ($PoShMonConfiguration.TypeName -ne 'PoShMon.Configuration')
@@ -31,6 +32,8 @@ Function Invoke-MonitoringCore
         # Resolve any output issues with all test output (e.g. High CPU might be explained because of something in another test's output)
         if ($OutputOptimizationList.Count -gt 0)
             { $outputValues = Optimize-Output $PoShMonConfiguration $outputValues $OutputOptimizationList }
+
+        $outputValues = Invoke-Merges $PoShMonConfiguration $outputValues $MergesList
 
     } catch {
         Send-ExceptionNotifications -PoShMonConfiguration $PoShMonConfiguration -Exception $_.Exception

@@ -3,7 +3,7 @@ Function New-PushbulletMessageSubject
     [CmdletBinding()]
     Param(
         [hashtable]$PoShMonConfiguration,
-        [object[]]$TestOutputValues
+        [System.Collections.ArrayList]$TestOutputValues
     )
 
     $issueCount = 0

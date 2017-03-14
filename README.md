@@ -94,6 +94,14 @@ Of course there are loads of monitoring systems and tools out there, both paid a
 ---
 
 ## Release Notes
+0.13.0
+* Implement hyperlinks in output
+* Implemented CI server
+* Created a Merger framework (to merge multiple outputs)
+* Create a Merger for OS output
+* Removed ApplicationName from SharePoint Job Health Test
+* Add 'Last Reboot Time' test  
+
 0.12.0
 * Added Office Web Apps / Office Online Server monitoring
 * Added some style to Email output
@@ -132,13 +140,5 @@ Of course there are loads of monitoring systems and tools out there, both paid a
 * Add Try..Catch error handling to each Test method
 * Switched to dynamically invoking test methods by name
 * Created a shared 'Core' monitoring function
-
-0.8.3
-* Reduced duplication in Test code for Stopwatch
-* Fixed naming for 'Free Percent' column in Memory Test
-* For 'Critical' (i.e. NotifyOnFailure) runs, set Email Priority to High if failure occurs
-* For Exception notifications,  set Email Priority to High
-* Convert all Tests that used a PSSession parameter to using PoShMonConfiguration - improves testability
-* Added Unit Tests for every main Test-* function
 
 See [here](https://github.com/HiltonGiesenow/PoShMon/wiki/Changelog) for full Changelog

@@ -1,0 +1,12 @@
+version: 1.0.{build}
+
+image: WMF 5
+
+install:
+  - cinst pester
+
+build: false
+
+test_script:
+# Test with native PS version
+  - ps: . .\src\Tests\appveyorCITests.ps1

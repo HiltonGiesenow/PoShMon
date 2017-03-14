@@ -3,7 +3,7 @@ Function Optimize-Output
     [CmdletBinding()]
     param (
         [hashtable]$PoShMonConfiguration,
-        [object[]]$TestOutputValues,
+        [System.Collections.ArrayList]$TestOutputValues,
         [string[]]$OutputOptimizationList
     )
 
