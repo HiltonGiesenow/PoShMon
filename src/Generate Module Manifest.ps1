@@ -1,4 +1,4 @@
-﻿$version = "0.12.0"
+﻿$version = "0.13.0"
 $manifestPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPath "\PoShMon.psd1"
 
 Remove-Item -Path $manifestPath -ErrorAction SilentlyContinue
@@ -17,6 +17,14 @@ Some of the key features / benefits of PoShMon are:
 For more information, documentation etc. visit https://github.com/HiltonGiesenow/PoShMon as well as the Samples folder within the module itself."
 
 $releaseNotes = "
+0.13.0
+* Implement hyperlinks in output
+* Implemented CI server
+* Created a Merger framework (to merge multiple outputs)
+* Create a Merger for OS output
+* Removed ApplicationName from SharePoint Job Health Test
+* Add 'Last Reboot Time' test
+
 0.12.0
 * Added Office Web Apps / Office Online Server monitoring
 * Added some style to Email output
@@ -72,16 +80,6 @@ $releaseNotes = "
 
 0.8.1
 * Fixing a bug in the SharePoint UPS sync query for datetime
-
-0.8.0
-* Added User Profile Sync monitoring for SharePoint 2010/2013 FIM service
-* Added CPU monitoring
-* Added html encoding for Email notification
-* Some unit test bug fixes and coverage work
-
-0.7.0
-* Added monitoring for server memory (free + total)
-* Removed Credential for Pushbullet, using Header directly instead
 "
 
 New-ModuleManifest -Path $manifestPath -ModuleVersion $version -RootModule "PoShMon.psm1" -Guid '6e6cb274-1bed-4540-b288-95bc638bf679' -Author "Hilton Giesenow" -CompanyName "Experts Inside" -FunctionsToExport '*' -Copyright "2016 Hilton Giesenow, All Rights Reserved" -ProjectUri "https://github.com/HiltonGiesenow/PoShMon" -LicenseUri "https://github.com/HiltonGiesenow/PoShMon/blob/master/LICENSE" -Description $description -Tags 'Monitoring','Server','Farm','SharePoint' -ReleaseNotes $releaseNotes -Verbose
