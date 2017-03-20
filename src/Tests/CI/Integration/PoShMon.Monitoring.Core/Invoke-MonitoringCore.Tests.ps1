@@ -103,27 +103,7 @@ Describe "Invoke-MonitoringCore" {
     }
 }
 Describe "Invoke-MonitoringCore (New Scope)" {
-    It "Should NOT send a notification for an exception INSIDE the tests" {
-
-        $poShMonConfiguration = New-PoShMonConfiguration {
-                        General `
-                            -EnvironmentName 'SharePoint' `
-                            -MinutesToScanHistory 60 `
-                            -PrimaryServerName 'AppServer01' `
-                            -ConfigurationName SpFarmPosh
-                        Notifications -When All {
-                            Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
-                            Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
-                            O365Teams -TeamsWebHookUrl "http://teams.office.com/theapi"
-                        }               
-                    }
-
-        Mock -CommandName Initialize-Notifications -ModuleName PoShMon -Verifiable -MockWith {
-            Write-Verbose "Final Output Received:"
-            $TestOutputValues | % { Write-Verbose "`t$($_.SectionHeader)" }
-            return
-        }
-
+        
         Mock -CommandName Test-SPServerStatus -ModuleName PoShMon -Verifiable -MockWith {
             return @{
                         "SectionHeader" = "SPServerStatus Mock"
@@ -140,28 +120,33 @@ Describe "Invoke-MonitoringCore (New Scope)" {
         }
 
         Mock -CommandName Test-SPJobHealth -ModuleName PoShMon -Verifiable -MockWith {
-            <#return @{
-                        "SectionHeader" = "SPFailingTimerJobs Mock"
-                        "OutputHeaders" = @{ 'Item1' = 'Item 1'; }
-                        "NoIssuesFound" = $false
-                        "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
-                        "OutputValues" = @(
-                                            @{
-                                                "Item1" = 123
-                                                "State" = "State 1"
-                                            }
-                                        )
-                    }#>
             throw "something"
         }
-
-        #Mock -CommandName Get-PSSession -Verifiable -MockWith {
-        #    return $null
-        #}
 
         Mock -CommandName Send-ExceptionNotifications -ModuleName PoShMon -MockWith {
             throw "Should not get here"
         }
+
+        Mock -CommandName Initialize-Notifications -ModuleName PoShMon -Verifiable -MockWith {
+            Write-Verbose "Final Output Received:"
+            $TestOutputValues | % { Write-Verbose "`t$($_.SectionHeader)" }
+            return
+        }
+
+    It "Should NOT send a notification for an exception INSIDE the tests" {
+
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                        General `
+                            -EnvironmentName 'SharePoint' `
+                            -MinutesToScanHistory 60 `
+                            -PrimaryServerName 'AppServer01' `
+                            -ConfigurationName SpFarmPosh
+                        Notifications -When All {
+                            Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
+                            Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            O365Teams -TeamsWebHookUrl "http://teams.office.com/theapi"
+                        }               
+                    }
 
         $actual = Invoke-MonitoringCore $poShMonConfiguration -TestList "SPServerStatus","SPJobHealth"
 
@@ -190,35 +175,11 @@ Describe "Invoke-MonitoringCore (New Scope)" {
                         }               
                     }
 
-        Mock -CommandName Initialize-Notifications -ModuleName PoShMon -Verifiable -MockWith {
-            Write-Verbose "Final Output Received:"
-            $TestOutputValues | % { Write-Verbose "`t$($_.SectionHeader)" }
-            return
-        }
-
-        Mock -CommandName Test-SPServerStatus -ModuleName PoShMon -Verifiable -MockWith {
-            return @{
-                        "SectionHeader" = "SPServerStatus Mock"
-                        "OutputHeaders" = @{ 'Item1' = 'Item 1'; }
-                        "NoIssuesFound" = $false
-                        "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
-                        "OutputValues" = @(
-                                            @{
-                                                "Item1" = 123
-                                                "State" = "State 1"
-                                            }
-                                        )
-                    }
-        }
-
-        Mock -CommandName Send-ExceptionNotifications -ModuleName PoShMon -MockWith {
-            throw "Should not get here"
-        }
-
         $actual = Invoke-MonitoringCore $poShMonConfiguration -TestList "SPServerStatus"
 
         Assert-VerifiableMocks
 
+        $actual.Count | Should Be 2
         $actual[1].SectionHeader | Should Be "Dummy Test"
     }
 
@@ -243,32 +204,8 @@ Describe "Invoke-MonitoringCore (New Scope)" {
                         }               
                     }
 
-        Mock -CommandName Initialize-Notifications -ModuleName PoShMon -Verifiable -MockWith {
-            Write-Verbose "Final Output Received:"
-            $TestOutputValues | % { Write-Verbose "`t$($_.SectionHeader)" }
-            return
-        }
-
-        Mock -CommandName Test-SPServerStatus -ModuleName PoShMon -Verifiable -MockWith {
-            return @{
-                        "SectionHeader" = "SPServerStatus Mock"
-                        "OutputHeaders" = @{ 'Item1' = 'Item 1'; }
-                        "NoIssuesFound" = $false
-                        "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
-                        "OutputValues" = @(
-                                            @{
-                                                "Item1" = 123
-                                                "State" = "State 1"
-                                            }
-                                        )
-                    }
-        }
-
-        Mock -CommandName Send-ExceptionNotifications -ModuleName PoShMon -MockWith {
-            throw "Should not get here"
-        }
-
         $actual = Invoke-MonitoringCore $poShMonConfiguration -TestList "SPServerStatus"
+        $actual.Count | Should Be 2
         $actual[1].SectionHeader | Should Be "Dummy Test"
 
         $output = $($actual = Invoke-MonitoringCore $poShMonConfiguration -TestList "SPServerStatus") 3>&1
