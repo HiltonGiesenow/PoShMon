@@ -269,6 +269,8 @@ Describe "Invoke-MonitoringCore (New Scope)" {
         }
 
         $actual = Invoke-MonitoringCore $poShMonConfiguration -TestList "SPServerStatus"
+        $actual[1].SectionHeader | Should Be "Dummy Test"
+
         $output = $($actual = Invoke-MonitoringCore $poShMonConfiguration -TestList "SPServerStatus") 3>&1
 
         $output.Count | Should Be 1
@@ -277,6 +279,5 @@ Describe "Invoke-MonitoringCore (New Scope)" {
 
         Assert-VerifiableMocks
 
-        $actual[1].SectionHeader | Should Be "Dummy Test"
     }
 }
