@@ -14,7 +14,8 @@ Function General
         [switch]$SkipVersionUpdateCheck = $false,
         [pscredential]$InternetAccessRunAsAccount,
         [parameter(HelpMessage="Web proxy for internet access (e.g. for notification API calls)")]
-        [string]$ProxyAddress
+        [string]$ProxyAddress,
+        [string[]]$ExtraTestFilesToInclude = @()       
     )
 
     if ($Script:PoShMon.ConfigurationItems.General -eq $null)
@@ -43,5 +44,6 @@ Function General
             SkipVersionUpdateCheck = $SkipVersionUpdateCheck
             InternetAccessRunAsAccount = $InternetAccessRunAsAccount
             ProxyAddress = $ProxyAddress
+            ExtraTestFilesToInclude = $ExtraTestFilesToInclude
         }
 }

@@ -26,6 +26,27 @@ Function Invoke-Tests
                 }
             }
         }
+
+        # now include any extra supplied tests, not part of the PoShMon project itself
+        foreach ($extraTestFile in $PoShMonConfiguration.General.ExtraTestFilesToInclude)
+        {
+            if (Test-Path $extraTestFile)
+            {
+                . $extraTestFile
+                try {
+                    $testName = (Split-Path $extraTestFileX -Leaf).Replace(".ps1", "")
+                    $outputValues += & $testName $PoShMonConfiguration
+                } catch {
+                    $outputValues += @{
+                        "SectionHeader" = $test;
+                        "NoIssuesFound" = $false;
+                        "Exception" = $_.Exception
+                    }
+                }
+            } else {
+                Write-Warning "Test file not found: $extraTestFile"
+            }
+        }     
     }
     
     End

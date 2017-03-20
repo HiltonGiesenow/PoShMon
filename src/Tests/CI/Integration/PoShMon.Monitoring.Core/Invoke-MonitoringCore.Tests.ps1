@@ -169,4 +169,114 @@ Describe "Invoke-MonitoringCore (New Scope)" {
 
         $actual[1].Exception.Message | Should Be "something"
     }
+
+    It "Should include additional supplied tests" {
+
+        $extraTestsToInclude = @(
+                                    (Join-Path $rootPath -ChildPath "Tests\CI\Integration\PoShMon.Monitoring.Core\Dummy-Test.ps1")
+                                )
+
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                        General `
+                            -EnvironmentName 'SharePoint' `
+                            -MinutesToScanHistory 60 `
+                            -PrimaryServerName 'AppServer01' `
+                            -ConfigurationName SpFarmPosh `
+                            -ExtraTestFilesToInclude $extraTestsToInclude
+                        Notifications -When All {
+                            Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
+                            Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            O365Teams -TeamsWebHookUrl "http://teams.office.com/theapi"
+                        }               
+                    }
+
+        Mock -CommandName Initialize-Notifications -ModuleName PoShMon -Verifiable -MockWith {
+            Write-Verbose "Final Output Received:"
+            $TestOutputValues | % { Write-Verbose "`t$($_.SectionHeader)" }
+            return
+        }
+
+        Mock -CommandName Test-SPServerStatus -ModuleName PoShMon -Verifiable -MockWith {
+            return @{
+                        "SectionHeader" = "SPServerStatus Mock"
+                        "OutputHeaders" = @{ 'Item1' = 'Item 1'; }
+                        "NoIssuesFound" = $false
+                        "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
+                        "OutputValues" = @(
+                                            @{
+                                                "Item1" = 123
+                                                "State" = "State 1"
+                                            }
+                                        )
+                    }
+        }
+
+        Mock -CommandName Send-ExceptionNotifications -ModuleName PoShMon -MockWith {
+            throw "Should not get here"
+        }
+
+        $actual = Invoke-MonitoringCore $poShMonConfiguration -TestList "SPServerStatus"
+
+        Assert-VerifiableMocks
+
+        $actual[1].SectionHeader | Should Be "Dummy Test"
+    }
+
+    It "Should warn on additional supplied tests that don't exist" {
+
+        $extraTestsToInclude = @(
+                                    (Join-Path $rootPath -ChildPath "Tests\CI\Integration\PoShMon.Monitoring.Core\Dummy-Test.ps1"),
+                                    (Join-Path $rootPath -ChildPath "Tests\CI\Integration\PoShMon.Monitoring.Core\NotExistingDummy-Test.ps1")
+                                )
+
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                        General `
+                            -EnvironmentName 'SharePoint' `
+                            -MinutesToScanHistory 60 `
+                            -PrimaryServerName 'AppServer01' `
+                            -ConfigurationName SpFarmPosh `
+                            -ExtraTestFilesToInclude $extraTestsToInclude
+                        Notifications -When All {
+                            Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
+                            Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            O365Teams -TeamsWebHookUrl "http://teams.office.com/theapi"
+                        }               
+                    }
+
+        Mock -CommandName Initialize-Notifications -ModuleName PoShMon -Verifiable -MockWith {
+            Write-Verbose "Final Output Received:"
+            $TestOutputValues | % { Write-Verbose "`t$($_.SectionHeader)" }
+            return
+        }
+
+        Mock -CommandName Test-SPServerStatus -ModuleName PoShMon -Verifiable -MockWith {
+            return @{
+                        "SectionHeader" = "SPServerStatus Mock"
+                        "OutputHeaders" = @{ 'Item1' = 'Item 1'; }
+                        "NoIssuesFound" = $false
+                        "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
+                        "OutputValues" = @(
+                                            @{
+                                                "Item1" = 123
+                                                "State" = "State 1"
+                                            }
+                                        )
+                    }
+        }
+
+        Mock -CommandName Send-ExceptionNotifications -ModuleName PoShMon -MockWith {
+            throw "Should not get here"
+        }
+
+        $actual = Invoke-MonitoringCore $poShMonConfiguration -TestList "SPServerStatus"
+        $output = $($actual = Invoke-MonitoringCore $poShMonConfiguration -TestList "SPServerStatus") 3>&1
+
+        $output.Count | Should Be 1
+        $output[0].ToString().StartsWith("Test file not found") | Should Be $true
+        $output[0].ToString().EndsWith("NotExistingDummy-Test.ps1") | Should Be $true
+
+        Assert-VerifiableMocks
+
+        $actual[1].SectionHeader | Should Be "Dummy Test"
+    }
 }
