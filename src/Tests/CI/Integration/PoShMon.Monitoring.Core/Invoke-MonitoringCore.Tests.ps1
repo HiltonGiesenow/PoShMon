@@ -158,7 +158,7 @@ Describe "Invoke-MonitoringCore (New Scope)" {
     It "Should include additional supplied tests" {
 
         $extraTestsToInclude = @(
-                                    (Join-Path $rootPath -ChildPath "Tests\CI\Integration\PoShMon.Monitoring.Core\Dummy-Test.ps1")
+                                    #(Join-Path $rootPath -ChildPath "Tests\CI\Integration\PoShMon.Monitoring.Core\Dummy-Test.ps1")
                                 )
 
         $poShMonConfiguration = New-PoShMonConfiguration {
