@@ -111,7 +111,7 @@ Describe "Invoke-MonitoringCore (New Scope)" {
                         "NoIssuesFound" = $false
                         "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
                         "OutputValues" = @(
-                                            @{
+                                            [PSCustomObject]@{
                                                 "Item1" = 123
                                                 "State" = "State 1"
                                             }
@@ -180,6 +180,7 @@ Describe "Invoke-MonitoringCore (New Scope)" {
         Assert-VerifiableMocks
 
         $actual.Count | Should Be 2
+        $actual | foreach { write-warning $_.SectionHeader }
         $section = ($actual | Where SectionHeader -eq "Dummy Test") #these are coming back in the wrong order in the CI environment
         $section.SectionHeader | Should Be "Dummy Test"
     }
