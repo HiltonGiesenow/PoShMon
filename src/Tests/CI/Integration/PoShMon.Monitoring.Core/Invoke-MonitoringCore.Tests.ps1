@@ -180,8 +180,10 @@ Describe "Invoke-MonitoringCore (New Scope)" {
         Assert-VerifiableMocks
 
         $actual.Count | Should Be 2
-        $actual | foreach { write-warning $_.SectionHeader }
-        Write-Warning $actual
+        $actual | foreach { 
+            write-warning $_.SectionHeader
+            Write-Warning $_.OutputValues[0]
+        }
         $section = ($actual | Where SectionHeader -eq "Dummy Test Section") #these are coming back in the wrong order in the CI environment
         $section.SectionHeader | Should Be "Dummy Test Section"
     }
