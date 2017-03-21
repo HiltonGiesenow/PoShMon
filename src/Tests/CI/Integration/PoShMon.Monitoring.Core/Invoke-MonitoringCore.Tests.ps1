@@ -180,8 +180,7 @@ Describe "Invoke-MonitoringCore (New Scope)" {
         Assert-VerifiableMocks
 
         $actual.Count | Should Be 2
-        $section = ($actual | Where SectionHeader -eq "Dummy Test Section")
-        $section.SectionHeader | Should Be "Dummy Test Section"
+        $actual[1].SectionHeader | Should Be "Dummy Test Section"
     }
 
     It "Should warn on additional supplied tests that don't exist" {
@@ -216,6 +215,94 @@ Describe "Invoke-MonitoringCore (New Scope)" {
         $output[0].ToString().EndsWith("NotExistingDummy-Test.ps1") | Should Be $true
 
         Assert-VerifiableMocks
+    }
 
+    It "Should handle exceptions inside additional supplied tests" {
+
+        $extraTestsToInclude = @(
+                                    (Join-Path $rootPath -ChildPath "Tests\CI\Integration\PoShMon.Monitoring.Core\Dummy-TestWithException.ps1")
+                                )
+
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                        General `
+                            -EnvironmentName 'SharePoint' `
+                            -MinutesToScanHistory 60 `
+                            -PrimaryServerName 'AppServer01' `
+                            -ConfigurationName SpFarmPosh `
+                            -ExtraTestFilesToInclude $extraTestsToInclude
+                        Notifications -When All {
+                            Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
+                            Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            O365Teams -TeamsWebHookUrl "http://teams.office.com/theapi"
+                        }               
+                    }
+
+        $actual = Invoke-MonitoringCore $poShMonConfiguration -TestList "SPServerStatus"
+
+        Assert-VerifiableMocks
+
+        $actual[1].Exception.Message | Should Be "something"
+    }
+
+    It "Should include additional supplied resolvers" {
+
+        $extraResolverFilesToInclude = @(
+                                    (Join-Path $rootPath -ChildPath "Tests\CI\Integration\PoShMon.Monitoring.Core\Dummy-Resolver.ps1")
+                                )
+
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                        General `
+                            -EnvironmentName 'SharePoint' `
+                            -MinutesToScanHistory 60 `
+                            -PrimaryServerName 'AppServer01' `
+                            -ConfigurationName SpFarmPosh `
+                            -ExtraResolverFilesToInclude $extraResolverFilesToInclude
+                        Notifications -When All {
+                            Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
+                            Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            O365Teams -TeamsWebHookUrl "http://teams.office.com/theapi"
+                        }               
+                    }
+
+        $actual = Invoke-MonitoringCore $poShMonConfiguration -TestList "SPServerStatus"
+
+        Assert-VerifiableMocks
+
+        $actual.NoIssuesFound | Should Be $true
+    }
+
+    It "Should warn on additional supplied resolvers that don't exist" {
+
+        $extraResolverFilesToInclude = @(
+                                    (Join-Path $rootPath -ChildPath "Tests\CI\Integration\PoShMon.Monitoring.Core\Dummy-Resolver.ps1")
+                                    (Join-Path $rootPath -ChildPath "Tests\CI\Integration\PoShMon.Monitoring.Core\Dummy-ResolverThatDoesntExist.ps1")
+                                )
+
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                        General `
+                            -EnvironmentName 'SharePoint' `
+                            -MinutesToScanHistory 60 `
+                            -PrimaryServerName 'AppServer01' `
+                            -ConfigurationName SpFarmPosh `
+                            -ExtraResolverFilesToInclude $extraResolverFilesToInclude
+                        Notifications -When All {
+                            Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
+                            Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            O365Teams -TeamsWebHookUrl "http://teams.office.com/theapi"
+                        }               
+                    }
+
+
+
+        $actual = Invoke-MonitoringCore $poShMonConfiguration -TestList "SPServerStatus"
+        $actual.NoIssuesFound | Should Be $true
+
+        Assert-VerifiableMocks
+
+        $output = $($actual = Invoke-MonitoringCore $poShMonConfiguration -TestList "SPServerStatus") 3>&1
+
+        $output.Count | Should Be 1
+        $output[0].ToString().StartsWith("Resolver file not found, will be skipped:") | Should Be $true
+        $output[0].ToString().EndsWith("Dummy-ResolverThatDoesntExist.ps1") | Should Be $true
     }
 }

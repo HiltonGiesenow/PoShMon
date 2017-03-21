@@ -32,7 +32,6 @@ Function Invoke-Tests
         {
             if (Test-Path $extraTestFile)
             {
-                
                 . $extraTestFile # Load the script
 
                 $testName = $extraTestFile | Get-Item | Select -ExpandProperty BaseName

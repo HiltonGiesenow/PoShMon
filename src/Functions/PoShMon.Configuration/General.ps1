@@ -15,7 +15,8 @@ Function General
         [pscredential]$InternetAccessRunAsAccount,
         [parameter(HelpMessage="Web proxy for internet access (e.g. for notification API calls)")]
         [string]$ProxyAddress,
-        [string[]]$ExtraTestFilesToInclude = @()       
+        [string[]]$ExtraTestFilesToInclude = @(),
+        [string[]]$ExtraResolverFilesToInclude = @()
     )
 
     if ($Script:PoShMon.ConfigurationItems.General -eq $null)
@@ -45,5 +46,6 @@ Function General
             InternetAccessRunAsAccount = $InternetAccessRunAsAccount
             ProxyAddress = $ProxyAddress
             ExtraTestFilesToInclude = $ExtraTestFilesToInclude
+            ExtraResolverFilesToInclude = $ExtraResolverFilesToInclude
         }
 }
