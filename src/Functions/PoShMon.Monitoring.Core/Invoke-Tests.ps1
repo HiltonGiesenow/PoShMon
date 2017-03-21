@@ -32,19 +32,24 @@ Function Invoke-Tests
         {
             if (Test-Path $extraTestFile)
             {
-                . $extraTestFile
+                
+                . $extraTestFile # Load the script
+
+                $testName = $extraTestFile | Get-Item | Select -ExpandProperty BaseName
+
                 try {
-                    $testName = (Split-Path $extraTestFileX -Leaf).Replace(".ps1", "")
+                    #$testName = (Split-Path $extraTestFileX -Leaf).Replace(".ps1", "")
                     $outputValues += & $testName $PoShMonConfiguration
                 } catch {
                     $outputValues += @{
-                        "SectionHeader" = $test;
+                        "SectionHeader" = $testName;
                         "NoIssuesFound" = $false;
                         "Exception" = $_.Exception
                     }
                 }
+
             } else {
-                Write-Warning "Test file not found: $extraTestFile"
+                Write-Warning "Test file not found, will be skipped: $extraTestFile"
             }
         }     
     }

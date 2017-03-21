@@ -158,7 +158,7 @@ Describe "Invoke-MonitoringCore (New Scope)" {
     It "Should include additional supplied tests" {
 
         $extraTestsToInclude = @(
-                                    #(Join-Path $rootPath -ChildPath "Tests\CI\Integration\PoShMon.Monitoring.Core\Dummy-Test.ps1")
+                                    (Join-Path $rootPath -ChildPath "Tests\CI\Integration\PoShMon.Monitoring.Core\Dummy-Test.ps1")
                                 )
 
         $poShMonConfiguration = New-PoShMonConfiguration {
@@ -179,12 +179,17 @@ Describe "Invoke-MonitoringCore (New Scope)" {
 
         Assert-VerifiableMocks
 
-        #$actual.Count | Should Be 2
+        if ($actual[1].Exception -ne $null)
+        {
+            Write-Warning $actual[1].Exception.Message
+        }
+
+        $actual.Count | Should Be 2
         $actual | foreach { 
             write-warning $_.SectionHeader
             Write-Warning $_.OutputValues[0]
         }
-        $section = ($actual | Where SectionHeader -eq "Dummy Test Section") #these are coming back in the wrong order in the CI environment
+        $section = ($actual | Where SectionHeader -eq "Dummy Test Section")
         $section.SectionHeader | Should Be "Dummy Test Section"
     }
 
