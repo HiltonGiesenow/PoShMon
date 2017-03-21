@@ -38,7 +38,7 @@ Function Invoke-Tests
                 $testName = $extraTestFile | Get-Item | Select -ExpandProperty BaseName
 
                 try {
-                    #$testName = (Split-Path $extraTestFileX -Leaf).Replace(".ps1", "")
+                    #$testName = (Split-Path $extraTestFile -Leaf).Replace(".ps1", "")
                     $outputValues += & $testName $PoShMonConfiguration
                 } catch {
                     $outputValues += @{

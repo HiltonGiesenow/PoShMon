@@ -179,16 +179,7 @@ Describe "Invoke-MonitoringCore (New Scope)" {
 
         Assert-VerifiableMocks
 
-        if ($actual[1].Exception -ne $null)
-        {
-            Write-Warning $actual[1].Exception.Message
-        }
-
         $actual.Count | Should Be 2
-        $actual | foreach { 
-            write-warning $_.SectionHeader
-            Write-Warning $_.OutputValues[0]
-        }
         $section = ($actual | Where SectionHeader -eq "Dummy Test Section")
         $section.SectionHeader | Should Be "Dummy Test Section"
     }
