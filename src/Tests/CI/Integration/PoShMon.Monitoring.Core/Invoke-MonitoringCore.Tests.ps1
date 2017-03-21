@@ -181,6 +181,7 @@ Describe "Invoke-MonitoringCore (New Scope)" {
 
         $actual.Count | Should Be 2
         $actual | foreach { write-warning $_.SectionHeader }
+        Write-Warning $actual
         $section = ($actual | Where SectionHeader -eq "Dummy Test Section") #these are coming back in the wrong order in the CI environment
         $section.SectionHeader | Should Be "Dummy Test Section"
     }
