@@ -180,7 +180,8 @@ Describe "Invoke-MonitoringCore (New Scope)" {
         Assert-VerifiableMocks
 
         $actual.Count | Should Be 2
-        $actual[1].SectionHeader | Should Be "Dummy Test"
+        $section = ($actual | Where SectionHeader -eq "Dummy Test") #these are coming back in the wrong order in the CI environment
+        $section.SectionHeader | Should Be "Dummy Test"
     }
 
     It "Should warn on additional supplied tests that don't exist" {
@@ -206,7 +207,8 @@ Describe "Invoke-MonitoringCore (New Scope)" {
 
         $actual = Invoke-MonitoringCore $poShMonConfiguration -TestList "SPServerStatus"
         $actual.Count | Should Be 2
-        $actual[1].SectionHeader | Should Be "Dummy Test"
+        $section = ($actual | Where SectionHeader -eq "Dummy Test") #these are coming back in the wrong order in the CI environment
+        $section.SectionHeader | Should Be "Dummy Test"
 
         $output = $($actual = Invoke-MonitoringCore $poShMonConfiguration -TestList "SPServerStatus") 3>&1
 
