@@ -158,7 +158,7 @@ Describe "Invoke-MonitoringCore (New Scope)" {
     It "Should include additional supplied tests" {
 
         $extraTestsToInclude = @(
-                                    #(Join-Path $rootPath -ChildPath "Tests\CI\Integration\PoShMon.Monitoring.Core\Dummy-Test.ps1")
+                                    (Join-Path $rootPath -ChildPath "Tests\CI\Integration\PoShMon.Monitoring.Core\Dummy-Test.ps1")
                                 )
 
         $poShMonConfiguration = New-PoShMonConfiguration {
@@ -181,8 +181,8 @@ Describe "Invoke-MonitoringCore (New Scope)" {
 
         $actual.Count | Should Be 2
         $actual | foreach { write-warning $_.SectionHeader }
-        $section = ($actual | Where SectionHeader -eq "Dummy Test") #these are coming back in the wrong order in the CI environment
-        $section.SectionHeader | Should Be "Dummy Test"
+        $section = ($actual | Where SectionHeader -eq "Dummy Test Section") #these are coming back in the wrong order in the CI environment
+        $section.SectionHeader | Should Be "Dummy Test Section"
     }
 
     It "Should warn on additional supplied tests that don't exist" {
@@ -208,8 +208,7 @@ Describe "Invoke-MonitoringCore (New Scope)" {
 
         $actual = Invoke-MonitoringCore $poShMonConfiguration -TestList "SPServerStatus"
         $actual.Count | Should Be 2
-        $section = ($actual | Where SectionHeader -eq "Dummy Test") #these are coming back in the wrong order in the CI environment
-        $section.SectionHeader | Should Be "Dummy Test"
+        $actual[1].SectionHeader | Should Be "Dummy Test Section"
 
         $output = $($actual = Invoke-MonitoringCore $poShMonConfiguration -TestList "SPServerStatus") 3>&1
 

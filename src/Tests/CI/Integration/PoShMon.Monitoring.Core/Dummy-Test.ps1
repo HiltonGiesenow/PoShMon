@@ -6,7 +6,7 @@ Function Dummy-Test
     )
 
     return @{
-        "SectionHeader" = "Dummy Test"
+        "SectionHeader" = "Dummy Test Section"
         "OutputHeaders" = @{ 'ThingID' = 'Thing ID'; 'Message' = 'Message'; 'Server' = 'Server' }
         "NoIssuesFound" = $true
         "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
