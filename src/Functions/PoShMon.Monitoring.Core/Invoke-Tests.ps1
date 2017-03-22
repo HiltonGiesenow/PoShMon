@@ -28,7 +28,7 @@ Function Invoke-Tests
         }
 
         # now include any extra supplied tests, not part of the PoShMon project itself
-        foreach ($extraTestFile in $PoShMonConfiguration.General.ExtraTestFilesToInclude)
+        foreach ($extraTestFile in $PoShMonConfiguration.Extensibility.ExtraTestFilesToInclude)
         {
             if (Test-Path $extraTestFile)
             {

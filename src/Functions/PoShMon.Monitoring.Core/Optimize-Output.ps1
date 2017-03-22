@@ -15,7 +15,7 @@ Function Optimize-Output
     }
 
     # now include any extra supplied resolvers, not part of the PoShMon project itself
-    foreach ($extraResolverFile in $PoShMonConfiguration.General.ExtraResolverFilesToInclude)
+    foreach ($extraResolverFile in $PoShMonConfiguration.Extensibility.ExtraResolverFilesToInclude)
     {
         if (Test-Path $extraResolverFile)
         {

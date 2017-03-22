@@ -28,6 +28,8 @@ Function New-PoShMonConfiguration
             { $newConfiguration.WebSite = $configurationItem }
         if ($configurationItem.TypeName -eq "PoShMon.ConfigurationItems.SharePoint")
             { $newConfiguration.SharePoint = $configurationItem }
+        if ($configurationItem.TypeName -eq "PoShMon.ConfigurationItems.Extensibility")
+            { $newConfiguration.Extensibility = $configurationItem }
         elseif ($configurationItem.TypeName.StartsWith("PoShMon.ConfigurationItems.NotificationCollection"))
             { 
                 $newConfiguration.Notifications += $configurationItem }
