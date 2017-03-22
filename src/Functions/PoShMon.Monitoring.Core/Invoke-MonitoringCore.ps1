@@ -30,8 +30,11 @@ Function Invoke-MonitoringCore
                                 Invoke-Tests -PoShMonConfiguration $PoShMonConfiguration
 
         # Resolve any output issues with all test output (e.g. High CPU might be explained because of something in another test's output)
-        if ($OutputOptimizationList.Count -gt 0)
-            { $outputValues = Optimize-Output $PoShMonConfiguration $outputValues $OutputOptimizationList }
+        #if ($OutputOptimizationList.Count -gt 0)
+            #{ 
+                #$outputValues = 
+                Optimize-Output $PoShMonConfiguration $outputValues $OutputOptimizationList
+             #}
 
         $outputValues = Invoke-Merges $PoShMonConfiguration $outputValues $MergesList
 
