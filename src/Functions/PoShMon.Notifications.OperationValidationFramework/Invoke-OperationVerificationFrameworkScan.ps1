@@ -11,7 +11,7 @@ Function Invoke-OperationVerificationFrameworkScan
     foreach ($outputSection in $TestOutputValues)
     {
     
-        $issueFound = $false
+        $global:issueFound = $false
 
         Describe $outputSection.SectionHeader {
             It "Should not have any Exceptions" {
@@ -20,6 +20,11 @@ Function Invoke-OperationVerificationFrameworkScan
 
             foreach ($outputValue in $outputSection.OutputValues)
             {
+                #$cleanObject = $outputValue.psobject.Copy()
+                #$cleanObject.psobject.Properties.Remove("Highlight")
+                #$cleanJsonValue = ConvertTo-Json($cleanObject)
+                $actualJsonValue = ConvertTo-Json($outputValue)
+                
                 foreach ($headerKey in $outputSection.OutputHeaders.Keys)
                 {
                     $fieldValue = $outputValue.psobject.Properties[$headerKey].Value
@@ -27,11 +32,11 @@ Function Invoke-OperationVerificationFrameworkScan
                     It "Should not find any issues" {
                         if ($outputValue.psobject.Properties['Highlight'].Value -ne $null -and $outputValue.psobject.Properties['Highlight'].Value.Contains($headerKey))
                         {
-                            $issueFound = $true
+                            $global:issueFound = $true
 
-                            $fieldValue | Should Not Be $fieldValue
+                            $actualJsonValue | Should Not Be $actualJsonValue
                         } else {
-                            $fieldValue | Should Be $fieldValue
+                            $actualJsonValue | Should Be $actualJsonValue
                         }
                     }
                 }
@@ -39,9 +44,9 @@ Function Invoke-OperationVerificationFrameworkScan
 
             # check now if an issue was found, but not in one of the items - it may be a test where the 
             # existence of items is itself the failure, like checking an error log
-            if ($issueFound -eq $false -and $outputSection.NoIssuesFound -eq $false)
+            if ($global:issueFound -eq $false -and $outputSection.NoIssuesFound -eq $false)
             {
-                It "Should find no issues" {
+                It "Should find no values" {
                     $outputSection.OutputValues.Count | Should Be 0
                 }
             }
