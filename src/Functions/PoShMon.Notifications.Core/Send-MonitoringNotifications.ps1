@@ -50,7 +50,7 @@
          }
          elseif ($notificationSink.TypeName -eq 'PoShMon.ConfigurationItems.Notifications.OperationValidationFramework')
          {
-                Invoke-OperationVerificationFrameworkScan `
+                Invoke-OperationValidationFrameworkScan `
                                 -PoShMonConfiguration $PoShMonConfiguration `
                                 -OperationValidationFrameworkNotificationSink $notificationSink `
                                 -TestOutputValues $TestOutputValues `

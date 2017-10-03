@@ -1,4 +1,4 @@
-Function Invoke-OperationVerificationFrameworkScan
+Function Invoke-OperationValidationFrameworkScan
 {
     [CmdletBinding()]
     Param(
@@ -35,8 +35,19 @@ Function Invoke-OperationVerificationFrameworkScan
 
             if ($outputSection.NoIssuesFound -eq $false -and $isAnItemError -eq $false)
             {
-                It "Should find no items for this Test" {
+                It "Should find no items for '$($outputSection.SectionHeader)'" {
                     $outputSection.OutputValues.Count | Should Be 0
+                }
+
+                if ($outputSection.OutputValues.Count -gt 0)
+                {
+                    foreach ($outputValue in $outputSection.OutputValues)
+                    {
+                        It "The following items exist: " {
+                            $actualJsonValue = ConvertTo-Json($outputValue)
+                            $actualJsonValue | Should Not Be $actualJsonValue
+                        }
+                    }
                 }
             } else {
                 foreach ($outputValue in $outputSection.OutputValues)
