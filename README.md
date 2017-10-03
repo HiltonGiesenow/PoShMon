@@ -94,6 +94,9 @@ Of course there are loads of monitoring systems and tools out there, both paid a
 ---
 
 ## Release Notes
+0.14.0
+* Integration with Operation Validation Framework (OVF)
+
 0.13.0
 * Implement hyperlinks in output
 * Implemented CI server
@@ -135,7 +138,7 @@ Of course there are loads of monitoring systems and tools out there, both paid a
 
 0.9.0
 * Added a Server Time test for servers drifting apart
-* Add an 'update' notification for new versions of PoShMon
+* Add an 'Update' notification for new versions of PoShMon
 * Add an 'Update' command to make updating PoShMon easier
 * Add Try..Catch error handling to each Test method
 * Switched to dynamically invoking test methods by name

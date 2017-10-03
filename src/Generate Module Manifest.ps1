@@ -1,4 +1,4 @@
-﻿$version = "0.13.0"
+﻿$version = "0.14.0"
 $manifestPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPath "\PoShMon.psd1"
 
 Remove-Item -Path $manifestPath -ErrorAction SilentlyContinue
@@ -17,6 +17,9 @@ Some of the key features / benefits of PoShMon are:
 For more information, documentation etc. visit https://github.com/HiltonGiesenow/PoShMon as well as the Samples folder within the module itself."
 
 $releaseNotes = "
+0.14.0
+* Integration with Operation Validation Framework (OVF)
+
 0.13.0
 * Implement hyperlinks in output
 * Implemented CI server
@@ -77,9 +80,6 @@ $releaseNotes = "
 * Added a function to initialise output for all Test methods
 * Added PoShMon version to email output
 * Added Farm Health Test (SharePoint) - not active
-
-0.8.1
-* Fixing a bug in the SharePoint UPS sync query for datetime
 "
 
 New-ModuleManifest -Path $manifestPath -ModuleVersion $version -RootModule "PoShMon.psm1" -Guid '6e6cb274-1bed-4540-b288-95bc638bf679' -Author "Hilton Giesenow" -CompanyName "Experts Inside" -FunctionsToExport '*' -Copyright "2016 Hilton Giesenow, All Rights Reserved" -ProjectUri "https://github.com/HiltonGiesenow/PoShMon" -LicenseUri "https://github.com/HiltonGiesenow/PoShMon/blob/master/LICENSE" -Description $description -Tags 'Monitoring','Server','Farm','SharePoint' -ReleaseNotes $releaseNotes -Verbose
