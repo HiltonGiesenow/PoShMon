@@ -47,8 +47,16 @@
                                 -Subject (New-O365TeamsMessageSubject $PoShMonConfiguration $TestOutputValues) `
                                 -Body (New-O365TeamsMessageBody $PoShMonConfiguration $SendNotificationsWhen $TestOutputValues $TotalElapsedTime) `
                                 -Critical $atLeastOneFailure
+         }
+         elseif ($notificationSink.TypeName -eq 'PoShMon.ConfigurationItems.Notifications.OperationValidationFramework')
+         {
+                Invoke-OperationValidationFrameworkScan `
+                                -PoShMonConfiguration $PoShMonConfiguration `
+                                -OperationValidationFrameworkNotificationSink $notificationSink `
+                                -TestOutputValues $TestOutputValues `
+                                -Critical $atLeastOneFailure
          } else {
-            Write-Error "Notitication Sink '$notificationSink.TypeName' type not found"
+            Write-Error "Notitication Sink '$($notificationSink.TypeName)' type not found"
         }
     }
 }
