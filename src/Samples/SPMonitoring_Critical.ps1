@@ -1,4 +1,4 @@
-﻿Import-Module "C:\Dev\GitHub\PoShMon\src\0.4.0\PoShMon.psd1" -Verbose -Force #This is only necessary if you haven't installed the module into your Modules folder, e.g. via PowerShellGallery / Install-Module
+﻿Import-Module "C:\Development\GitHub\PoShMon\PoShMon\src\PoShMon.psd1" -Verbose -Force #This is only necessary if you haven't installed the module into your Modules folder, e.g. via PowerShellGallery / Install-Module
 
 #Alternatively, use the lines below
 #If (!(Get-module PoShMon))
