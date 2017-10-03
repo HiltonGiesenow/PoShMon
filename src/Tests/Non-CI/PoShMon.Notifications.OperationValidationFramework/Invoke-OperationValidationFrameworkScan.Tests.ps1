@@ -9,7 +9,7 @@ Describe "Invoke-OperationValidationFrameworkTests" {
 
         It "Should pass if no PoShMon failures" {
             
-            $testOutput = Invoke-Pester -Script $harnessScript -TestName "Invoke-OperationValidationFrameworkScan-Clear" -PassThru #-Show None            
+            $testOutput = Invoke-Pester -Script $harnessScript -TestName "Invoke-OperationValidationFrameworkScan-Clear" -PassThru -Show None            
 
             $testOutput.PassedCount | Should Be 11
 
@@ -20,7 +20,7 @@ Describe "Invoke-OperationValidationFrameworkTests" {
 
         It "Should fail any PoShMon failures" {
 
-            $testOutput = Invoke-Pester -Script $harnessScript -TestName "Invoke-OperationValidationFrameworkScan-FailureSet" -PassThru #-Show None            
+            $testOutput = Invoke-Pester -Script $harnessScript -TestName "Invoke-OperationValidationFrameworkScan-FailureSet" -PassThru -Show None            
 
             $testOutput.PassedCount | Should Be 7
             $testOutput.FailedCount | Should Be 3
