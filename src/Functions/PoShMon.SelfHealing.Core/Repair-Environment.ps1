@@ -2,7 +2,7 @@ Function Repair-Environment
 {
     [CmdletBinding()]
     Param(
-        [hashtable]$poShMonConfiguration,
+        [hashtable]$PoShMonConfiguration,
         [System.Collections.ArrayList]$PoShMonOutputValues,
         [string[]]$RepairScripts
     )

@@ -1,7 +1,7 @@
 ﻿<#
     
 #>
-Function Repair-WindowsServiceState
+Function Sample-Repair-WindowsServiceState
 {
     [CmdletBinding()]
     Param(
@@ -13,20 +13,32 @@ Function Repair-WindowsServiceState
  
     $repairOutput = @()
 
-    foreach ($groupOutputValue in $stoppedServices.OutputValues)
+    $groups = $stoppedServices.OutputValues | Group $stoppedServices["GroupBy"]
+
+    foreach ($group in $groups)
     {
-        $serverName = $groupOutputValue.GroupName
-        $services = $groupOutputValue.GroupOutputValues | Where { $_.Highlight.Count -gt 0 }
+        $serverName = $group.Name
+        $services = $group.Group | Where { $_.Highlight.Count -gt 0 }
 
         $serviceNames = @()
         foreach ($service in $services)
             { $serviceNames += $service.Name }
 
-        Invoke-Command -ComputerName $serverName -ScriptBlock {
-            param($serviceNames)
-            $serviceNames | Start-Service
-            $serviceNames | Set-Service -StartupType Automatic #Presumably if it's meant to be running, it should be set to auto start...
-        } -ArgumentList $serviceNames
+        $params = @{
+            ScriptBlock = {
+                param($serviceNames)
+    
+                Write-Verbose "Starting $serviceNames on $serverName"
+                $serviceNames | Start-Service
+                $serviceNames | Set-Service -StartupType Automatic #Presumably if it's meant to be running, it should be set to auto start...
+            }
+            ArgumentList = $serviceNames
+        }
+
+        if ($serverName -ne $Env:COMPUTERNAME)
+            { $params.Add("ComputerName", $serverName) }
+            
+        Invoke-Command @params
  
         $repairOutput += @{
                  "SectionHeader" = "Windows Service State on $serverName"
