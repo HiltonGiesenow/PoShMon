@@ -10,9 +10,11 @@ Some of the key features / benefits of PoShMon are:
 - Agent-less Monitoring - nothing needs to be installed on the remote servers
 - Core operating system and web-site monitoring
 - Specialized SharePoint monitoring
+- Specialized Office Online Server monitoring
 - Supports frequent/critical as well as comprehensive daily monitoring
 - Email, Pushbullet (mobile) and Office 365 Teams ('Chat-ops') notifications
 - Provides a framework for 'self-healing' systems
+- Support for Operation Validation Framework (OVF)
 
 For more information, documentation etc. visit https://github.com/HiltonGiesenow/PoShMon as well as the Samples folder within the module itself."
 
