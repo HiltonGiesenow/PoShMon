@@ -25,7 +25,7 @@
     if ($PoShMonConfiguration.General.InternetAccessRunAsAccount -ne $null)
         { $params.Add("Credential", $PoShMonConfiguration.General.InternetAccessRunAsAccount) }
 
-    if ($PoShMonConfiguration.General.ProxyAddress -ne $null)
+    if ([string]::IsNullOrEmpty($PoShMonConfiguration.General.ProxyAddress) -eq $false)
         { $params.Add("Proxy", $PoShMonConfiguration.General.ProxyAddress) }
 
     #$response = Invoke-WebRequest -Uri $O365TeamsNotificationSink.TeamsWebHookUrl -Headers $headers -Body $finalMessageBody -Method Post
