@@ -36,7 +36,6 @@ Function Test-EventLogs
 
                         Write-Warning ("`t`t" + $currentEntry.EventCode.ToString() + ' : ' + $eventLogEntryGroup.Count + ' : ' + $currentEntry.SourceName + ' : ' + $currentEntry.User + ' : ' + $currentEntry.ConvertToDateTime($currentEntry.TimeGenerated) + ' - ' + $currentEntry.Message)
                 
-                        # $outputItem = @{
                         $mainOutput.OutputValues += [pscustomobject]@{
                                         'ServerName' = $serverName;
                                         'EventID' = $currentEntry.EventCode;
@@ -46,25 +45,14 @@ Function Test-EventLogs
                                         'Timestamp' = $currentEntry.ConvertToDateTime($currentEntry.TimeGenerated);
                                         'Message' = $currentEntry.Message
                                     }
-
-                        # $itemOutputValues += $outputItem
                     }
                 }
-
-                # $mainOutput.OutputValues += @{
-                #                     'GroupName' = $serverName
-                #                     'GroupOutputValues' = $itemOutputValues
-                #                 }
             }
 
             if ($mainOutput.NoIssuesFound)
             {
                 Write-Verbose "`t`tNo Entries Found In Time Specified"
 
-                # $mainOutput.OutputValues += @{
-                #                     'GroupName' = $serverName
-                #                     'GroupOutputValues' = @()
-                #                 }
                 $mainOutput.OutputValues += [pscustomobject]@{
                                 'ServerName' = $serverName;
                 }
