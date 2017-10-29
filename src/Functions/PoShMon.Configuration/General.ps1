@@ -1,6 +1,6 @@
 Function General
 {
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParameterSetName='PrimaryServer')]
     param(
         [string]$EnvironmentName = $env:COMPUTERNAME,
         [int]$MinutesToScanHistory = 15,
