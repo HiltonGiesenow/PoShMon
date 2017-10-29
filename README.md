@@ -94,6 +94,11 @@ Of course there are loads of monitoring systems and tools out there, both paid a
 ---
 
 ## Release Notes
+0.15.0
+* Bug fixes for Pushbullet and Microsoft Teams message posting
+* Added sample for self-healing
+* Minor code cleanups
+
 0.14.0
 * Integration with Operation Validation Framework (OVF)
 
@@ -135,13 +140,5 @@ Of course there are loads of monitoring systems and tools out there, both paid a
 0.9.1
 * Fixed a bug crossing hour and day boundaries for Server Time test
 * Fixed a bug with Services on server testing in non-SharePoint environments
-
-0.9.0
-* Added a Server Time test for servers drifting apart
-* Add an 'Update' notification for new versions of PoShMon
-* Add an 'Update' command to make updating PoShMon easier
-* Add Try..Catch error handling to each Test method
-* Switched to dynamically invoking test methods by name
-* Created a shared 'Core' monitoring function
 
 See [here](https://github.com/HiltonGiesenow/PoShMon/wiki/Changelog) for full Changelog
