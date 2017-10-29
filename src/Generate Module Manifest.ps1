@@ -1,4 +1,4 @@
-﻿$version = "0.14.0"
+﻿$version = "0.15.0"
 $manifestPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPath "\PoShMon.psd1"
 
 Remove-Item -Path $manifestPath -ErrorAction SilentlyContinue
@@ -19,6 +19,11 @@ Some of the key features / benefits of PoShMon are:
 For more information, documentation etc. visit https://github.com/HiltonGiesenow/PoShMon as well as the Samples folder within the module itself."
 
 $releaseNotes = "
+0.15.0
+* Bug fixes for Pushbullet and Microsoft Teams message posting
+* Added sample for self-healing
+* Minor code cleanups
+
 0.14.0
 * Integration with Operation Validation Framework (OVF)
 
@@ -76,12 +81,6 @@ $releaseNotes = "
 * For Exception notifications,  set Email Priority to High
 * Convert all Tests that used a PSSession parameter to using PoShMonConfiguration - improves testability
 * Added Unit Tests for every main Test-* function
-
-0.8.2
-* Added date to UserProfileSync output
-* Added a function to initialise output for all Test methods
-* Added PoShMon version to email output
-* Added Farm Health Test (SharePoint) - not active
 "
 
 New-ModuleManifest -Path $manifestPath -ModuleVersion $version -RootModule "PoShMon.psm1" -Guid '6e6cb274-1bed-4540-b288-95bc638bf679' -Author "Hilton Giesenow" -CompanyName "Experts Inside" -FunctionsToExport '*' -Copyright "2016 Hilton Giesenow, All Rights Reserved" -ProjectUri "https://github.com/HiltonGiesenow/PoShMon" -LicenseUri "https://github.com/HiltonGiesenow/PoShMon/blob/master/LICENSE" -Description $description -Tags 'Monitoring','Server','Farm','SharePoint' -ReleaseNotes $releaseNotes -Verbose
