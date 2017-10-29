@@ -16,10 +16,6 @@
                 body = $body
              }
 
-    #$pushbulletSendUrl = "https://api.pushbullet.com/v2/pushes"
-
-    #$headers = @{ 'Access-Token' = $PushbulletNotificationSink.AccessToken }
-
     $params = @{
         Uri = "https://api.pushbullet.com/v2/pushes"
         Headers = @{ 'Access-Token' = $PushbulletNotificationSink.AccessToken }
