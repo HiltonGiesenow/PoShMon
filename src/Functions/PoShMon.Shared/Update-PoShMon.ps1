@@ -21,7 +21,7 @@ Function Update-PoShMon
         
         if ($upgradedVersion.Version -eq $galleryVersion.Version)
         {
-            Write-Host "PoShMon version upgrade to $($upgradedVersion.Version.ToString())"
+            Write-Host "PoShMon version upgraded to $($upgradedVersion.Version.ToString())"
         } else {
             "Upgrade failed"
         }
