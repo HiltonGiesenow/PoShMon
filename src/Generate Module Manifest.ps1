@@ -1,4 +1,4 @@
-﻿$version = "0.15.0"
+﻿$version = "0.15.1"
 $manifestPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPath "\PoShMon.psd1"
 
 Remove-Item -Path $manifestPath -ErrorAction SilentlyContinue
@@ -19,6 +19,10 @@ Some of the key features / benefits of PoShMon are:
 For more information, documentation etc. visit https://github.com/HiltonGiesenow/PoShMon as well as the Samples folder within the module itself."
 
 $releaseNotes = "
+0.15.1
+* Adding capability to run without and config (to scan local machine)
+* Minor wording change
+
 0.15.0
 * Bug fixes for Pushbullet and Microsoft Teams message posting
 * Added sample for self-healing
@@ -73,14 +77,6 @@ $releaseNotes = "
 * Add Try..Catch error handling to each Test method
 * Switched to dynamically invoking test methods by name
 * Created a shared 'Core' monitoring function
-
-0.8.3
-* Reduced duplication in Test code for Stopwatch
-* Fixed naming for 'Free Percent' column in Memory Test
-* For 'Critical' (i.e. NotifyOnFailure) runs, set Email Priority to High if failure occurs
-* For Exception notifications,  set Email Priority to High
-* Convert all Tests that used a PSSession parameter to using PoShMonConfiguration - improves testability
-* Added Unit Tests for every main Test-* function
 "
 
 New-ModuleManifest -Path $manifestPath -ModuleVersion $version -RootModule "PoShMon.psm1" -Guid '6e6cb274-1bed-4540-b288-95bc638bf679' -Author "Hilton Giesenow" -CompanyName "Experts Inside" -FunctionsToExport '*' -Copyright "2016 Hilton Giesenow, All Rights Reserved" -ProjectUri "https://github.com/HiltonGiesenow/PoShMon" -LicenseUri "https://github.com/HiltonGiesenow/PoShMon/blob/master/LICENSE" -Description $description -Tags 'Monitoring','Server','Farm','SharePoint' -ReleaseNotes $releaseNotes -Verbose
