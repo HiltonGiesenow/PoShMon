@@ -2,7 +2,7 @@ Function Invoke-MonitoringCore
 {
     [CmdletBinding()]
     Param(
-        [parameter(Mandatory=$true)]
+        [parameter()]
         [hashtable]$PoShMonConfiguration,
         [parameter(Mandatory=$true)]
         [string[]]$TestList,
@@ -12,6 +12,8 @@ Function Invoke-MonitoringCore
         [string[]]$MergesList = @()
     )
 
+    if ($PoShMonConfiguration -eq $null) { $PoShMonConfiguration = New-PoShMonConfiguration {} }
+    
     if ($PoShMonConfiguration.TypeName -ne 'PoShMon.Configuration')
         { throw "PoShMonConfiguration is not of the correct type - please use New-PoShMonConfiguration to create it" }
 

@@ -2,7 +2,7 @@ Function Invoke-OSMonitoring
 {
     [CmdletBinding()]
     Param(
-        [parameter(Mandatory=$true, HelpMessage="A PoShMonConfiguration instance - use New-PoShMonConfiguration to create it")]
+        [parameter(HelpMessage="A PoShMonConfiguration instance - use New-PoShMonConfiguration to create it")]
         [hashtable]$PoShMonConfiguration
     )
 
