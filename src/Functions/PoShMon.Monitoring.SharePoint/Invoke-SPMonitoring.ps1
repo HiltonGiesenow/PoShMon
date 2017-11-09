@@ -2,10 +2,11 @@ Function Invoke-SPMonitoring
 {
     [CmdletBinding()]
     Param(
-        [parameter(Mandatory=$true, HelpMessage="A PoShMonConfiguration instance - use New-PoShMonConfiguration to create it")]
+        [parameter(HelpMessage="A PoShMonConfiguration instance - use New-PoShMonConfiguration to create it")]
         [hashtable]$PoShMonConfiguration
     )
-
+    
+    if ($PoShMonConfiguration -eq $null) { $PoShMonConfiguration = New-PoShMonConfiguration {} }
     if ($PoShMonConfiguration.SharePoint -eq $null) { $PoShMonConfiguration.SharePoint = SharePoint }
 
     $outputValues = Invoke-MonitoringCore `

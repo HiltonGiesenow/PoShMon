@@ -50,5 +50,7 @@
                 }
             }
         }
+    } else {
+        throw $Exception
     }
 }
