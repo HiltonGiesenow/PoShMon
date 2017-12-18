@@ -40,7 +40,7 @@ Describe "Send-RepairNotifications" {
 
         $actual = Send-RepairNotifications $poShMonConfiguration $poShMonConfiguration.Notifications.Sinks $repairOutput -Verbose
 
-        Assert-VerifiableMock
+        Assert-VerifiableMocks
     }
 
     It "Should send notifications to ONLY the specified channels (email, Pushbullet, O365 Teams)" {
@@ -79,6 +79,6 @@ Describe "Send-RepairNotifications" {
 
         $actual = Send-RepairNotifications $poShMonConfiguration $poShMonConfiguration.Notifications.Sinks $repairOutput -Verbose
 
-        Assert-VerifiableMock
+        Assert-VerifiableMocks
     }
 }

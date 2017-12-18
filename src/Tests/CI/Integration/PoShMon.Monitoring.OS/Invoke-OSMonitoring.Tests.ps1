@@ -58,7 +58,7 @@ Describe "Invoke-OSMonitoring" {
 
         $actual = Invoke-OSMonitoring $poShMonConfiguration -Verbose
 
-        Assert-VerifiableMock
+        Assert-VerifiableMocks
     }
 }
 
@@ -107,6 +107,6 @@ Describe "Invoke-OSMonitoring2" {
         
         $actual = Invoke-OSMonitoring $poShMonConfiguration -Verbose
 
-        Assert-VerifiableMock
+        Assert-VerifiableMocks
     }
 }

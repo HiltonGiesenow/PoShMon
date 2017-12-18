@@ -156,7 +156,7 @@ Describe "Test-SPWindowsServiceState" {
 
             $actual.NoIssuesFound | Should Be $false
 
-            Assert-VerifiableMock
+            Assert-VerifiableMocks
         }
 
         It "Should test for services discovered" {
@@ -195,7 +195,7 @@ Describe "Test-SPWindowsServiceState" {
 
             $actual.NoIssuesFound | Should Be $false
 
-            Assert-VerifiableMock
+            Assert-VerifiableMocks
         }
 
         It "Should skip any service specified discovered" {
@@ -235,7 +235,7 @@ Describe "Test-SPWindowsServiceState" {
 
             $actual.NoIssuesFound | Should Be $false
 
-            Assert-VerifiableMock
+            Assert-VerifiableMocks
         }
 
     }

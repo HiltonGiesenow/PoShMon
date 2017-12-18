@@ -72,7 +72,7 @@ Describe "Repair-Environment" {
 
         $actual = Repair-Environment $poShMonConfiguration $monitoringOutput $RepairScripts -Verbose
 
-        Assert-VerifiableMock
+        Assert-VerifiableMocks
     }
 
     It "Should send notifications of exceptions in repairs" {
@@ -141,7 +141,7 @@ Describe "Repair-Environment" {
 
         $actual = Repair-Environment $poShMonConfiguration $monitoringOutput $RepairScripts -Verbose
 
-        Assert-VerifiableMock
+        Assert-VerifiableMocks
     }
 
     It "Should send notifications of each repair performed" {
@@ -211,7 +211,7 @@ Describe "Repair-Environment" {
 
         $actual = Repair-Environment $poShMonConfiguration $monitoringOutput $RepairScripts -Verbose
 
-        Assert-VerifiableMock
+        Assert-VerifiableMocks
     }
 
     It "Should send notifications of exceptions in repairs as well as successful repairs" {
@@ -281,6 +281,6 @@ Describe "Repair-Environment" {
 
         $actual = Repair-Environment $poShMonConfiguration $monitoringOutput $RepairScripts -Verbose
 
-        Assert-VerifiableMock
+        Assert-VerifiableMocks
     }
 }
