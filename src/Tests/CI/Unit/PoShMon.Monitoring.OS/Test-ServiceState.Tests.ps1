@@ -134,7 +134,7 @@ Describe "Test-ServiceState" {
 
             $actual = Test-ServiceState $poShMonConfiguration
 
-            Assert-VerifiableMock
+            Assert-VerifiableMocks
 
             $actual.OutputValues.Count | Should Be 1
             $actual.OutputValues.Highlight.Count | Should Be 0

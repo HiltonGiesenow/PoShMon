@@ -40,7 +40,7 @@ Describe "Test-Website" {
 
         $actual = Test-WebSite -SiteUrl 'abc' -TextToLocate $testContent -ServerNames $serverName
 
-        Assert-VerifiableMock
+        Assert-VerifiableMocks
 
         $actual.Keys.Count | Should Be 5
         $actual.ContainsKey("NoIssuesFound") | Should Be $true
@@ -73,7 +73,7 @@ Describe "Test-Website" {
 
         $actual = Test-WebSite -SiteUrl 'https://www.mywebsite.test' -TextToLocate 'Test content' -ServerNames 'Server1','Server2'
 
-        Assert-VerifiableMock
+        Assert-VerifiableMocks
 
         $actual.NoIssuesFound | Should Be $true
         $actual.OutputValues.Count | Should Be 3
@@ -97,7 +97,7 @@ Describe "Test-Website" {
 
         $actual = Test-WebSite -SiteUrl 'https://www.mywebsite.test' -TextToLocate 'Test content' -ServerNames 'Server1','Server2'
 
-        Assert-VerifiableMock
+        Assert-VerifiableMocks
 
         $actual.NoIssuesFound | Should Be $false
         $actual.OutputValues[1].Highlight | Should Be 'Outcome'
@@ -119,7 +119,7 @@ Describe "Test-Website" {
 
         $actual = Test-WebSite -SiteUrl 'https://www.mywebsite.test' -TextToLocate 'Test Content' -ServerNames 'Server1','Server2'
 
-        Assert-VerifiableMock
+        Assert-VerifiableMocks
 
         $actual.NoIssuesFound | Should Be $true
         $actual.OutputValues[0].Highlight.Count | Should Be 0
