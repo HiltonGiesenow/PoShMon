@@ -66,6 +66,6 @@ Describe "Invoke-SPMonitoring" {
 
         $actual = Invoke-SPMonitoring $poShMonConfiguration -Verbose
 
-        Assert-VerifiableMocks
+        Assert-VerifiableMock
     }
 }

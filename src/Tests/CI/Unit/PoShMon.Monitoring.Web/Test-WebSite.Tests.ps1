@@ -51,7 +51,7 @@ Describe "Test-Website" {
 
             $actual = Test-WebSites $poShMonConfiguration
 
-            Assert-VerifiableMocks
+            Assert-VerifiableMock
 
             $actual.Keys.Count | Should Be 5
             $actual.ContainsKey("NoIssuesFound") | Should Be $true
@@ -125,7 +125,7 @@ Describe "Test-Website" {
 
             $actual = Test-WebSites $poShMonConfiguration
 
-            Assert-VerifiableMocks
+            Assert-VerifiableMock
 
             $actual.NoIssuesFound | Should Be $true
             $actual.OutputValues.Count | Should Be 3
@@ -158,7 +158,7 @@ Describe "Test-Website" {
 
             $actual = Test-WebSites $poShMonConfiguration
 
-            Assert-VerifiableMocks
+            Assert-VerifiableMock
 
             $actual.NoIssuesFound | Should Be $false
             $actual.OutputValues[1].Highlight | Should Be 'Outcome'
@@ -189,7 +189,7 @@ Describe "Test-Website" {
 
             $actual = Test-WebSites $poShMonConfiguration
 
-            Assert-VerifiableMocks
+            Assert-VerifiableMock
 
             $actual.NoIssuesFound | Should Be $false
             $actual.OutputValues[0].Highlight.Count | Should Be 0

@@ -88,7 +88,7 @@ Describe "Test-SPJobHealth" {
 
             $actual = Test-SPJobHealth $poShMonConfiguration
         
-            Assert-VerifiableMocks
+            Assert-VerifiableMock
 
             $actual.NoIssuesFound | Should Be $true
         }
@@ -127,7 +127,7 @@ Describe "Test-SPJobHealth" {
 
             $actual = Test-SPJobHealth $poShMonConfiguration -WarningAction SilentlyContinue
         
-            Assert-VerifiableMocks
+            Assert-VerifiableMock
 
             $actual.NoIssuesFound | Should Be $false
 
@@ -147,7 +147,7 @@ Describe "Test-SPJobHealth" {
 
             $actual = Test-SPJobHealth $poShMonConfiguration -WarningAction SilentlyContinue
         
-            Assert-VerifiableMocks
+            Assert-VerifiableMock
 
             $actual.NoIssuesFound | Should Be $false
 
