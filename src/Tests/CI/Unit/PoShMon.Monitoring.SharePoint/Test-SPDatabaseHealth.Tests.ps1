@@ -76,7 +76,7 @@ Describe "Test-SPDatabaseHealth" {
             $output[2].ToString() | Should Be "`tDatabase2 : No : 4.00 GB"
             $output[3].ToString() | Should Be "Complete 'Database Status' Test, Issues Found: No"
 
-            Assert-VerifiableMocks
+            Assert-VerifiableMock
         }
 
         It "Should write the expected Warning output" {
@@ -113,7 +113,7 @@ Describe "Test-SPDatabaseHealth" {
 
             $actual = Test-SPDatabaseHealth $poShMonConfiguration
         
-            Assert-VerifiableMocks
+            Assert-VerifiableMock
 
             $actual.NoIssuesFound | Should Be $true
 
@@ -133,7 +133,7 @@ Describe "Test-SPDatabaseHealth" {
 
             $actual = Test-SPDatabaseHealth $poShMonConfiguration -WarningAction SilentlyContinue
         
-            Assert-VerifiableMocks
+            Assert-VerifiableMock
 
             $actual.NoIssuesFound | Should Be $false
 
