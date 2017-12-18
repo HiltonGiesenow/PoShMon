@@ -188,7 +188,7 @@ Describe "Merge-WinOSTests" {
         $actual[0].OutputValues[1].Highlight[0] | Should Be "Memory"
         $actual[0].OutputValues[1].Highlight[1] | Should Be "CurrentTime"
         $actual[0].OutputValues[1].Highlight[2] | Should Be "LastBootUptime"
-        $actual[0].ElapsedTime | Should Be ([timespan]::new(0, 6, 0))
+        ($actual[0].ElapsedTime).TotalMinutes | Should Be ([timespan]::new(0, 6, 0)).TotalMinutes
         $actual[1]["SectionHeader"] | Should Be "Another Test"
     }
 
