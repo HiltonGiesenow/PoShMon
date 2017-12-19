@@ -65,7 +65,7 @@ Describe "Invoke-MonitoringCore" {
 
         $actual = Invoke-MonitoringCore $poShMonConfiguration -TestList "Test1","Test2" -Verbose
 
-        Assert-VerifiableMocks
+        Assert-VerifiableMock
     }
 
     It "Should send a notification for an exception OUTSIDE the tests" {
@@ -99,7 +99,7 @@ Describe "Invoke-MonitoringCore" {
 
         Invoke-MonitoringCore $poShMonConfiguration -TestList "Test1","Test2" -FarmDiscoveryFunctionName 'Get-ServersInSPFarm'
 
-        Assert-VerifiableMocks
+        Assert-VerifiableMock
     }
 }
 Describe "Invoke-MonitoringCore (New Scope)" {
@@ -150,7 +150,7 @@ Describe "Invoke-MonitoringCore (New Scope)" {
 
         $actual = Invoke-MonitoringCore $poShMonConfiguration -TestList "SPServerStatus","SPJobHealth"
 
-        Assert-VerifiableMocks
+        Assert-VerifiableMock
 
         $actual[1].Exception.Message | Should Be "something"
     }
@@ -178,7 +178,7 @@ Describe "Invoke-MonitoringCore (New Scope)" {
 
         $actual = Invoke-MonitoringCore $poShMonConfiguration -TestList "SPServerStatus"
 
-        Assert-VerifiableMocks
+        Assert-VerifiableMock
 
         $actual.Count | Should Be 2
         $actual[1].SectionHeader | Should Be "Dummy Test Section"
@@ -216,7 +216,7 @@ Describe "Invoke-MonitoringCore (New Scope)" {
         $output[0].ToString().StartsWith("Test file not found") | Should Be $true
         $output[0].ToString().EndsWith("NotExistingDummy-Test.ps1") | Should Be $true
 
-        Assert-VerifiableMocks
+        Assert-VerifiableMock
     }
 
     It "Should handle exceptions inside additional supplied tests" {
@@ -242,7 +242,7 @@ Describe "Invoke-MonitoringCore (New Scope)" {
 
         $actual = Invoke-MonitoringCore $poShMonConfiguration -TestList "SPServerStatus"
 
-        Assert-VerifiableMocks
+        Assert-VerifiableMock
 
         $actual[1].Exception.Message | Should Be "something"
     }
@@ -270,7 +270,7 @@ Describe "Invoke-MonitoringCore (New Scope)" {
 
         $actual = Invoke-MonitoringCore $poShMonConfiguration -TestList "SPServerStatus"
 
-        Assert-VerifiableMocks
+        Assert-VerifiableMock
 
         $actual.NoIssuesFound | Should Be $true
     }
@@ -302,7 +302,7 @@ Describe "Invoke-MonitoringCore (New Scope)" {
         $actual = Invoke-MonitoringCore $poShMonConfiguration -TestList "SPServerStatus"
         $actual.NoIssuesFound | Should Be $true
 
-        Assert-VerifiableMocks
+        Assert-VerifiableMock
 
         $output = $($actual = Invoke-MonitoringCore $poShMonConfiguration -TestList "SPServerStatus") 3>&1
 
@@ -349,7 +349,7 @@ Describe "Invoke-MonitoringCore (New Scope)" {
 
         $actual = Invoke-MonitoringCore $poShMonConfiguration -TestList "SPServerStatus", "CPULoad"
 
-        Assert-VerifiableMocks
+        Assert-VerifiableMock
 
         $actual.SectionHeader | Should Be "New Merger Mock"
     }
@@ -381,7 +381,7 @@ Describe "Invoke-MonitoringCore (New Scope)" {
         $actual = Invoke-MonitoringCore $poShMonConfiguration -TestList "SPServerStatus", "CPULoad"
         $actual.NoIssuesFound | Should Be $true
 
-        Assert-VerifiableMocks
+        Assert-VerifiableMock
 
         $output = $($actual = Invoke-MonitoringCore $poShMonConfiguration -TestList "SPServerStatus", "CPULoad") 3>&1
 

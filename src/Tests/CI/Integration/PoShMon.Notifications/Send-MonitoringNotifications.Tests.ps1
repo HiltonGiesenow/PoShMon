@@ -95,7 +95,7 @@ Describe "Send-MonitoringNotifications" {
 
             $actual = Send-MonitoringNotifications $poShMonConfiguration $poShMonConfiguration.Notifications.Sinks "All" $testMonitoringOutput $totalElapsedTime
 
-            Assert-VerifiableMocks
+            Assert-VerifiableMock
         }
 
         It "Should send notifications to ONLY the specified channels (email, Pushbullet, O365 Teams)" {
@@ -176,7 +176,7 @@ Describe "Send-MonitoringNotifications" {
 
             $actual = Send-MonitoringNotifications $poShMonConfiguration $poShMonConfiguration.Notifications.Sinks "All" $testMonitoringOutput $totalElapsedTime
         
-            Assert-VerifiableMocks
+            Assert-VerifiableMock
         }
 
         It "Should mark failures as Critical" {
@@ -221,7 +221,7 @@ Describe "Send-MonitoringNotifications" {
 
             $actual = Send-MonitoringNotifications $poShMonConfiguration $poShMonConfiguration.Notifications.Sinks $poShMonConfiguration.Notifications.When $testMonitoringOutput $totalElapsedTime
         
-            Assert-VerifiableMocks
+            Assert-VerifiableMock
         }
 
         It "Should mark non-failures as NOT Critical" {
@@ -266,7 +266,7 @@ Describe "Send-MonitoringNotifications" {
 
             $actual = Send-MonitoringNotifications $poShMonConfiguration $poShMonConfiguration.Notifications.Sinks $poShMonConfiguration.Notifications.When $testMonitoringOutput $totalElapsedTime
         
-            Assert-VerifiableMocks
+            Assert-VerifiableMock
         }
 
         It "Should mark failures as NOT Critical when 'All' set" {
@@ -311,7 +311,7 @@ Describe "Send-MonitoringNotifications" {
 
             $actual = Send-MonitoringNotifications $poShMonConfiguration $poShMonConfiguration.Notifications.Sinks $poShMonConfiguration.Notifications.When $testMonitoringOutput $totalElapsedTime
         
-            Assert-VerifiableMocks
+            Assert-VerifiableMock
         }
     }
 }

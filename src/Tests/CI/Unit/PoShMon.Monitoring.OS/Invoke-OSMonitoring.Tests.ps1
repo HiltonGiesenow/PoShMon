@@ -45,7 +45,7 @@ Describe "Invoke-OSMonitoring" {
         
         $actual = Invoke-OSMonitoring $poShMonConfiguration -Verbose
 
-        Assert-VerifiableMocks
+        Assert-VerifiableMock
     }
 
     It "Should work with a full configuration (Servers list)" {
@@ -102,7 +102,7 @@ Describe "Invoke-OSMonitoring" {
         
         $actual = Invoke-OSMonitoring $poShMonConfiguration -Verbose
 
-        Assert-VerifiableMocks
+        Assert-VerifiableMock
     }
 
     It "Should work with a full configuration (primary server)" {
@@ -159,6 +159,6 @@ Describe "Invoke-OSMonitoring" {
         
         $actual = Invoke-OSMonitoring $poShMonConfiguration -Verbose
 
-        Assert-VerifiableMocks
+        Assert-VerifiableMock
     }
 }
