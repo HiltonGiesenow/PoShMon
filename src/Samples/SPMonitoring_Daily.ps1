@@ -7,21 +7,21 @@
 $VerbosePreference = 'Continue'
 
 $poShMonConfiguration = New-PoShMonConfiguration {
-                General `
+                New-GeneralConfig `
                     -EnvironmentName 'SharePoint' `
                     -MinutesToScanHistory 1440 `
                     -PrimaryServerName 'SPAPPSVR01' `
                     -ConfigurationName SpFarmPosh `
                     -TestsToSkip ""
-                OperatingSystem `
+                New-OSConfig `
                     -EventLogCodes "Error","Warning"
-                WebSite `
+                New-WebSiteConfig `
                     -WebsiteDetails @{ 
                                         "http://intranet" = "Read our terms"
                                         "http://extranet.company.com" = "Read our terms"
                                      }
-                Notifications -When OnlyOnFailure {
-                    Email `
+                New-NotificationsConfig -When OnlyOnFailure {
+                    New-EmailConfig `
                         -ToAddress "SharePointTeam@Company.com" `
                         -FromAddress "Monitoring@company.com" `
                         -SmtpServer "EXCHANGE.COMPANY.COM" `

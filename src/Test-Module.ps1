@@ -2,7 +2,7 @@
 	.NOTES
 	===========================================================================
 	 Created with: 	SAPIEN Technologies, Inc., PowerShell Studio 2017 v5.4.145
-	 Created on:   	12/10/2017 2:39 AM
+	 Created on:   	12/19/2017 2:49 PM
 	 Created by:   	Jerris
 	 Organization: 	
 	 Filename:     	Test-Module.ps1
@@ -24,17 +24,3 @@
 
 #Explicitly import the module for testing
 Import-Module 'PoShMon'
-Import-Module 'Pester'
-
-# Included for graceful deprication from Pester v3 - v4.
-function Assert-VerifiableMocks
-{
-	[CmdletBinding()]
-	param ()
-	write-warning "This command has been renamed to 'Assert-VerifiableMock' (without the 's' at the end), please update your code. For more information see: https://github.com/pester/Pester/wiki/Migrating-from-Pester-3-to-Pester-4"
-	Assert-VerifiableMock;
-}
-
-#Run each module function
-Invoke-Expression -Command .\Tests\PoShMon.Tests.ps1
-

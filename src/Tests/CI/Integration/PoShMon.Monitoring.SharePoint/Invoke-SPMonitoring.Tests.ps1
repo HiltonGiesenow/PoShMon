@@ -6,16 +6,16 @@ Describe "Invoke-SPMonitoring" {
     It "Should invoke SP monitoring" {
 
         $poShMonConfiguration = New-PoShMonConfiguration {
-                        General `
+                        New-GeneralConfig `
                             -EnvironmentName 'SharePoint' `
                             -MinutesToScanHistory 60 `
                             -PrimaryServerName 'AppServer01' `
                             -ConfigurationName SpFarmPosh `
                             -TestsToSkip 'SPServerStatus','SPDatabaseHealth','SPSearchHealth','SPDistributedCacheHealth'
-                        Notifications -When All {
-                            Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
-                            Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
-                            O365Teams -TeamsWebHookUrl "http://teams.office.com/theapi"
+                        New-NotificationsConfig -When All {
+                            New-EmailConfig -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
+                            New-PushBullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            New-O365TeamsConfig -TeamsWebHookUrl "http://teams.office.com/theapi"
                         }               
                     }
 

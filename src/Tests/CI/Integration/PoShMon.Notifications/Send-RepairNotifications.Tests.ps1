@@ -8,16 +8,16 @@ Describe "Send-RepairNotifications" {
     It "Should send notifications to the specified channels (email, Pushbullet, O365 Teams)" {
 
         $poShMonConfiguration = New-PoShMonConfiguration {
-                        General `
+                        New-GeneralConfig `
                             -EnvironmentName 'SharePoint' `
                             -MinutesToScanHistory 60 `
                             -PrimaryServerName 'APPServer1' `
                             -ConfigurationName SpFarmPosh `
                             -TestsToSkip 'SPServerStatus','WindowsServiceState','SPFailingTimerJobs','SPDatabaseHealth','SPSearchHealth','SPDistributedCacheHealth','WebTests'
-                        Notifications -When All {
-                            Email -ToAddress "hilton@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
-                            Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
-                            O365Teams -TeamsWebHookUrl "http://teams.office.com/theapi"
+                        New-NotificationsConfig -When All {
+                            New-EmailConfig -ToAddress "hilton@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
+                            New-PushBullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            New-O365TeamsConfig -TeamsWebHookUrl "http://teams.office.com/theapi"
                         }
                     }
 
@@ -48,15 +48,15 @@ Describe "Send-RepairNotifications" {
         #$o365TeamsConfig = Get-Content -Raw -Path $o365TeamsConfigPath | ConvertFrom-Json
 
         $poShMonConfiguration = New-PoShMonConfiguration {
-                        General `
+                        New-GeneralConfig `
                             -EnvironmentName 'SharePoint' `
                             -MinutesToScanHistory 60 `
                             -PrimaryServerName 'APPServer1' `
                             -ConfigurationName SpFarmPosh `
                             -TestsToSkip 'SPServerStatus','WindowsServiceState','SPFailingTimerJobs','SPDatabaseHealth','SPSearchHealth','SPDistributedCacheHealth','WebTests'
-                        Notifications -When All {
-                            Email -ToAddress "hilton@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
-                            Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                        New-NotificationsConfig -When All {
+                            New-EmailConfig -ToAddress "hilton@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
+                            New-PushBullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
                         }
                     }
 

@@ -50,7 +50,7 @@ Describe "Test-SPWindowsServiceState" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                                        OperatingSystem
+                                        New-OSConfig
                                     }   
 
             $actual = Test-SPWindowsServiceState $poShMonConfiguration
@@ -110,7 +110,7 @@ Describe "Test-SPWindowsServiceState" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                                        OperatingSystem
+                                        New-OSConfig
                                     }   
 
             $actual = Test-SPWindowsServiceState $poShMonConfiguration -Verbose
@@ -149,7 +149,7 @@ Describe "Test-SPWindowsServiceState" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                                        OperatingSystem
+                                        New-OSConfig
                                     }   
 
             $actual = Test-SPWindowsServiceState $poShMonConfiguration
@@ -188,7 +188,7 @@ Describe "Test-SPWindowsServiceState" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                                        OperatingSystem
+                                        New-OSConfig
                                     }   
 
             $actual = Test-SPWindowsServiceState $poShMonConfiguration
@@ -228,7 +228,7 @@ Describe "Test-SPWindowsServiceState" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                                        OperatingSystem -WindowsServicesToSkip 'SPWriterV4'
+                                        New-OSConfig -WindowsServicesToSkip 'SPWriterV4'
                                     }   
 
             $actual = Test-SPWindowsServiceState $poShMonConfiguration

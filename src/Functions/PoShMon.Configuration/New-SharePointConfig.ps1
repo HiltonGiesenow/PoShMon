@@ -1,4 +1,4 @@
-Function SharePoint
+Function New-SharePointConfig
 {
     [CmdletBinding()]
     param(
