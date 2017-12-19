@@ -101,7 +101,7 @@ Describe "Test-SPDistributedCacheHealth" {
 
             $actual = Test-SPDistributedCacheHealth $poShMonConfiguration
         
-            Assert-VerifiableMocks
+            Assert-VerifiableMock
 
             $actual.NoIssuesFound | Should Be $true
 
@@ -121,7 +121,7 @@ Describe "Test-SPDistributedCacheHealth" {
 
             $actual = Test-SPDistributedCacheHealth $poShMonConfiguration -WarningAction SilentlyContinue
         
-            Assert-VerifiableMocks
+            Assert-VerifiableMock
 
             $actual.NoIssuesFound | Should Be $false
 
