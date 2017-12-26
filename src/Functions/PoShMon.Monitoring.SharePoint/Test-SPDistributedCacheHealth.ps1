@@ -12,37 +12,18 @@ Function Test-SPDistributedCacheHealth
                                 return Get-SPServiceInstance | ? {($_.service.tostring()) -eq "SPDistributedCacheService Name=AppFabricCachingService"} | select Server, Status
                             }
 
+    $clusterResponse = $null
+
     $firstOnlineServer = $cacheServers | Where-Object { $_.Status.Value -eq "Online" } | Select -First 1
 
     if ($firstOnlineServer -ne $null) #i.e. no healthy servers found
     {
-        try {
-            $remoteSession = New-PSSession -ComputerName $firstOnlineServer.Server.DisplayName -ConfigurationName $PoShMonConfiguration.General.ConfigurationName
-    
-            $clusterResponse = Invoke-Command -Session $remoteSession -ScriptBlock {
-                                Add-PSSnapin Microsoft.SharePoint.PowerShell
-
-                                Use-CacheCluster
-
-                                Get-CacheHost
-                        }
-        } finally {
-            if ($remoteSession -ne $null) { Disconnect-RemoteSession $remoteSession }
-        }
+        $clusterResponse = Get-SPCacheHostInfo -PoShMonConfiguration $PoShMonConfiguration -FirstSPCacheServer $firstOnlineServer
     } else {
         Write-Warning "`tNo healthy servers found in cache cluster from Get-SPServiceInstance"
 
         $mainOutput.NoIssuesFound = $false #TODO: this won't return a specified response
     }
-
-
-                            # Possible extensions:
-    <#
-    Use-CacheCluster
-        Get-CacheHost
-
-        Get-CacheClusterHealth
-    #>
 
     foreach ($cacheServer in $cacheServers)
     {
@@ -56,7 +37,7 @@ Function Test-SPDistributedCacheHealth
 
             Write-Warning ("`t" + $cacheServer.Server.DisplayName + " is listed as " + $cacheServer.Status.Value)
 
-            $highlight += 'Status'
+            $highlight += 'SharePointStatus'
         }
 
         $clusterServer = $clusterResponse | Where HostName -Like ($cacheServer.Server.DisplayName + "*")
@@ -78,7 +59,7 @@ Function Test-SPDistributedCacheHealth
         } else {
             Write-Warning "`tCache cluster entry not found for $($cacheServer.Server.DisplayName)"
             
-            $serverUpDown = "Down"
+            $clusterMemberUpDown = "[Not Found]"
         }
 
         $mainOutput.OutputValues += [pscustomobject]@{
