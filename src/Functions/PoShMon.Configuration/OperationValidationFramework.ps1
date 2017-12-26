@@ -1,4 +1,4 @@
-Function New-OperationValidationFramework
+Function New-OperationValidationFrameworkConfig
 {
     [CmdletBinding()]
     param(

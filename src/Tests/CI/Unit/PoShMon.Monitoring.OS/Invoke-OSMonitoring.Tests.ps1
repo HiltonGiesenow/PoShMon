@@ -59,7 +59,7 @@ Describe "Invoke-OSMonitoring" {
                             -TestsToSkip 'Memory'
                         New-NotificationsConfig -When All {
                             New-EmailConfig -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
-                            New-PushBullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            New-PushBulletConfig -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
                             New-O365TeamsConfig -TeamsWebHookUrl "http://teams.office.com/theapi"
                         }               
                     }
@@ -116,7 +116,7 @@ Describe "Invoke-OSMonitoring" {
                             -TestsToSkip 'Memory'
                         New-NotificationsConfig -When All {
                             New-EmailConfig -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
-                            New-PushBullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            New-PushBulletConfig -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
                             New-O365TeamsConfig -TeamsWebHookUrl "http://teams.office.com/theapi"
                         }               
                     }

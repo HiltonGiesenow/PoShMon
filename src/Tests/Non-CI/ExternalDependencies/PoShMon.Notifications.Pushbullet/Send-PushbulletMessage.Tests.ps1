@@ -19,7 +19,7 @@ if (Test-Path $pushbulletConfigPath) # only run this test if there's a config to
                                 -ConfigurationName SpFarmPosh `
                                 -TestsToSkip 'SPServerStatus','WindowsServiceState','SPFailingTimerJobs','SPDatabaseHealth','SPSearchHealth','SPDistributedCacheHealth','WebTests'
                             New-NotificationsConfig -When All {
-                                New-PushBullet `
+                                New-PushBulletConfig `
                                     -AccessToken $pushbulletConfig.AccessToken `
                                     -DeviceId $pushbulletConfig.DeviceId
                             }               

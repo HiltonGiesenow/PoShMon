@@ -16,7 +16,7 @@ Describe "Send-RepairNotifications" {
                             -TestsToSkip 'SPServerStatus','WindowsServiceState','SPFailingTimerJobs','SPDatabaseHealth','SPSearchHealth','SPDistributedCacheHealth','WebTests'
                         New-NotificationsConfig -When All {
                             New-EmailConfig -ToAddress "hilton@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
-                            New-PushBullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            New-PushBulletConfig -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
                             New-O365TeamsConfig -TeamsWebHookUrl "http://teams.office.com/theapi"
                         }
                     }
@@ -56,7 +56,7 @@ Describe "Send-RepairNotifications" {
                             -TestsToSkip 'SPServerStatus','WindowsServiceState','SPFailingTimerJobs','SPDatabaseHealth','SPSearchHealth','SPDistributedCacheHealth','WebTests'
                         New-NotificationsConfig -When All {
                             New-EmailConfig -ToAddress "hilton@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
-                            New-PushBullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            New-PushBulletConfig -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
                         }
                     }
 

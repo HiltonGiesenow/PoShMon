@@ -51,20 +51,9 @@
   <Files>
     <File Build="2">PoShMon.psd1</File>
     <File Build="0">PoShMon.psm1</File>
-    <File Build="1" Shared="False" ReferenceFunction="Invoke-Test-Module_ps1">Test-Module.ps1</File>
     <File Build="1">.gitignore</File>
     <File Build="2" Shared="True" ReferenceFunction="Invoke-Generate_Module_Manifest_ps1">Generate Module Manifest.ps1</File>
-    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-EmailConfig_ps1">Functions\PoShMon.Configuration\New-EmailConfig.ps1</File>
-    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-ExtensibilityConfig_ps1">Functions\PoShMon.Configuration\New-ExtensibilityConfig.ps1</File>
-    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-GeneralConfig_ps1">Functions\PoShMon.Configuration\New-GeneralConfig.ps1</File>
     <File Build="2" Shared="True" ReferenceFunction="Invoke-New-PoShMonConfiguration_ps1">Functions\PoShMon.Configuration\New-PoShMonConfiguration.ps1</File>
-    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-NotificationsConfig_ps1">Functions\PoShMon.Configuration\New-NotificationsConfig.ps1</File>
-    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-O365TeamsConfig_ps1">Functions\PoShMon.Configuration\New-O365TeamsConfig.ps1</File>
-    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-OSConfig_ps1">Functions\PoShMon.Configuration\New-OSConfig.ps1</File>
-    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-OperationValidationFramework_ps1">Functions\PoShMon.Configuration\New-OperationValidationFramework.ps1</File>
-    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-PushBullet_ps1">Functions\PoShMon.Configuration\New-PushBullet.ps1</File>
-    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-SharePointConfig_ps1">Functions\PoShMon.Configuration\New-SharePointConfig.ps1</File>
-    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-WebSiteConfig_ps1">Functions\PoShMon.Configuration\New-WebSiteConfig.ps1</File>
     <File Build="2" Shared="True" ReferenceFunction="Invoke-Compare-SkippedTestsToActual_ps1">Functions\PoShMon.Monitoring.Core\Compare-SkippedTestsToActual.ps1</File>
     <File Build="2" Shared="True" ReferenceFunction="Invoke-Complete-TimedOutput_ps1">Functions\PoShMon.Monitoring.Core\Complete-TimedOutput.ps1</File>
     <File Build="2" Shared="True" ReferenceFunction="Invoke-Confirm-NoIssuesFound_ps1">Functions\PoShMon.Monitoring.Core\Confirm-NoIssuesFound.ps1</File>
@@ -207,6 +196,17 @@
     <File Build="2" Shared="True" ReferenceFunction="Invoke-Send-PushbulletMessage_Tests_ps1">Tests\Non-CI\ExternalDependencies\PoShMon.Notifications.Pushbullet\Send-PushbulletMessage.Tests.ps1</File>
     <File Build="2" Shared="True" ReferenceFunction="Invoke-Invoke-OperationValidationFrameworkScan_Tests_ps1">Tests\Non-CI\PoShMon.Notifications.OperationValidationFramework\Invoke-OperationValidationFrameworkScan.Tests.ps1</File>
     <File Build="2" Shared="True" ReferenceFunction="Invoke-Invoke-OperationValidationFrameworkScan_TestHarness_ps1">Tests\Resources\Invoke-OperationValidationFrameworkScan.TestHarness.ps1</File>
+    <File Build="1" Shared="False" ReferenceFunction="Invoke-Test-Module_ps1">Test-Module.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Email_ps1">Functions\PoShMon.Configuration\Email.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Extensibility_ps1">Functions\PoShMon.Configuration\Extensibility.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-General_ps1">Functions\PoShMon.Configuration\General.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Notifications_ps1">Functions\PoShMon.Configuration\Notifications.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-O365Teams_ps1">Functions\PoShMon.Configuration\O365Teams.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-OperatingSystem_ps1">Functions\PoShMon.Configuration\OperatingSystem.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-OperationValidationFramework_ps1">Functions\PoShMon.Configuration\OperationValidationFramework.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-PushBullet_ps1">Functions\PoShMon.Configuration\PushBullet.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-SharePoint_ps1">Functions\PoShMon.Configuration\SharePoint.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-WebSite_ps1">Functions\PoShMon.Configuration\WebSite.ps1</File>
   </Files>
   <StartupScript>C:\Users\Jerris\PoShMon\src\Test-Module.ps1</StartupScript>
 </Project>

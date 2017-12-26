@@ -13,7 +13,7 @@ Describe "Invoke-MonitoringCore" {
                             -ConfigurationName SpFarmPosh
                         New-NotificationsConfig -When All {
                             New-EmailConfig -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
-                            New-PushBullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            New-PushBulletConfig -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
                             New-O365TeamsConfig -TeamsWebHookUrl "http://teams.office.com/theapi"
                         }               
                     }
@@ -78,7 +78,7 @@ Describe "Invoke-MonitoringCore" {
                             -ConfigurationName SpFarmPosh
                         New-NotificationsConfig -When All {
                             New-EmailConfig -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
-                            New-PushBullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            New-PushBulletConfig -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
                             New-O365TeamsConfig -TeamsWebHookUrl "http://teams.office.com/theapi"
                         }               
                     }
@@ -143,7 +143,7 @@ Describe "Invoke-MonitoringCore (New Scope)" {
                             -ConfigurationName SpFarmPosh
                         New-NotificationsConfig -When All {
                             New-EmailConfig -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
-                            New-PushBullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            New-PushBulletConfig -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
                             New-O365TeamsConfig -TeamsWebHookUrl "http://teams.office.com/theapi"
                         }               
                     }
@@ -171,7 +171,7 @@ Describe "Invoke-MonitoringCore (New Scope)" {
                             -ExtraTestFilesToInclude $extraTestsToInclude
                         New-NotificationsConfig -When All {
                             New-EmailConfig -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
-                            New-PushBullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            New-PushBulletConfig -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
                             New-O365TeamsConfig -TeamsWebHookUrl "http://teams.office.com/theapi"
                         }               
                     }
@@ -201,7 +201,7 @@ Describe "Invoke-MonitoringCore (New Scope)" {
                             -ExtraTestFilesToInclude $extraTestsToInclude
                         New-NotificationsConfig -When All {
                             New-EmailConfig -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
-                            New-PushBullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            New-PushBulletConfig -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
                             New-O365TeamsConfig -TeamsWebHookUrl "http://teams.office.com/theapi"
                         }               
                     }
@@ -235,7 +235,7 @@ Describe "Invoke-MonitoringCore (New Scope)" {
                             -ExtraTestFilesToInclude $extraTestsToInclude
                         New-NotificationsConfig -When All {
                             New-EmailConfig -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
-                            New-PushBullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            New-PushBulletConfig -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
                             New-O365TeamsConfig -TeamsWebHookUrl "http://teams.office.com/theapi"
                         }               
                     }
@@ -263,7 +263,7 @@ Describe "Invoke-MonitoringCore (New Scope)" {
                             -ExtraResolverFilesToInclude $extraResolverFilesToInclude
                         New-NotificationsConfig -When All {
                             New-EmailConfig -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
-                            New-PushBullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            New-PushBulletConfig -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
                             New-O365TeamsConfig -TeamsWebHookUrl "http://teams.office.com/theapi"
                         }               
                     }
@@ -292,7 +292,7 @@ Describe "Invoke-MonitoringCore (New Scope)" {
                             -ExtraResolverFilesToInclude $extraResolverFilesToInclude
                         New-NotificationsConfig -When All {
                             New-EmailConfig -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
-                            New-PushBullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            New-PushBulletConfig -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
                             New-O365TeamsConfig -TeamsWebHookUrl "http://teams.office.com/theapi"
                         }               
                     }
@@ -327,7 +327,7 @@ Describe "Invoke-MonitoringCore (New Scope)" {
                             -ExtraMergerFilesToInclude $extraMergerFilesToInclude
                         New-NotificationsConfig -When All {
                             New-EmailConfig -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
-                            New-PushBullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            New-PushBulletConfig -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
                             New-O365TeamsConfig -TeamsWebHookUrl "http://teams.office.com/theapi"
                         }               
                     }
@@ -371,7 +371,7 @@ Describe "Invoke-MonitoringCore (New Scope)" {
                             -ExtraMergerFilesToInclude $extraMergerFilesToInclude
                         New-NotificationsConfig -When All {
                             New-EmailConfig -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
-                            New-PushBullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            New-PushBulletConfig -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
                             New-O365TeamsConfig -TeamsWebHookUrl "http://teams.office.com/theapi"
                         }               
                     }

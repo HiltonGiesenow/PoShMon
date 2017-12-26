@@ -1,4 +1,4 @@
-Function New-PushBullet
+Function New-PushBulletConfig
 {
     [CmdletBinding()]
     param(
