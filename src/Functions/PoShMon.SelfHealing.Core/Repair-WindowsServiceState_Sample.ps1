@@ -1,7 +1,7 @@
 ﻿<#
     
 #>
-Function Repair-WindowsServiceState
+Function Repair-WindowsServiceState_Sample
 {
     [CmdletBinding()]
     Param(

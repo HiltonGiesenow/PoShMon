@@ -137,7 +137,7 @@
     <File Build="2" Shared="True" ReferenceFunction="Invoke-Send-PushbulletMessage_ps1">Functions\PoShMon.Notifications.Pushbullet\Send-PushbulletMessage.ps1</File>
     <File Build="2" Shared="True" ReferenceFunction="Invoke-Invoke-Repairs_ps1">Functions\PoShMon.SelfHealing.Core\Invoke-Repairs.ps1</File>
     <File Build="2" Shared="True" ReferenceFunction="Invoke-Repair-Environment_ps1">Functions\PoShMon.SelfHealing.Core\Repair-Environment.ps1</File>
-    <File Build="2" Shared="True" ReferenceFunction="Invoke-Repair-WindowsServiceState_ps1">Functions\PoShMon.SelfHealing.Core\Repair-WindowsServiceState.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Repair-WindowsServiceState_Sample_ps1">Functions\PoShMon.SelfHealing.Core\Repair-WindowsServiceState_Sample.ps1</File>
     <File Build="2" Shared="True" ReferenceFunction="Invoke-Add-Scripts_ps1">Functions\PoShMon.Shared\Add-Scripts.ps1</File>
     <File Build="2" Shared="True" ReferenceFunction="Invoke-Connect-PrimaryServer_ps1">Functions\PoShMon.Shared\Connect-PrimaryServer.ps1</File>
     <File Build="2" Shared="True" ReferenceFunction="Invoke-Connect-RemoteSession_ps1">Functions\PoShMon.Shared\Connect-RemoteSession.ps1</File>
