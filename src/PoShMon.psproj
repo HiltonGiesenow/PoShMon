@@ -207,6 +207,7 @@
     <File Build="2" Shared="True" ReferenceFunction="Invoke-PushBullet_ps1">Functions\PoShMon.Configuration\PushBullet.ps1</File>
     <File Build="2" Shared="True" ReferenceFunction="Invoke-SharePoint_ps1">Functions\PoShMon.Configuration\SharePoint.ps1</File>
     <File Build="2" Shared="True" ReferenceFunction="Invoke-WebSite_ps1">Functions\PoShMon.Configuration\WebSite.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Get-SPCacheHostInfo_ps1">Functions\PoShMon.Monitoring.SharePoint\Get-SPCacheHostInfo.ps1</File>
   </Files>
   <StartupScript>C:\Users\Jerris\PoShMon\src\Test-Module.ps1</StartupScript>
 </Project>
