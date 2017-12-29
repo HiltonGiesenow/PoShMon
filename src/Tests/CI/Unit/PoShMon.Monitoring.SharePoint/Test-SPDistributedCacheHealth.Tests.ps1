@@ -98,8 +98,8 @@ Describe "Test-SPDistributedCacheHealth" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            New-GeneralConfig -ServerNames 'Server1'
-                            New-OSConfig
+                            General -ServerNames 'Server1'
+                            OperatingSystem
                         }
 
             $actual = Test-SPDistributedCacheHealth $poShMonConfiguration

@@ -35,8 +35,8 @@ Describe "Test-EventLogs" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            New-GeneralConfig -ServerNames 'localhost'
-                            New-OSConfig
+                            General -ServerNames 'localhost'
+                            OperatingSystem
                         }
 
             $actual = Test-EventLogs $poShMonConfiguration -WarningAction SilentlyContinue
@@ -78,8 +78,8 @@ Describe "Test-EventLogs" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            New-GeneralConfig -ServerNames 'Server1'
-                            New-OSConfig
+                            General -ServerNames 'Server1'
+                            OperatingSystem
                         }
 
             $actual = Test-EventLogs $poShMonConfiguration -Verbose
@@ -105,8 +105,8 @@ Describe "Test-EventLogs" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            New-GeneralConfig -ServerNames 'Server1'
-                            New-OSConfig
+                            General -ServerNames 'Server1'
+                            OperatingSystem
                         }
 
             $actual = Test-EventLogs $poShMonConfiguration
@@ -129,8 +129,8 @@ Describe "Test-EventLogs" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            New-GeneralConfig -ServerNames 'Server1'
-                            New-OSConfig
+                            General -ServerNames 'Server1'
+                            OperatingSystem
                         }
 
             $actual = Test-EventLogs $poShMonConfiguration -WarningAction SilentlyContinue
@@ -153,8 +153,8 @@ Describe "Test-EventLogs" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            New-GeneralConfig -ServerNames 'Server1', 'Server2'
-                            New-OSConfig
+                            General -ServerNames 'Server1', 'Server2'
+                            OperatingSystem
                         }
 
             $actual = Test-EventLogs $poShMonConfiguration -WarningAction SilentlyContinue
@@ -184,8 +184,8 @@ Describe "Test-EventLogs" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            New-GeneralConfig -ServerNames 'Server1', 'Server2'
-                            New-OSConfig
+                            General -ServerNames 'Server1', 'Server2'
+                            OperatingSystem
                         }
 
             $actual = Test-EventLogs $poShMonConfiguration -WarningAction SilentlyContinue

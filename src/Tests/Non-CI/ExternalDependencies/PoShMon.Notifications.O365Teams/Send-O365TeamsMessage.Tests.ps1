@@ -12,14 +12,14 @@ if (Test-Path $o365TeamsConfigPath) # only run this test if there's a config to 
             $o365TeamsConfig = Get-Content -Raw -Path $o365TeamsConfigPath | ConvertFrom-Json
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            New-GeneralConfig `
+                            General `
                                 -EnvironmentName 'SharePoint' `
                                 -MinutesToScanHistory 60 `
                                 -PrimaryServerName 'ZAMGNTSPAPP1' `
                                 -ConfigurationName SpFarmPosh `
                                 -TestsToSkip 'SPServerStatus','WindowsServiceState','SPFailingTimerJobs','SPDatabaseHealth','SPSearchHealth','SPDistributedCacheHealth','WebTests'
-                            New-NotificationsConfig -When All {
-                                New-O365TeamsConfig -TeamsWebHookUrl $o365TeamsConfig.TeamsWebHookUrl
+                            Notifications -When All {
+                                O365Teams -TeamsWebHookUrl $o365TeamsConfig.TeamsWebHookUrl
                             }               
                         }
 

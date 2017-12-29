@@ -15,16 +15,16 @@ Describe "New-PoShMonConfiguration" {
     It "Should work with a full configuration (Servers list)" {
 
         $poShMonConfiguration = New-PoShMonConfiguration {
-                        New-GeneralConfig `
+                        General `
                             -EnvironmentName 'OS Base Test' `
                             -MinutesToScanHistory 60 `
                             -ServerNames 'Server01','Server02' `
                             -ConfigurationName SpFarmPosh `
                             -TestsToSkip 'Memory'
-                        New-NotificationsConfig -When All {
-                            New-EmailConfig -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
-                            New-PushBulletConfig -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
-                            New-O365TeamsConfig -TeamsWebHookUrl "http://teams.office.com/theapi"
+                        Notifications -When All {
+                            Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
+                            Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            O365Teams -TeamsWebHookUrl "http://teams.office.com/theapi"
                         }               
                     }
 
@@ -35,16 +35,16 @@ Describe "New-PoShMonConfiguration" {
     It "Should work with a full configuration (primary server)" {
 
         $poShMonConfiguration = New-PoShMonConfiguration {
-                        New-GeneralConfig `
+                        General `
                             -EnvironmentName 'OS Base Test' `
                             -MinutesToScanHistory 60 `
                             -PrimaryServerName "Server1" `
                             -ConfigurationName SpFarmPosh `
                             -TestsToSkip 'Memory'
-                        New-NotificationsConfig -When All {
-                            New-EmailConfig -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
-                            New-PushBulletConfig -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
-                            New-O365TeamsConfig -TeamsWebHookUrl "http://teams.office.com/theapi"
+                        Notifications -When All {
+                            Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
+                            Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            O365Teams -TeamsWebHookUrl "http://teams.office.com/theapi"
                         }               
                     }
 

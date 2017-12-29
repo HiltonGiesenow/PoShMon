@@ -43,8 +43,8 @@ Describe "Test-ComputerTime" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            New-GeneralConfig -ServerNames 'Server1'
-                            New-OSConfig
+                            General -ServerNames 'Server1'
+                            OperatingSystem
                         }
 
             $actual = Test-ComputerTime $poShMonConfiguration
@@ -76,8 +76,8 @@ Describe "Test-ComputerTime" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            New-GeneralConfig -ServerNames 'Server1'
-                            New-OSConfig
+                            General -ServerNames 'Server1'
+                            OperatingSystem
                         }
         
             $actual = Test-ComputerTime $poShMonConfiguration -Verbose
@@ -103,8 +103,8 @@ Describe "Test-ComputerTime" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            New-GeneralConfig -ServerNames 'Server1'
-                            New-OSConfig
+                            General -ServerNames 'Server1'
+                            OperatingSystem
                         }
         
             $actual = Test-ComputerTime $poShMonConfiguration
@@ -127,8 +127,8 @@ Describe "Test-ComputerTime" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            New-GeneralConfig -ServerNames 'Server1'
-                            New-OSConfig
+                            General -ServerNames 'Server1'
+                            OperatingSystem
                         }
         
             $actual = Test-ComputerTime $poShMonConfiguration
@@ -151,8 +151,8 @@ Describe "Test-ComputerTime" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            New-GeneralConfig -ServerNames 'Server1'
-                            New-OSConfig
+                            General -ServerNames 'Server1'
+                            OperatingSystem
                         }
 
             $actual = Test-ComputerTime $poShMonConfiguration -WarningAction SilentlyContinue
@@ -174,8 +174,8 @@ Describe "Test-ComputerTime" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            New-GeneralConfig -ServerNames 'Server1'
-                            New-OSConfig
+                            General -ServerNames 'Server1'
+                            OperatingSystem
                         }
 
             $actual = Test-ComputerTime $poShMonConfiguration
@@ -196,8 +196,8 @@ Describe "Test-ComputerTime" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            New-GeneralConfig -ServerNames 'Server1'
-                            New-OSConfig
+                            General -ServerNames 'Server1'
+                            OperatingSystem
                         }
 
             $actual = Test-ComputerTime $poShMonConfiguration
@@ -218,8 +218,8 @@ Describe "Test-ComputerTime" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            New-GeneralConfig -ServerNames 'Server1'
-                            New-OSConfig
+                            General -ServerNames 'Server1'
+                            OperatingSystem
                         }
 
             $actual = Test-ComputerTime $poShMonConfiguration -WarningAction SilentlyContinue
@@ -242,8 +242,8 @@ Describe "Test-ComputerTime" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            New-GeneralConfig -ServerNames 'Server1'
-                            New-OSConfig -AllowedMinutesVarianceBetweenServerTimes 31
+                            General -ServerNames 'Server1'
+                            OperatingSystem -AllowedMinutesVarianceBetweenServerTimes 31
                         }
 
             $actual = Test-ComputerTime $poShMonConfiguration
@@ -264,8 +264,8 @@ Describe "Test-ComputerTime" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            New-GeneralConfig -ServerNames 'Server1'
-                            New-OSConfig -AllowedMinutesVarianceBetweenServerTimes 2
+                            General -ServerNames 'Server1'
+                            OperatingSystem -AllowedMinutesVarianceBetweenServerTimes 2
                         }
 
             $actual = Test-ComputerTime $poShMonConfiguration -WarningAction SilentlyContinue
@@ -287,8 +287,8 @@ Describe "Test-ComputerTime" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            New-GeneralConfig -ServerNames 'Server1'
-                            New-OSConfig -AllowedMinutesVarianceBetweenServerTimes 3
+                            General -ServerNames 'Server1'
+                            OperatingSystem -AllowedMinutesVarianceBetweenServerTimes 3
                         }
 
             $actual = Test-ComputerTime $poShMonConfiguration
@@ -307,8 +307,8 @@ Describe "Test-ComputerTime" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            New-GeneralConfig -ServerNames 'Server1'
-                            New-OSConfig -AllowedMinutesVarianceBetweenServerTimes 3
+                            General -ServerNames 'Server1'
+                            OperatingSystem -AllowedMinutesVarianceBetweenServerTimes 3
                         }
 
             $actual = Test-ComputerTime $poShMonConfiguration
@@ -331,8 +331,8 @@ Describe "Test-ComputerTime" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            New-GeneralConfig -ServerNames 'Server1'
-                            New-OSConfig -AllowedMinutesVarianceBetweenServerTimes 3
+                            General -ServerNames 'Server1'
+                            OperatingSystem -AllowedMinutesVarianceBetweenServerTimes 3
                         }
 
             $actual = Test-ComputerTime $poShMonConfiguration -WarningAction SilentlyContinue

@@ -26,7 +26,7 @@ Describe "Test-SPServerStatus" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                                        New-GeneralConfig -ServerNames 'Server1','Server2'
+                                        General -ServerNames 'Server1','Server2'
                                     }   
 
             $actual = Test-SPServerStatus $poShMonConfiguration
@@ -63,7 +63,7 @@ Describe "Test-SPServerStatus" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                                        New-GeneralConfig -ServerNames 'Server1','Server2'
+                                        General -ServerNames 'Server1','Server2'
                                     }
 
             $actual = Test-SPServerStatus $poShMonConfiguration -Verbose
@@ -87,7 +87,7 @@ Describe "Test-SPServerStatus" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                                        New-GeneralConfig -ServerNames 'Server1','Server2','Server3'
+                                        General -ServerNames 'Server1','Server2','Server3'
                                     }
 
             $actual = Test-SPServerStatus $poShMonConfiguration
@@ -105,7 +105,7 @@ Describe "Test-SPServerStatus" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                                        New-GeneralConfig -ServerNames 'Server1','Server2'
+                                        General -ServerNames 'Server1','Server2'
                                     }   
 
             $actual = Test-SPServerStatus $poShMonConfiguration
@@ -123,7 +123,7 @@ Describe "Test-SPServerStatus" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                                        New-GeneralConfig -ServerNames 'Server1','Server2'
+                                        General -ServerNames 'Server1','Server2'
                                     }
 
             $actual = Test-SPServerStatus $poShMonConfiguration -WarningAction SilentlyContinue
@@ -146,7 +146,7 @@ Describe "Test-SPServerStatus" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                                        New-GeneralConfig -ServerNames 'Server1','Server2'
+                                        General -ServerNames 'Server1','Server2'
                                     }
 
             $actual = Test-SPServerStatus $poShMonConfiguration -WarningAction SilentlyContinue
@@ -170,7 +170,7 @@ Describe "Test-SPServerStatus" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                                        New-GeneralConfig -ServerNames 'Server1','Server2'
+                                        General -ServerNames 'Server1','Server2'
                                     }
 
             $actual = Test-SPServerStatus $poShMonConfiguration -WarningAction SilentlyContinue

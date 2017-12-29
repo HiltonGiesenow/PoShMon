@@ -8,12 +8,12 @@ Describe "New-O365TeamsMessageBody" {
         It "Should return a the correct output for given test output" {
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            New-GeneralConfig `
+                            General `
                                 -EnvironmentName 'SharePoint' `
                                 -PrimaryServerName 'Server1' `
                                 -TestsToSkip 'SPServerStatus','WindowsServiceState','SPFailingTimerJobs','SPDatabaseHealth','SPSearchHealth','SPDistributedCacheHealth','WebTests'
-                            New-NotificationsConfig -When All {
-                                New-EmailConfig -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
+                            Notifications -When All {
+                                Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
                             }
                         }
 
@@ -79,12 +79,12 @@ Describe "New-O365TeamsMessageBody" {
         It "Should return a the correct output if an exception occurs in a test" {
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            New-GeneralConfig `
+                            General `
                                 -EnvironmentName 'SharePoint' `
                                 -PrimaryServerName 'Server1' `
                                 -TestsToSkip 'SPServerStatus','WindowsServiceState','SPFailingTimerJobs','SPDatabaseHealth','SPSearchHealth','SPDistributedCacheHealth','WebTests'
-                            New-NotificationsConfig -When OnlyOnFailure {
-                                New-EmailConfig -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
+                            Notifications -When OnlyOnFailure {
+                                Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
                             }
                         }
 

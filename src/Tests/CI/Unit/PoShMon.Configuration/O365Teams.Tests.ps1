@@ -8,13 +8,13 @@ Describe "O365TeamsConfiguration" {
         $testWebhookUrl = "https://outlook.office.com/webhook/"
 
         $actual = New-PoShMonConfiguration {
-                New-NotificationsConfig -When OnlyOnFailure {
-                    New-EmailConfig `
+                Notifications -When OnlyOnFailure {
+                    Email `
                         -ToAddress "someone@email.com" `
                         -FromAddress "bob@jones.com" `
                         -SmtpServer "smtp.company.com" `
                         -Port 27
-                    New-O365TeamsConfig -TeamsWebHookUrl $testWebhookUrl
+                    O365Teams -TeamsWebHookUrl $testWebhookUrl
                 }
             }
 

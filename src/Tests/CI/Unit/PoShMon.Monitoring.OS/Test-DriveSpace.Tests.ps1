@@ -38,8 +38,8 @@ Describe "Test-DriveSpace" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            New-GeneralConfig -ServerNames 'localhost'
-                            New-OSConfig -DriveSpaceThreshold 0 # zero will trigger the default, 10 (GB)
+                            General -ServerNames 'localhost'
+                            OperatingSystem -DriveSpaceThreshold 0 # zero will trigger the default, 10 (GB)
                         }
 
             $actual = Test-DriveSpace $poShMonConfiguration
@@ -74,8 +74,8 @@ Describe "Test-DriveSpace" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            New-GeneralConfig -ServerNames 'localhost'
-                            New-OSConfig # zero will trigger the default, 10 (GB)
+                            General -ServerNames 'localhost'
+                            OperatingSystem # zero will trigger the default, 10 (GB)
                         }
 
             $actual = Test-DriveSpace $poShMonConfiguration -Verbose
@@ -95,8 +95,8 @@ Describe "Test-DriveSpace" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            New-GeneralConfig -ServerNames 'Server1'
-                            New-OSConfig -DriveSpaceThreshold 0 # zero will trigger the default, 10 (GB)
+                            General -ServerNames 'Server1'
+                            OperatingSystem -DriveSpaceThreshold 0 # zero will trigger the default, 10 (GB)
                         }
 
             $actual = Test-DriveSpace $poShMonConfiguration
@@ -113,8 +113,8 @@ Describe "Test-DriveSpace" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            New-GeneralConfig -ServerNames 'Server1'
-                            New-OSConfig -DriveSpaceThresholdPercent 95 # zero will trigger the default, 10 (GB)
+                            General -ServerNames 'Server1'
+                            OperatingSystem -DriveSpaceThresholdPercent 95 # zero will trigger the default, 10 (GB)
                         }
 
             $actual = Test-DriveSpace $poShMonConfiguration
@@ -130,8 +130,8 @@ Describe "Test-DriveSpace" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            New-GeneralConfig -ServerNames 'localhost'
-                            New-OSConfig -DriveSpaceThreshold 0 # zero will trigger the default, 10 (GB)
+                            General -ServerNames 'localhost'
+                            OperatingSystem -DriveSpaceThreshold 0 # zero will trigger the default, 10 (GB)
                         }
 
             $actual = Test-DriveSpace $poShMonConfiguration
@@ -148,8 +148,8 @@ Describe "Test-DriveSpace" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            New-GeneralConfig -ServerNames 'localhost'
-                            New-OSConfig -DriveSpaceThreshold 0 # zero will trigger the default, 10 (GB)
+                            General -ServerNames 'localhost'
+                            OperatingSystem -DriveSpaceThreshold 0 # zero will trigger the default, 10 (GB)
                         }
 
             $actual = Test-DriveSpace $poShMonConfiguration -WarningAction SilentlyContinue
@@ -167,8 +167,8 @@ Describe "Test-DriveSpace" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            New-GeneralConfig -ServerNames 'localhost'
-                            New-OSConfig -DriveSpaceThreshold 20
+                            General -ServerNames 'localhost'
+                            OperatingSystem -DriveSpaceThreshold 20
                         }
 
             $actual = Test-DriveSpace $poShMonConfiguration -WarningAction SilentlyContinue
@@ -189,8 +189,8 @@ Describe "Test-DriveSpace" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            New-GeneralConfig -ServerNames 'localhost'
-                            New-OSConfig -DriveSpaceThresholdPercent 50
+                            General -ServerNames 'localhost'
+                            OperatingSystem -DriveSpaceThresholdPercent 50
                         }
 
             $actual = Test-DriveSpace $poShMonConfiguration -WarningAction SilentlyContinue
@@ -208,8 +208,8 @@ Describe "Test-DriveSpace" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            New-GeneralConfig -ServerNames 'localhost'
-                            New-OSConfig -DriveSpaceThresholdPercent 5
+                            General -ServerNames 'localhost'
+                            OperatingSystem -DriveSpaceThresholdPercent 5
                         }
 
             $actual = Test-DriveSpace $poShMonConfiguration -WarningAction SilentlyContinue

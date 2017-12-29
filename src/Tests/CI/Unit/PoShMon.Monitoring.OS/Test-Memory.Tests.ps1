@@ -31,8 +31,8 @@ Describe "Test-Memory" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            New-GeneralConfig -ServerNames 'Server1'
-                            New-OSConfig
+                            General -ServerNames 'Server1'
+                            OperatingSystem
                         }
 
             $actual = Test-Memory $poShMonConfiguration
@@ -64,8 +64,8 @@ Describe "Test-Memory" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            New-GeneralConfig -ServerNames 'Server1'
-                            New-OSConfig
+                            General -ServerNames 'Server1'
+                            OperatingSystem
                         }
 
             $actual = Test-Memory $poShMonConfiguration -Verbose
@@ -84,8 +84,8 @@ Describe "Test-Memory" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            New-GeneralConfig -ServerNames 'Server1'
-                            New-OSConfig
+                            General -ServerNames 'Server1'
+                            OperatingSystem
                         }
 
             $actual = Test-Memory $poShMonConfiguration
@@ -102,8 +102,8 @@ Describe "Test-Memory" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            New-GeneralConfig -ServerNames 'localhost'
-                            New-OSConfig
+                            General -ServerNames 'localhost'
+                            OperatingSystem
                         }
 
             $actual = Test-Memory $poShMonConfiguration -WarningAction SilentlyContinue
@@ -120,8 +120,8 @@ Describe "Test-Memory" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            New-GeneralConfig -ServerNames 'TheServer'
-                            New-OSConfig
+                            General -ServerNames 'TheServer'
+                            OperatingSystem
                         }
 
             $actual = Test-Memory $poShMonConfiguration -WarningAction SilentlyContinue
@@ -141,8 +141,8 @@ Describe "Test-Memory" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            New-GeneralConfig -ServerNames 'localhost'
-                            New-OSConfig -FreeMemoryThreshold 51
+                            General -ServerNames 'localhost'
+                            OperatingSystem -FreeMemoryThreshold 51
                         }
 
             $actual = Test-Memory $poShMonConfiguration -WarningAction SilentlyContinue

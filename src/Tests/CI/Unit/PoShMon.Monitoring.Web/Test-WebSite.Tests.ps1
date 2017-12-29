@@ -41,9 +41,9 @@ Describe "Test-Website" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                    New-GeneralConfig `
+                    General `
                         -ServerNames 'Server1','Server2'
-                    New-WebSiteConfig `
+                    WebSite `
                         -WebsiteDetails @{
                                             "http://my.website.com" = "Some Text"
                                          }
@@ -83,9 +83,9 @@ Describe "Test-Website" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                    New-GeneralConfig `
+                    General `
                         -ServerNames 'Server1','Server2'
-                    New-WebSiteConfig `
+                    WebSite `
                         -WebsiteDetails @{
                                             "http://my.website.com" = "Some Text"
                                          }
@@ -115,9 +115,9 @@ Describe "Test-Website" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                    New-GeneralConfig `
+                    General `
                         -ServerNames 'Server1','Server2'
-                    New-WebSiteConfig `
+                    WebSite `
                         -WebsiteDetails @{
                                             "http://my.website.com" = "Some Text"
                                          }
@@ -148,9 +148,9 @@ Describe "Test-Website" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                    New-GeneralConfig `
+                    General `
                         -ServerNames 'Server1','Server2'
-                    New-WebSiteConfig `
+                    WebSite `
                         -WebsiteDetails @{
                                             "http://my.website.com" = "Test Content"
                                          }
@@ -179,9 +179,9 @@ Describe "Test-Website" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                    New-GeneralConfig `
+                    General `
                         -ServerNames 'Server1','Server2'
-                    New-WebSiteConfig `
+                    WebSite `
                         -WebsiteDetails @{
                                             "http://my.website.com" = "Test Content"
                                          }

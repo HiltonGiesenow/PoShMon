@@ -3,9 +3,9 @@
 Stop-Service BITS
 
 $poShMonConfiguration = New-PoShMonConfiguration {
-    New-GeneralConfig `
+    General `
         -MinutesToScanHistory 1440
-    New-OSConfig `
+    OperatingSystem `
         -EventLogCodes 'Error', 'Warning' `
         -WindowsServices 'BITS'
 }

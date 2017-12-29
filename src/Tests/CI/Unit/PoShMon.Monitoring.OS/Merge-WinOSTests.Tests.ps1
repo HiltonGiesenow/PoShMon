@@ -8,7 +8,7 @@ Describe "Merge-WinOSTests" {
         $currentTime = Get-Date
 
         $poShMonConfiguration = New-PoShMonConfiguration {
-                    New-GeneralConfig -EnvironmentName 'SharePoint' -PrimaryServerName 'Server1'
+                    General -EnvironmentName 'SharePoint' -PrimaryServerName 'Server1'
                 }
 
         $testMonitoringOutput = [System.Collections.ArrayList]@(
@@ -87,7 +87,7 @@ Describe "Merge-WinOSTests" {
     It "Should merge all matching tests" {
 
         $poShMonConfiguration = New-PoShMonConfiguration {
-                    New-GeneralConfig -EnvironmentName 'SharePoint' -PrimaryServerName 'Server1'
+                    General -EnvironmentName 'SharePoint' -PrimaryServerName 'Server1'
                 }
 
         $currentTime = Get-Date
@@ -197,7 +197,7 @@ Describe "Merge-WinOSTests" {
     It "Should show NoIssuesFound if all Tests are fine" {
 
         $poShMonConfiguration = New-PoShMonConfiguration {
-                    New-GeneralConfig -EnvironmentName 'SharePoint' -PrimaryServerName 'Server1'
+                    General -EnvironmentName 'SharePoint' -PrimaryServerName 'Server1'
                 }
 
         $currentTime = Get-Date
@@ -306,7 +306,7 @@ Describe "Merge-WinOSTests" {
     It "Should not merge if only one valid test appears" {
 
         $poShMonConfiguration = New-PoShMonConfiguration {
-                    New-GeneralConfig -EnvironmentName 'SharePoint' -PrimaryServerName 'Server1'
+                    General -EnvironmentName 'SharePoint' -PrimaryServerName 'Server1'
                 }
 
         $currentTime = Get-Date

@@ -44,8 +44,8 @@ Describe "Test-ServiceState" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                                        New-GeneralConfig -ServerNames "Server1"
-                                        New-OSConfig -WindowsServices "ABC"
+                                        General -ServerNames "Server1"
+                                        OperatingSystem -WindowsServices "ABC"
                                     }   
 
             $actual = Test-ServiceState $poShMonConfiguration
@@ -96,8 +96,8 @@ Describe "Test-ServiceState" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                                        New-GeneralConfig -ServerNames "Server2"
-                                        New-OSConfig -WindowsServices "ABC"
+                                        General -ServerNames "Server2"
+                                        OperatingSystem -WindowsServices "ABC"
                                     }
 
             $actual = Test-ServiceState $poShMonConfiguration -Verbose
@@ -128,8 +128,8 @@ Describe "Test-ServiceState" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                                        New-GeneralConfig -ServerNames "Server2"
-                                        New-OSConfig -WindowsServices "ABC"
+                                        General -ServerNames "Server2"
+                                        OperatingSystem -WindowsServices "ABC"
                                     }
 
             $actual = Test-ServiceState $poShMonConfiguration
@@ -166,8 +166,8 @@ Describe "Test-ServiceState" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                                        New-GeneralConfig -ServerNames "Server1"
-                                        New-OSConfig -WindowsServices "ABC"
+                                        General -ServerNames "Server1"
+                                        OperatingSystem -WindowsServices "ABC"
                                     }
 
             $actual = Test-ServiceState $poShMonConfiguration

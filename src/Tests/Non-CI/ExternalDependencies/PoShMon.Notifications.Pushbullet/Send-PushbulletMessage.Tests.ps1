@@ -12,14 +12,14 @@ if (Test-Path $pushbulletConfigPath) # only run this test if there's a config to
             $pushbulletConfig = Get-Content -Raw -Path $pushbulletConfigPath | ConvertFrom-Json
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            New-GeneralConfig `
+                            General `
                                 -EnvironmentName 'SharePoint' `
                                 -MinutesToScanHistory 60 `
                                 -PrimaryServerName 'ZAMGNTSPAPP1' `
                                 -ConfigurationName SpFarmPosh `
                                 -TestsToSkip 'SPServerStatus','WindowsServiceState','SPFailingTimerJobs','SPDatabaseHealth','SPSearchHealth','SPDistributedCacheHealth','WebTests'
-                            New-NotificationsConfig -When All {
-                                New-PushBulletConfig `
+                            Notifications -When All {
+                                Pushbullet `
                                     -AccessToken $pushbulletConfig.AccessToken `
                                     -DeviceId $pushbulletConfig.DeviceId
                             }               

@@ -6,15 +6,15 @@ Describe "Invoke-MonitoringCore" {
     It "Should invoke core monitoring (non-farm)" {
 
         $poShMonConfiguration = New-PoShMonConfiguration {
-                        New-GeneralConfig `
+                        General `
                             -EnvironmentName 'Core' `
                             -MinutesToScanHistory 60 `
                             -PrimaryServerName 'AppServer01' `
                             -ConfigurationName SpFarmPosh
-                        New-NotificationsConfig -When All {
-                            New-EmailConfig -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
-                            New-PushBulletConfig -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
-                            New-O365TeamsConfig -TeamsWebHookUrl "http://teams.office.com/theapi"
+                        Notifications -When All {
+                            Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
+                            Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            O365Teams -TeamsWebHookUrl "http://teams.office.com/theapi"
                         }               
                     }
 
@@ -71,15 +71,15 @@ Describe "Invoke-MonitoringCore" {
     It "Should send a notification for an exception OUTSIDE the tests" {
 
         $poShMonConfiguration = New-PoShMonConfiguration {
-                        New-GeneralConfig `
+                        General `
                             -EnvironmentName 'SharePoint' `
                             -MinutesToScanHistory 60 `
                             -PrimaryServerName 'AppServer01' `
                             -ConfigurationName SpFarmPosh
-                        New-NotificationsConfig -When All {
-                            New-EmailConfig -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
-                            New-PushBulletConfig -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
-                            New-O365TeamsConfig -TeamsWebHookUrl "http://teams.office.com/theapi"
+                        Notifications -When All {
+                            Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
+                            Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            O365Teams -TeamsWebHookUrl "http://teams.office.com/theapi"
                         }               
                     }
 
@@ -136,15 +136,15 @@ Describe "Invoke-MonitoringCore (New Scope)" {
     It "Should NOT send a notification for an exception INSIDE the tests" {
 
         $poShMonConfiguration = New-PoShMonConfiguration {
-                        New-GeneralConfig `
+                        General `
                             -EnvironmentName 'SharePoint' `
                             -MinutesToScanHistory 60 `
                             -PrimaryServerName 'AppServer01' `
                             -ConfigurationName SpFarmPosh
-                        New-NotificationsConfig -When All {
-                            New-EmailConfig -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
-                            New-PushBulletConfig -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
-                            New-O365TeamsConfig -TeamsWebHookUrl "http://teams.office.com/theapi"
+                        Notifications -When All {
+                            Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
+                            Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            O365Teams -TeamsWebHookUrl "http://teams.office.com/theapi"
                         }               
                     }
 
@@ -162,17 +162,17 @@ Describe "Invoke-MonitoringCore (New Scope)" {
                                 )
 
         $poShMonConfiguration = New-PoShMonConfiguration {
-                        New-GeneralConfig `
+                        General `
                             -EnvironmentName 'SharePoint' `
                             -MinutesToScanHistory 60 `
                             -PrimaryServerName 'AppServer01' `
                             -ConfigurationName SpFarmPosh
-                        New-ExtensibilityConfig `
+                        Extensibility `
                             -ExtraTestFilesToInclude $extraTestsToInclude
-                        New-NotificationsConfig -When All {
-                            New-EmailConfig -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
-                            New-PushBulletConfig -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
-                            New-O365TeamsConfig -TeamsWebHookUrl "http://teams.office.com/theapi"
+                        Notifications -When All {
+                            Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
+                            Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            O365Teams -TeamsWebHookUrl "http://teams.office.com/theapi"
                         }               
                     }
 
@@ -192,17 +192,17 @@ Describe "Invoke-MonitoringCore (New Scope)" {
                                 )
 
         $poShMonConfiguration = New-PoShMonConfiguration {
-                        New-GeneralConfig `
+                        General `
                             -EnvironmentName 'SharePoint' `
                             -MinutesToScanHistory 60 `
                             -PrimaryServerName 'AppServer01' `
                             -ConfigurationName SpFarmPosh
-                        New-ExtensibilityConfig `
+                        Extensibility `
                             -ExtraTestFilesToInclude $extraTestsToInclude
-                        New-NotificationsConfig -When All {
-                            New-EmailConfig -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
-                            New-PushBulletConfig -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
-                            New-O365TeamsConfig -TeamsWebHookUrl "http://teams.office.com/theapi"
+                        Notifications -When All {
+                            Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
+                            Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            O365Teams -TeamsWebHookUrl "http://teams.office.com/theapi"
                         }               
                     }
 
@@ -226,17 +226,17 @@ Describe "Invoke-MonitoringCore (New Scope)" {
                                 )
 
         $poShMonConfiguration = New-PoShMonConfiguration {
-                        New-GeneralConfig `
+                        General `
                             -EnvironmentName 'SharePoint' `
                             -MinutesToScanHistory 60 `
                             -PrimaryServerName 'AppServer01' `
                             -ConfigurationName SpFarmPosh
-                        New-ExtensibilityConfig `
+                        Extensibility `
                             -ExtraTestFilesToInclude $extraTestsToInclude
-                        New-NotificationsConfig -When All {
-                            New-EmailConfig -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
-                            New-PushBulletConfig -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
-                            New-O365TeamsConfig -TeamsWebHookUrl "http://teams.office.com/theapi"
+                        Notifications -When All {
+                            Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
+                            Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            O365Teams -TeamsWebHookUrl "http://teams.office.com/theapi"
                         }               
                     }
 
@@ -254,17 +254,17 @@ Describe "Invoke-MonitoringCore (New Scope)" {
                                 )
 
         $poShMonConfiguration = New-PoShMonConfiguration {
-                        New-GeneralConfig `
+                        General `
                             -EnvironmentName 'SharePoint' `
                             -MinutesToScanHistory 60 `
                             -PrimaryServerName 'AppServer01' `
                             -ConfigurationName SpFarmPosh
-                        New-ExtensibilityConfig `
+                        Extensibility `
                             -ExtraResolverFilesToInclude $extraResolverFilesToInclude
-                        New-NotificationsConfig -When All {
-                            New-EmailConfig -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
-                            New-PushBulletConfig -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
-                            New-O365TeamsConfig -TeamsWebHookUrl "http://teams.office.com/theapi"
+                        Notifications -When All {
+                            Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
+                            Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            O365Teams -TeamsWebHookUrl "http://teams.office.com/theapi"
                         }               
                     }
 
@@ -283,17 +283,17 @@ Describe "Invoke-MonitoringCore (New Scope)" {
                                 )
 
         $poShMonConfiguration = New-PoShMonConfiguration {
-                        New-GeneralConfig `
+                        General `
                             -EnvironmentName 'SharePoint' `
                             -MinutesToScanHistory 60 `
                             -PrimaryServerName 'AppServer01' `
                             -ConfigurationName SpFarmPosh
-                        New-ExtensibilityConfig `
+                        Extensibility `
                             -ExtraResolverFilesToInclude $extraResolverFilesToInclude
-                        New-NotificationsConfig -When All {
-                            New-EmailConfig -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
-                            New-PushBulletConfig -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
-                            New-O365TeamsConfig -TeamsWebHookUrl "http://teams.office.com/theapi"
+                        Notifications -When All {
+                            Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
+                            Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            O365Teams -TeamsWebHookUrl "http://teams.office.com/theapi"
                         }               
                     }
 
@@ -318,17 +318,17 @@ Describe "Invoke-MonitoringCore (New Scope)" {
                                 )
 
         $poShMonConfiguration = New-PoShMonConfiguration {
-                        New-GeneralConfig `
+                        General `
                             -EnvironmentName 'SharePoint' `
                             -MinutesToScanHistory 60 `
                             -PrimaryServerName 'AppServer01' `
                             -ConfigurationName SpFarmPosh
-                        New-ExtensibilityConfig `
+                        Extensibility `
                             -ExtraMergerFilesToInclude $extraMergerFilesToInclude
-                        New-NotificationsConfig -When All {
-                            New-EmailConfig -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
-                            New-PushBulletConfig -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
-                            New-O365TeamsConfig -TeamsWebHookUrl "http://teams.office.com/theapi"
+                        Notifications -When All {
+                            Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
+                            Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            O365Teams -TeamsWebHookUrl "http://teams.office.com/theapi"
                         }               
                     }
 
@@ -362,17 +362,17 @@ Describe "Invoke-MonitoringCore (New Scope)" {
                                 )
 
         $poShMonConfiguration = New-PoShMonConfiguration {
-                        New-GeneralConfig `
+                        General `
                             -EnvironmentName 'SharePoint' `
                             -MinutesToScanHistory 60 `
                             -PrimaryServerName 'AppServer01' `
                             -ConfigurationName SpFarmPosh
-                        New-ExtensibilityConfig `
+                        Extensibility `
                             -ExtraMergerFilesToInclude $extraMergerFilesToInclude
-                        New-NotificationsConfig -When All {
-                            New-EmailConfig -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
-                            New-PushBulletConfig -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
-                            New-O365TeamsConfig -TeamsWebHookUrl "http://teams.office.com/theapi"
+                        Notifications -When All {
+                            Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
+                            Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            O365Teams -TeamsWebHookUrl "http://teams.office.com/theapi"
                         }               
                     }
 
