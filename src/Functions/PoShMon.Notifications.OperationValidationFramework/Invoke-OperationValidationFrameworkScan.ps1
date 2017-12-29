@@ -2,9 +2,11 @@ Function Invoke-OperationValidationFrameworkScan
 {
     [CmdletBinding()]
     Param(
-        [hashtable]$PoShMonConfiguration,
-        [hashtable]$OperationValidationFrameworkNotificationSink,
-        [System.Collections.ArrayList]$TestOutputValues,
+		[hashtable]$PoShMonConfiguration,
+		[System.Collections.ArrayList]$TestOutputValues,
+		[hashtable]$NotificationSink,
+		[ValidateSet("All","OnlyOnFailure","None")][string]$SendNotificationsWhen,
+		[TimeSpan]$TotalElapsedTime,
         [bool]$Critical
     )
 

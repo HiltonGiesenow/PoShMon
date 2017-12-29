@@ -2,14 +2,14 @@ $rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPa
 Remove-Module PoShMon -ErrorAction SilentlyContinue
 Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 
-$o365TeamsConfigPath = [Environment]::GetFolderPath("MyDocuments") + "\o365TeamsConfig.json"
+$pushbulletConfigPath = [Environment]::GetFolderPath("MyDocuments") + "\pushbulletconfig.json"
 
-if (Test-Path $o365TeamsConfigPath) # only run this test if there's a config to send notifications
+if (Test-Path $pushbulletConfigPath) # only run this test if there's a config to send notifications
 {
-    Describe "Send-O365TeamsMessage" {
-        It "Should send an O365 Teams message" {
+    Describe "Send-PushbulletMonitoringMessage" {
+        It "Should send a Pushbullet message" {
 
-            $o365TeamsConfig = Get-Content -Raw -Path $o365TeamsConfigPath | ConvertFrom-Json
+            $pushbulletConfig = Get-Content -Raw -Path $pushbulletConfigPath | ConvertFrom-Json
 
             $poShMonConfiguration = New-PoShMonConfiguration {
                             General `
@@ -19,7 +19,9 @@ if (Test-Path $o365TeamsConfigPath) # only run this test if there's a config to 
                                 -ConfigurationName SpFarmPosh `
                                 -TestsToSkip 'SPServerStatus','WindowsServiceState','SPFailingTimerJobs','SPDatabaseHealth','SPSearchHealth','SPDistributedCacheHealth','WebTests'
                             Notifications -When All {
-                                O365Teams -TeamsWebHookUrl $o365TeamsConfig.TeamsWebHookUrl
+                                Pushbullet `
+                                    -AccessToken $pushbulletConfig.AccessToken `
+                                    -DeviceId $pushbulletConfig.DeviceId
                             }               
                         }
 
@@ -74,7 +76,15 @@ if (Test-Path $o365TeamsConfigPath) # only run this test if there's a config to 
 
             $totalElapsedTime = (Get-Date).Subtract((Get-Date).AddMinutes(-3))
 
-            $actual = Send-O365TeamsMessage $poShMonConfiguration $poShMonConfiguration.Notifications.Sinks "Test Subject" "Test Body"
+			Mock -CommandName Send-PushbulletMessage -ModuleName PoShMon -Verifiable -MockWith {
+				$Subject | Should Be "[PoshMon SharePoint Monitoring Results]"
+				$Body | Should Be "Grouped Test With A Long Name : issue(s) found - No `r`nUngrouped Test : issue(s) found - Yes `r`n"
+			}
+
+            $actual = Send-PushbulletMonitoringMessage $poShMonConfiguration $testMonitoringOutput $poShMonConfiguration.Notifications.Sinks "All" ([timespan]::new(1000)) $true
+
+			Assert-VerifiableMock
         }
+
     }
 }
