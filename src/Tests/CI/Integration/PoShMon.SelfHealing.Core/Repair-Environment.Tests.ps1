@@ -4,10 +4,13 @@ Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 
 #. (Join-Path $rootPath -ChildPath "Tests\CI\Integration\PoShMon.SelfHealing.Core\Dummy-Repair.ps1")
 #. (Join-Path $rootPath -ChildPath "Tests\CI\Integration\PoShMon.SelfHealing.Core\Dummy-Repair2.ps1")
+Write-Warning $MyInvocation.MyCommand.Path
 
 Describe "Repair-Environment" {
 
     InModuleScope PoShMon {
+
+		$moduleBasePath = (Get-Module PoShMon).ModuleBase
 
         It "Should send notifications of repairs" {
 
@@ -42,7 +45,7 @@ Describe "Repair-Environment" {
             )
 
             $RepairScripts = @(
-                                (Join-Path $rootPath -ChildPath "Tests\CI\Integration\PoShMon.SelfHealing.Core\Dummy-Repair.ps1")        
+                                (Join-Path $moduleBasePath -ChildPath "Tests\CI\Integration\PoShMon.SelfHealing.Core\Dummy-Repair.ps1")        
             )
 
             Mock -CommandName Initialize-RepairNotifications -ModuleName PoShMon -Verifiable -MockWith {
@@ -88,7 +91,7 @@ Describe "Repair-Environment" {
             )
 
             $RepairScripts = @(
-                                (Join-Path $rootPath -ChildPath "Tests\CI\Integration\PoShMon.SelfHealing.Core\Failing-Repair.ps1")        
+                                (Join-Path $moduleBasePath -ChildPath "Tests\CI\Integration\PoShMon.SelfHealing.Core\Failing-Repair.ps1")        
             )
 
             Mock -CommandName Initialize-RepairNotifications -ModuleName PoShMon -Verifiable -MockWith {
@@ -133,8 +136,8 @@ Describe "Repair-Environment" {
             )
 
             $RepairScripts = @(
-                                (Join-Path $rootPath -ChildPath "Tests\CI\Integration\PoShMon.SelfHealing.Core\Dummy-Repair.ps1")        
-                                (Join-Path $rootPath -ChildPath "Tests\CI\Integration\PoShMon.SelfHealing.Core\Dummy-Repair2.ps1")        
+                                (Join-Path $moduleBasePath -ChildPath "Tests\CI\Integration\PoShMon.SelfHealing.Core\Dummy-Repair.ps1")        
+                                (Join-Path $moduleBasePath -ChildPath "Tests\CI\Integration\PoShMon.SelfHealing.Core\Dummy-Repair2.ps1")        
             )
 
             Mock -CommandName Initialize-RepairNotifications -ModuleName PoShMon -Verifiable -MockWith {
@@ -180,8 +183,8 @@ Describe "Repair-Environment" {
             )
 
             $RepairScripts = @(
-                                (Join-Path $rootPath -ChildPath "Tests\CI\Integration\PoShMon.SelfHealing.Core\Failing-Repair.ps1")        
-                                (Join-Path $rootPath -ChildPath "Tests\CI\Integration\PoShMon.SelfHealing.Core\Dummy-Repair2.ps1")        
+                                (Join-Path $moduleBasePath -ChildPath "Tests\CI\Integration\PoShMon.SelfHealing.Core\Failing-Repair.ps1")        
+                                (Join-Path $moduleBasePath -ChildPath "Tests\CI\Integration\PoShMon.SelfHealing.Core\Dummy-Repair2.ps1")        
             )
 
             Mock -CommandName Initialize-RepairNotifications -ModuleName PoShMon -Verifiable -MockWith {
