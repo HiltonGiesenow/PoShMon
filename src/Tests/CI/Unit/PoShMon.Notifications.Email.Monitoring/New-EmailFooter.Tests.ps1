@@ -20,7 +20,7 @@ Describe "New-EmailFooter" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                                        General `
+                                        New-GeneralConfig `
                                             -ServerNames 'Foo' `
                                             -SkipVersionUpdateCheck `
                                             -TestsToSkip 'ABC','DEF'
@@ -40,7 +40,7 @@ Describe "New-EmailFooter" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                                        General `
+                                        New-GeneralConfig `
                                             -ServerNames 'Foo' `
                                             -SkipVersionUpdateCheck
                                     }
@@ -61,7 +61,7 @@ Describe "New-EmailFooter" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                                        General `
+                                        New-GeneralConfig `
                                             -ServerNames 'Foo' `
                                             -SkipVersionUpdateCheck `
                                             -TestsToSkip @()
@@ -81,7 +81,7 @@ Describe "New-EmailFooter" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                                        General `
+                                        New-GeneralConfig `
                                             -ServerNames 'Foo' `
                                             -SkipVersionUpdateCheck `
                                             -TestsToSkip ''

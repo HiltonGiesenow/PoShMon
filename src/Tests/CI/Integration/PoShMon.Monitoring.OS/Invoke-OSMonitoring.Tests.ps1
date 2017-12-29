@@ -6,16 +6,16 @@ Describe "Invoke-OSMonitoring" {
     It "Should invoke OS monitoring" {
 
         $poShMonConfiguration = New-PoShMonConfiguration {
-                        General `
+                        New-GeneralConfig `
                             -EnvironmentName 'OS Base Test' `
                             -MinutesToScanHistory 60 `
                             -ServerNames 'Server01','Server02' `
                             -ConfigurationName SpFarmPosh `
                             -TestsToSkip 'Memory'
-                        Notifications -When All {
-                            Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
-                            Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
-                            O365Teams -TeamsWebHookUrl "http://teams.office.com/theapi"
+                        New-NotificationsConfig -When All {
+                            New-EmailConfig -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
+                            New-PushBulletConfig -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            New-O365TeamsConfig -TeamsWebHookUrl "http://teams.office.com/theapi"
                         }               
                     }
 

@@ -1,4 +1,4 @@
-Function O365Teams
+Function New-O365TeamsConfig
 {
     [CmdletBinding()]
     param(

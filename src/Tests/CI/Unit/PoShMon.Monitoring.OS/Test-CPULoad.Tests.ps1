@@ -43,8 +43,8 @@ Describe "Test-CPULoad" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            General -ServerNames '.'
-                            OperatingSystem
+                            New-GeneralConfig -ServerNames '.'
+                            New-OSConfig
                         }
 
             $actual = Test-CPULoad $poShMonConfiguration
@@ -78,8 +78,8 @@ Describe "Test-CPULoad" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            General -ServerNames '.'
-                            OperatingSystem
+                            New-GeneralConfig -ServerNames '.'
+                            New-OSConfig
                         }
 
             $actual = Test-CPULoad $poShMonConfiguration -Verbose
@@ -103,8 +103,8 @@ Describe "Test-CPULoad" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            General -ServerNames '.'
-                            OperatingSystem
+                            New-GeneralConfig -ServerNames '.'
+                            New-OSConfig
                         }
 
             $output = $($actual = Test-CPULoad $poShMonConfiguration) 3>&1
@@ -124,8 +124,8 @@ Describe "Test-CPULoad" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            General -ServerNames 'localhost'
-                            OperatingSystem
+                            New-GeneralConfig -ServerNames 'localhost'
+                            New-OSConfig
                         }
 
             $actual = Test-CPULoad $poShMonConfiguration
@@ -146,8 +146,8 @@ Describe "Test-CPULoad" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            General -ServerNames 'localhost'
-                            OperatingSystem
+                            New-GeneralConfig -ServerNames 'localhost'
+                            New-OSConfig
                         }
 
             $actual = Test-CPULoad $poShMonConfiguration
@@ -168,8 +168,8 @@ Describe "Test-CPULoad" {
             }
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            General -ServerNames 'localhost'
-                            OperatingSystem -CPULoadThresholdPercent 50
+                            New-GeneralConfig -ServerNames 'localhost'
+                            New-OSConfig -CPULoadThresholdPercent 50
                         }
 
             $actual = Test-CPULoad $poShMonConfiguration

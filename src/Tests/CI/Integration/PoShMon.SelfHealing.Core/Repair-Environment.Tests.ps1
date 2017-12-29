@@ -9,13 +9,13 @@ Describe "Repair-Environment" {
     It "Should send notifications of repairs" {
 
         $poShMonConfiguration = New-PoShMonConfiguration {
-                        General `
+                        New-GeneralConfig `
                             -EnvironmentName 'Core' `
                             -PrimaryServerName 'Svr1'
-                        Notifications -When All {
-                            Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
-                            Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
-                            O365Teams -TeamsWebHookUrl "http://teams.office.com/theapi"
+                        New-NotificationsConfig -When All {
+                            New-EmailConfig -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
+                            New-PushBulletConfig -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            New-O365TeamsConfig -TeamsWebHookUrl "http://teams.office.com/theapi"
                         }               
                     }
 
@@ -78,13 +78,13 @@ Describe "Repair-Environment" {
     It "Should send notifications of exceptions in repairs" {
 
         $poShMonConfiguration = New-PoShMonConfiguration {
-                        General `
+                        New-GeneralConfig `
                             -EnvironmentName 'Core' `
                             -PrimaryServerName 'Svr1'
-                        Notifications -When All {
-                            Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
-                            Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
-                            O365Teams -TeamsWebHookUrl "http://teams.office.com/theapi"
+                        New-NotificationsConfig -When All {
+                            New-EmailConfig -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
+                            New-PushBulletConfig -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            New-O365TeamsConfig -TeamsWebHookUrl "http://teams.office.com/theapi"
                         }               
                     }
 
@@ -147,13 +147,13 @@ Describe "Repair-Environment" {
     It "Should send notifications of each repair performed" {
 
         $poShMonConfiguration = New-PoShMonConfiguration {
-                        General `
+                        New-GeneralConfig `
                             -EnvironmentName 'Core' `
                             -PrimaryServerName 'Svr1'
-                        Notifications -When All {
-                            Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
-                            Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
-                            O365Teams -TeamsWebHookUrl "http://teams.office.com/theapi"
+                        New-NotificationsConfig -When All {
+                            New-EmailConfig -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
+                            New-PushBulletConfig -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            New-O365TeamsConfig -TeamsWebHookUrl "http://teams.office.com/theapi"
                         }               
                     }
 
@@ -217,13 +217,13 @@ Describe "Repair-Environment" {
     It "Should send notifications of exceptions in repairs as well as successful repairs" {
 
         $poShMonConfiguration = New-PoShMonConfiguration {
-                        General `
+                        New-GeneralConfig `
                             -EnvironmentName 'Core' `
                             -PrimaryServerName 'Svr1'
-                        Notifications -When All {
-                            Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
-                            Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
-                            O365Teams -TeamsWebHookUrl "http://teams.office.com/theapi"
+                        New-NotificationsConfig -When All {
+                            New-EmailConfig -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
+                            New-PushBulletConfig -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            New-O365TeamsConfig -TeamsWebHookUrl "http://teams.office.com/theapi"
                         }               
                     }
 
