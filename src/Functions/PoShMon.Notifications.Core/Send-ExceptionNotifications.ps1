@@ -40,6 +40,10 @@
                     {
 						Send-O365TeamsExceptionMessage @params
 					}
+                    elseif ($notificationSink.TypeName -eq 'PoShMon.ConfigurationItems.Notifications.Twilio')
+                    {
+						Send-TwilioExceptionMessage @params
+					}
 					else
 					{
                         Write-Error "Notitication Sink '$notificationSink.TypeName' type not found"

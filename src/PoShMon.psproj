@@ -204,7 +204,7 @@
     <File Build="2" Shared="True" ReferenceFunction="Invoke-O365Teams_ps1">Functions\PoShMon.Configuration\O365Teams.ps1</File>
     <File Build="2" Shared="True" ReferenceFunction="Invoke-OperatingSystem_ps1">Functions\PoShMon.Configuration\OperatingSystem.ps1</File>
     <File Build="2" Shared="True" ReferenceFunction="Invoke-OperationValidationFramework_ps1">Functions\PoShMon.Configuration\OperationValidationFramework.ps1</File>
-    <File Build="2" Shared="True" ReferenceFunction="Invoke-PushBullet_ps1">Functions\PoShMon.Configuration\PushBullet.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Pushbullet_ps1">Functions\PoShMon.Configuration\Pushbullet.ps1</File>
     <File Build="2" Shared="True" ReferenceFunction="Invoke-SharePoint_ps1">Functions\PoShMon.Configuration\SharePoint.ps1</File>
     <File Build="2" Shared="True" ReferenceFunction="Invoke-WebSite_ps1">Functions\PoShMon.Configuration\WebSite.ps1</File>
     <File Build="2" Shared="True" ReferenceFunction="Invoke-Get-SPCacheHostInfo_ps1">Functions\PoShMon.Monitoring.SharePoint\Get-SPCacheHostInfo.ps1</File>

@@ -43,7 +43,11 @@
         elseif ($notificationSink.TypeName -eq 'PoShMon.ConfigurationItems.Notifications.O365Teams')
         {
 			Send-O365TeamsMonitoringMessage @params
-        }
+		}
+		elseif ($notificationSink.TypeName -eq 'PoShMon.ConfigurationItems.Notifications.Twilio')
+		{
+			Send-TwilioMonitoringMessage @params
+		}
         elseif ($notificationSink.TypeName -eq 'PoShMon.ConfigurationItems.Notifications.OperationValidationFramework')
         {
 			Invoke-OperationValidationFrameworkScan @params
