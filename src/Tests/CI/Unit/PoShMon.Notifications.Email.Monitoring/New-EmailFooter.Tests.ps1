@@ -49,8 +49,6 @@ Describe "New-HtmlFooter" {
 
             $actual = New-HtmlFooter $poShMonConfiguration $totalElapsedTime
 
-            #Write-Host $actual
-
             $actual.IndexOf("<b>Skipped Tests:</b> None") -gt 0 | Should Be $true
         }
 
