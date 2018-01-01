@@ -16,13 +16,13 @@ Function Test-FarmHealth
     {
         $mainOutput.NoIssuesFound = $false
         $highlight += 'Status'
-        Write-Host "Farm Status is $($farm.Status.Value)" -ForegroundColor Yellow
+        Write-Warning "Farm Status is $($farm.Status.Value)"
     }
     if ($farm.NeedsUpgrade -eq $true)
     {
         $mainOutput.NoIssuesFound = $false
         $highlight += 'NeedsUpgrade'
-        Write-Host "Farm needs upgrade"  -ForegroundColor Yellow       
+        Write-Warning "Farm needs upgrade"      
     }
     
     $mainOutput.OutputValues += [pscustomobject]@{
