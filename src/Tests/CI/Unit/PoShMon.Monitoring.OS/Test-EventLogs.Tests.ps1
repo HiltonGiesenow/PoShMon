@@ -69,7 +69,7 @@ Describe "Test-EventLogs" {
             #$values1.ContainsKey("Message") | Should Be $true
         }
 
-        It "Should write the expected Verbose output" {
+        It "Should write the expected Verbose output - No Failing Servers" {
     
             Mock -CommandName Get-WmiObject -MockWith {
                 $eventsCollection = @()
@@ -92,7 +92,7 @@ Describe "Test-EventLogs" {
             $output[3].ToString() | Should Be "Complete 'Critical Event Log Issues' Test, Issues Found: No"
         }
 
-        It "Should write the expected Warning output" {
+        It "Should write the expected Warning output - Single Failing Server" {
     
             Mock -CommandName Get-WmiObject -MockWith {
                 $eventsCollection = @()
@@ -206,6 +206,108 @@ Describe "Test-EventLogs" {
             $actual.OutputValues[4].ServerName  | Should Be "Server2"
             $actual.OutputValues[4].Message  | Should Be "Another Sample Message"
             $actual.OutputValues[4].InstanceCount  | Should Be 1
+		}
+	}
+}
+Describe "Test-EventLogs-NewScope" {
+	InModuleScope PoShMon {
+
+        class EventLogItemMock {
+            [int]$EventCode
+            [string]$SourceName
+            [string]$User
+            [datetime]$TimeGenerated
+            [string]$Message
+
+            EventLogItemMock ([int]$NewEventCode, [String]$NewSourceName, [String]$NewUser, [datetime]$NewTimeGenerated, [String]$NewMessage) {
+                $this.EventCode = $NewEventCode;
+                $this.SourceName = $NewSourceName;
+                $this.User = $NewUser;
+                $this.TimeGenerated = $NewTimeGenerated;
+                $this.Message = $NewMessage;
+            }
+
+            [string] ConvertToDateTime([datetime]$something) {
+                return $something.ToString()
+            }
+		}
+		
+		Mock -CommandName Get-WmiObject -MockWith {
+			$eventsCollection = @()
+
+			if ($ComputerName -eq 'Server2')
+			{
+				$date = Get-Date -Year 2017 -Month 1 -Day 1 -Hour 9 -Minute 30 -Second 15
+
+				$eventsCollection += [EventLogItemMock]::new(123, "Test App", "domain\user1", $date, "Sample Message")
+				$eventsCollection += [EventLogItemMock]::new(123, "Test App", "domain\user1", $date.AddMinutes(-1), "Sample Message")
+				$eventsCollection += [EventLogItemMock]::new(123, "Test App", "domain\user1", $date.AddMinutes(-2), "Another Sample Message")
+			}
+
+			return $eventsCollection
+		}
+
+        It "Should List a Result for All Servers Specified" {
+
+            $poShMonConfiguration = New-PoShMonConfiguration {
+                            General -ServerNames 'Server1', 'Server2', 'Server3'
+                            OperatingSystem
+                        }
+
+            $actual = Test-EventLogs $poShMonConfiguration -WarningAction SilentlyContinue
+        
+            $actual.NoIssuesFound | Should Be $false
+
+            $actual.OutputValues.Count  | Should Be 4
+            $actual.OutputValues[0].ServerName  | Should Be "Server1"
+            $actual.OutputValues[0].Message  | Should Be $null
+            $actual.OutputValues[0].InstanceCount  | Should Be $null
+
+            $actual.OutputValues[1].ServerName  | Should Be "Server2"
+            $actual.OutputValues[1].Message  | Should Be "Sample Message"
+            $actual.OutputValues[1].InstanceCount  | Should Be 2
+            $actual.OutputValues[2].ServerName  | Should Be "Server2"
+            $actual.OutputValues[2].Message  | Should Be "Another Sample Message"
+			$actual.OutputValues[2].InstanceCount  | Should Be 1
+
+			$actual.OutputValues[3].ServerName  | Should Be "Server3"
+            $actual.OutputValues[3].Message  | Should Be $null
+            $actual.OutputValues[3].InstanceCount  | Should Be $null
+		}
+        It "Should write the expected Warning output - Failing Server in Group" {
+
+            $poShMonConfiguration = New-PoShMonConfiguration {
+                            General -ServerNames 'Server1', 'Server2', 'Server3'
+                            OperatingSystem
+                        }
+
+            $actual = Test-EventLogs $poShMonConfiguration
+            $output = $($actual = Test-EventLogs $poShMonConfiguration) 3>&1
+
+            $date = Get-Date -Year 2017 -Month 1 -Day 1 -Hour 9 -Minute 30 -Second 15
+        
+            $output.Count | Should Be 2
+            $output[0].ToString() | Should Be "`t`t123 : 2 : Test App : domain\user1 : $($date.ToString()) - Sample Message"
+            $output[1].ToString() | Should Be "`t`t123 : 1 : Test App : domain\user1 : $($date.AddMinutes(-2).ToString()) - Another Sample Message"
+		}
+        It "Should write the expected Verbose output - Failing Server in Group" {
+
+            $poShMonConfiguration = New-PoShMonConfiguration {
+                            General -ServerNames 'Server1', 'Server2', 'Server3'
+                            OperatingSystem
+                        }
+
+			$actual = Test-EventLogs $poShMonConfiguration -Verbose
+			$output = $($actual = Test-EventLogs $poShMonConfiguration -Verbose) 4>&1
+
+			$output.Count | Should Be 7
+			$output[0].ToString() | Should Be "Initiating 'Critical Event Log Issues' Test..."
+			$output[1].ToString() | Should Be "`tServer1"
+			$output[2].ToString() | Should Be "`t`tNo Entries Found In Time Specified"
+			$output[3].ToString() | Should Be "`tServer2"
+			$output[4].ToString() | Should Be "`tServer3"
+			$output[5].ToString() | Should Be "`t`tNo Entries Found In Time Specified"
+			$output[6].ToString() | Should Be "Complete 'Critical Event Log Issues' Test, Issues Found: Yes"
         }
     }
 }
