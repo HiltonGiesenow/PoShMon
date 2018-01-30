@@ -2,23 +2,23 @@
 {
     [CmdletBinding()]
     Param(
-		[hashtable]$PoShMonConfiguration,
-		[hashtable]$NotificationSink,
-		[string]$Subject,
-		[string]$Body,
+        [hashtable]$PoShMonConfiguration,
+        [hashtable]$PushbulletNotificationSink,
+        [string]$Subject,
+        [string]$Body,
         [bool]$Critical
     )
 
     $finalMessageBody = @{
-                device_iden = $NotificationSink.DeviceId
+                device_iden = $PushbulletNotificationSink.DeviceId
                 type = "note"
-                title = $Subject
-                body = $Body
+                title = $subject
+                body = $body
              }
 
     $params = @{
         Uri = "https://api.pushbullet.com/v2/pushes"
-        Headers = @{ 'Access-Token' = $NotificationSink.AccessToken }
+        Headers = @{ 'Access-Token' = $PushbulletNotificationSink.AccessToken }
         Method = "Post"
         Body = $finalMessageBody
         ErrorAction = "SilentlyContinue"

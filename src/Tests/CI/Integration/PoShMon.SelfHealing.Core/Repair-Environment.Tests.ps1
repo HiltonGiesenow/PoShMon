@@ -4,197 +4,283 @@ Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 
 #. (Join-Path $rootPath -ChildPath "Tests\CI\Integration\PoShMon.SelfHealing.Core\Dummy-Repair.ps1")
 #. (Join-Path $rootPath -ChildPath "Tests\CI\Integration\PoShMon.SelfHealing.Core\Dummy-Repair2.ps1")
-Write-Warning $MyInvocation.MyCommand.Path
 
 Describe "Repair-Environment" {
+    It "Should send notifications of repairs" {
 
-    InModuleScope PoShMon {
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                        General `
+                            -EnvironmentName 'Core' `
+                            -PrimaryServerName 'Svr1'
+                        Notifications -When All {
+                            Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
+                            Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            O365Teams -TeamsWebHookUrl "http://teams.office.com/theapi"
+                        }               
+                    }
 
-		$moduleBasePath = (Get-Module PoShMon).ModuleBase
-
-        It "Should send notifications of repairs" {
-
-            $poShMonConfiguration = New-PoShMonConfiguration {
-                            General `
-                                -EnvironmentName 'Core' `
-                                -PrimaryServerName 'Svr1'
-                            Notifications -When All {
-                                Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
-                                Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
-                                O365Teams -TeamsWebHookUrl "http://teams.office.com/theapi"
-                            }               
-                        }
-
-            $monitoringOutput = [System.Collections.ArrayList]@(
-                @{
-                    "SectionHeader" = "AMonitoringTest"
-                    "OutputHeaders" = @{ 'ComponentName' = 'Component'; 'State' = 'State' }
-                    "NoIssuesFound" = $false
-                    "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
-                    "OutputValues" = @(
-                                        @{
-                                            "Component" = 123
-                                            "State" = "State 1"
-                                        },
-                                        @{
-                                            "Component" = 456
-                                            "State" = "State 2"
-                                        }
-                                    )
-                }
-            )
-
-            $RepairScripts = @(
-                                (Join-Path $moduleBasePath -ChildPath "Tests\CI\Integration\PoShMon.SelfHealing.Core\Dummy-Repair.ps1")        
-            )
-
-            Mock -CommandName Initialize-RepairNotifications -ModuleName PoShMon -Verifiable -MockWith {
-                $RepairOutputValues.SectionHeader | Should Be "Mock Repair"
-                $RepairOutputValues.RepairResult | Should Be "Some repair message"
+        $monitoringOutput = [System.Collections.ArrayList]@(
+            @{
+                "SectionHeader" = "AMonitoringTest"
+                "OutputHeaders" = @{ 'ComponentName' = 'Component'; 'State' = 'State' }
+                "NoIssuesFound" = $false
+                "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
+                "OutputValues" = @(
+                                    @{
+                                        "Component" = 123
+                                        "State" = "State 1"
+                                    },
+                                    @{
+                                        "Component" = 456
+                                        "State" = "State 2"
+                                    }
+                                )
             }
+        )
 
-            $actual = Repair-Environment $poShMonConfiguration $monitoringOutput $RepairScripts -Verbose
+        $RepairScripts = @(
+                            (Join-Path $rootPath -ChildPath "Tests\CI\Integration\PoShMon.SelfHealing.Core\Dummy-Repair.ps1")        
+        )
 
-            Assert-VerifiableMock
+        Mock -CommandName Send-PoShMonEmail -ModuleName PoShMon -Verifiable -MockWith {
+            Write-Verbose $Subject
+            Write-Verbose $Body
+
+            $Subject | Should Be "[PoshMon] Core Repair Results (1 Repairs(s) Performed)"
+            $Body | Should Be '<head><title>Core Repairs Report</title></head><body><h1>Core Repairs Report</h1><p><h1>Mock Repair</h1><table border="1"><tbody><tr><td>Some repair message</td></tr></tbody></table></body>'
+
+            return
+        }
+        Mock -CommandName Send-PushbulletMessage -ModuleName PoShMon -Verifiable -MockWith {
+            Write-Verbose $Subject
+            Write-Verbose $Body
+
+            $Subject | Should Be "[PoshMon Core Repair Results]`r`n"
+            $Body | Should Be "Mock Repair : Repair performed`r`n"
+
+            return
+        }
+        Mock -CommandName Send-O365TeamsMessage -ModuleName PoShMon -Verifiable -MockWith {
+            Write-Verbose $Subject
+            Write-Verbose $Body
+
+            $Subject | Should Be "[PoshMon Core Repair Results]`r`n"
+            $Body | Should Be "Mock Repair : Repair performed`r`n"
+
+            return
         }
 
-        It "Should send notifications of exceptions in repairs" {
+        $actual = Repair-Environment $poShMonConfiguration $monitoringOutput $RepairScripts -Verbose
 
-            $poShMonConfiguration = New-PoShMonConfiguration {
-                            General `
-                                -EnvironmentName 'Core' `
-                                -PrimaryServerName 'Svr1'
-                            Notifications -When All {
-                                Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
-                                Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
-                                O365Teams -TeamsWebHookUrl "http://teams.office.com/theapi"
-                            }               
-                        }
+        Assert-VerifiableMocks
+    }
 
-            $monitoringOutput = [System.Collections.ArrayList]@(
-                @{
-                    "SectionHeader" = "AMonitoringTest"
-                    "OutputHeaders" = @{ 'ComponentName' = 'Component'; 'State' = 'State' }
-                    "NoIssuesFound" = $false
-                    "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
-                    "OutputValues" = @(
-                                        @{
-                                            "Component" = 123
-                                            "State" = "State 1"
-                                        },
-                                        @{
-                                            "Component" = 456
-                                            "State" = "State 2"
-                                        }
-                                    )
-                }
-            )
+    It "Should send notifications of exceptions in repairs" {
 
-            $RepairScripts = @(
-                                (Join-Path $moduleBasePath -ChildPath "Tests\CI\Integration\PoShMon.SelfHealing.Core\Failing-Repair.ps1")        
-            )
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                        General `
+                            -EnvironmentName 'Core' `
+                            -PrimaryServerName 'Svr1'
+                        Notifications -When All {
+                            Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
+                            Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            O365Teams -TeamsWebHookUrl "http://teams.office.com/theapi"
+                        }               
+                    }
 
-            Mock -CommandName Initialize-RepairNotifications -ModuleName PoShMon -Verifiable -MockWith {
-                $RepairOutputValues.SectionHeader | Should Be "Failing-Repair"
+        $monitoringOutput = [System.Collections.ArrayList]@(
+            @{
+                "SectionHeader" = "AMonitoringTest"
+                "OutputHeaders" = @{ 'ComponentName' = 'Component'; 'State' = 'State' }
+                "NoIssuesFound" = $false
+                "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
+                "OutputValues" = @(
+                                    @{
+                                        "Component" = 123
+                                        "State" = "State 1"
+                                    },
+                                    @{
+                                        "Component" = 456
+                                        "State" = "State 2"
+                                    }
+                                )
             }
+        )
 
-            $actual = Repair-Environment $poShMonConfiguration $monitoringOutput $RepairScripts -Verbose
+        $RepairScripts = @(
+                            (Join-Path $rootPath -ChildPath "Tests\CI\Integration\PoShMon.SelfHealing.Core\Failing-Repair.ps1")        
+        )
 
-            Assert-VerifiableMock
+        Mock -CommandName Send-PoShMonEmail -ModuleName PoShMon -Verifiable -MockWith {
+            Write-Verbose $Subject
+            Write-Verbose $Body
+
+            $Subject | Should Be "[PoshMon] Core Repair Results (1 Repairs(s) Performed)"
+            $Body | Should Be '<head><title>Core Repairs Report</title></head><body><h1>Core Repairs Report</h1><p><h1>Failing-Repair</h1><table border="1"><tbody><tr><td>An Exception Occurred</td></tr><tr><td>System.Management.Automation.RuntimeException: Something</td></tr></tbody></table></body>'
+
+            return
+        }
+        Mock -CommandName Send-PushbulletMessage -ModuleName PoShMon -Verifiable -MockWith {
+            Write-Verbose $Subject
+            Write-Verbose $Body
+
+            $Subject | Should Be "[PoshMon Core Repair Results]`r`n"
+            $Body | Should Be "Failing-Repair : (Exception occurred)`r`n"
+
+            return
+        }
+        Mock -CommandName Send-O365TeamsMessage -ModuleName PoShMon -Verifiable -MockWith {
+            Write-Verbose $Subject
+            Write-Verbose $Body
+
+            $Subject | Should Be "[PoshMon Core Repair Results]`r`n"
+            $Body | Should Be "Failing-Repair : (Exception occurred)`r`n"
+
+            return
         }
 
-        It "Should send notifications of each repair performed" {
+        $actual = Repair-Environment $poShMonConfiguration $monitoringOutput $RepairScripts -Verbose
 
-            $poShMonConfiguration = New-PoShMonConfiguration {
-                            General `
-                                -EnvironmentName 'Core' `
-                                -PrimaryServerName 'Svr1'
-                            Notifications -When All {
-                                Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
-                                Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
-                                O365Teams -TeamsWebHookUrl "http://teams.office.com/theapi"
-                            }               
-                        }
+        Assert-VerifiableMocks
+    }
 
-            $monitoringOutput = @(
-                @{
-                    "SectionHeader" = "AMonitoringTest"
-                    "OutputHeaders" = @{ 'ComponentName' = 'Component'; 'State' = 'State' }
-                    "NoIssuesFound" = $false
-                    "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
-                    "OutputValues" = @(
-                                        @{
-                                            "Component" = 123
-                                            "State" = "State 1"
-                                        },
-                                        @{
-                                            "Component" = 456
-                                            "State" = "State 2"
-                                        }
-                                    )
-                }
-            )
+    It "Should send notifications of each repair performed" {
 
-            $RepairScripts = @(
-                                (Join-Path $moduleBasePath -ChildPath "Tests\CI\Integration\PoShMon.SelfHealing.Core\Dummy-Repair.ps1")        
-                                (Join-Path $moduleBasePath -ChildPath "Tests\CI\Integration\PoShMon.SelfHealing.Core\Dummy-Repair2.ps1")        
-            )
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                        General `
+                            -EnvironmentName 'Core' `
+                            -PrimaryServerName 'Svr1'
+                        Notifications -When All {
+                            Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
+                            Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            O365Teams -TeamsWebHookUrl "http://teams.office.com/theapi"
+                        }               
+                    }
 
-            Mock -CommandName Initialize-RepairNotifications -ModuleName PoShMon -Verifiable -MockWith {
-                $RepairOutputValues[0].SectionHeader | Should Be "Mock Repair"
-                $RepairOutputValues[1].SectionHeader | Should Be "Another Mock Repair"
+        $monitoringOutput = @(
+            @{
+                "SectionHeader" = "AMonitoringTest"
+                "OutputHeaders" = @{ 'ComponentName' = 'Component'; 'State' = 'State' }
+                "NoIssuesFound" = $false
+                "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
+                "OutputValues" = @(
+                                    @{
+                                        "Component" = 123
+                                        "State" = "State 1"
+                                    },
+                                    @{
+                                        "Component" = 456
+                                        "State" = "State 2"
+                                    }
+                                )
             }
+        )
 
-            $actual = Repair-Environment $poShMonConfiguration $monitoringOutput $RepairScripts -Verbose
+        $RepairScripts = @(
+                            (Join-Path $rootPath -ChildPath "Tests\CI\Integration\PoShMon.SelfHealing.Core\Dummy-Repair.ps1")        
+                            (Join-Path $rootPath -ChildPath "Tests\CI\Integration\PoShMon.SelfHealing.Core\Dummy-Repair2.ps1")        
+        )
 
-            Assert-VerifiableMock
+        Mock -CommandName Send-PoShMonEmail -ModuleName PoShMon -Verifiable -MockWith {
+            Write-Verbose $Subject
+            Write-Verbose $Body
+
+            $Subject | Should Be "[PoshMon] Core Repair Results (2 Repairs(s) Performed)"
+            $Body | Should Be '<head><title>Core Repairs Report</title></head><body><h1>Core Repairs Report</h1><p><h1>Mock Repair</h1><table border="1"><tbody><tr><td>Some repair message</td></tr></tbody></table><p><h1>Another Mock Repair</h1><table border="1"><tbody><tr><td>Another repair message</td></tr></tbody></table></body>'
+
+            return
+        }
+        Mock -CommandName Send-PushbulletMessage -ModuleName PoShMon -Verifiable -MockWith {
+            Write-Verbose $Subject
+            Write-Verbose $Body
+
+            $Subject | Should Be "[PoshMon Core Repair Results]`r`n"
+            $Body | Should Be "Mock Repair : Repair performed`r`nAnother Mock Repair : Repair performed`r`n"
+
+            return
+        }
+        Mock -CommandName Send-O365TeamsMessage -ModuleName PoShMon -Verifiable -MockWith {
+            Write-Verbose $Subject
+            Write-Verbose $Body
+
+            $Subject | Should Be "[PoshMon Core Repair Results]`r`n"
+            $Body | Should Be "Mock Repair : Repair performed`r`nAnother Mock Repair : Repair performed`r`n"
+
+            return
         }
 
-        It "Should send notifications of exceptions in repairs as well as successful repairs" {
+        $actual = Repair-Environment $poShMonConfiguration $monitoringOutput $RepairScripts -Verbose
 
-            $poShMonConfiguration = New-PoShMonConfiguration {
-                            General `
-                                -EnvironmentName 'Core' `
-                                -PrimaryServerName 'Svr1'
-                            Notifications -When All {
-                                Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
-                                Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
-                                O365Teams -TeamsWebHookUrl "http://teams.office.com/theapi"
-                            }               
-                        }
+        Assert-VerifiableMocks
+    }
 
-            $monitoringOutput = @(
-                @{
-                    "SectionHeader" = "AMonitoringTest"
-                    "OutputHeaders" = @{ 'ComponentName' = 'Component'; 'State' = 'State' }
-                    "NoIssuesFound" = $false
-                    "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
-                    "OutputValues" = @(
-                                        @{
-                                            "Component" = 123
-                                            "State" = "State 1"
-                                        },
-                                        @{
-                                            "Component" = 456
-                                            "State" = "State 2"
-                                        }
-                                    )
-                }
-            )
+    It "Should send notifications of exceptions in repairs as well as successful repairs" {
 
-            $RepairScripts = @(
-                                (Join-Path $moduleBasePath -ChildPath "Tests\CI\Integration\PoShMon.SelfHealing.Core\Failing-Repair.ps1")        
-                                (Join-Path $moduleBasePath -ChildPath "Tests\CI\Integration\PoShMon.SelfHealing.Core\Dummy-Repair2.ps1")        
-            )
+        $poShMonConfiguration = New-PoShMonConfiguration {
+                        General `
+                            -EnvironmentName 'Core' `
+                            -PrimaryServerName 'Svr1'
+                        Notifications -When All {
+                            Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
+                            Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            O365Teams -TeamsWebHookUrl "http://teams.office.com/theapi"
+                        }               
+                    }
 
-            Mock -CommandName Initialize-RepairNotifications -ModuleName PoShMon -Verifiable -MockWith {
-                $RepairOutputValues[0].SectionHeader | Should Be "Failing-Repair"
-                $RepairOutputValues[1].SectionHeader | Should Be "Another Mock Repair"
+        $monitoringOutput = @(
+            @{
+                "SectionHeader" = "AMonitoringTest"
+                "OutputHeaders" = @{ 'ComponentName' = 'Component'; 'State' = 'State' }
+                "NoIssuesFound" = $false
+                "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
+                "OutputValues" = @(
+                                    @{
+                                        "Component" = 123
+                                        "State" = "State 1"
+                                    },
+                                    @{
+                                        "Component" = 456
+                                        "State" = "State 2"
+                                    }
+                                )
             }
+        )
 
-            $actual = Repair-Environment $poShMonConfiguration $monitoringOutput $RepairScripts -Verbose
+        $RepairScripts = @(
+                            (Join-Path $rootPath -ChildPath "Tests\CI\Integration\PoShMon.SelfHealing.Core\Failing-Repair.ps1")        
+                            (Join-Path $rootPath -ChildPath "Tests\CI\Integration\PoShMon.SelfHealing.Core\Dummy-Repair2.ps1")        
+        )
 
-            Assert-VerifiableMock
+        Mock -CommandName Send-PoShMonEmail -ModuleName PoShMon -Verifiable -MockWith {
+            Write-Verbose $Subject
+            Write-Verbose $Body
+
+            $Subject | Should Be "[PoshMon] Core Repair Results (2 Repairs(s) Performed)"
+            $Body | Should Be '<head><title>Core Repairs Report</title></head><body><h1>Core Repairs Report</h1><p><h1>Failing-Repair</h1><table border="1"><tbody><tr><td>An Exception Occurred</td></tr><tr><td>System.Management.Automation.RuntimeException: something</td></tr></tbody></table><p><h1>Another Mock Repair</h1><table border="1"><tbody><tr><td>Another repair message</td></tr></tbody></table></body>'
+
+            return
         }
+        Mock -CommandName Send-PushbulletMessage -ModuleName PoShMon -Verifiable -MockWith {
+            Write-Verbose $Subject
+            Write-Verbose $Body
+
+            $Subject | Should Be "[PoshMon Core Repair Results]`r`n"
+            $Body | Should Be "Failing-Repair : (Exception occurred)`r`nAnother Mock Repair : Repair performed`r`n"
+
+            return
+        }
+        Mock -CommandName Send-O365TeamsMessage -ModuleName PoShMon -Verifiable -MockWith {
+            Write-Verbose $Subject
+            Write-Verbose $Body
+
+            $Subject | Should Be "[PoshMon Core Repair Results]`r`n"
+            $Body | Should Be "Failing-Repair : (Exception occurred)`r`nAnother Mock Repair : Repair performed`r`n"
+
+            return
+        }
+
+        $actual = Repair-Environment $poShMonConfiguration $monitoringOutput $RepairScripts -Verbose
+
+        Assert-VerifiableMocks
     }
 }

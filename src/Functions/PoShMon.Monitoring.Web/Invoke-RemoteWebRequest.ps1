@@ -14,7 +14,7 @@ Function Invoke-RemoteWebRequest
 
         $webResponse = Invoke-Command -Session $remoteSession -ScriptBlock {
                                     param($SiteUrl)
-                                    Invoke-WebRequest $SiteUrl -UseDefaultCredentials -UseBasicParsing
+                                    Invoke-WebRequest $SiteUrl -UseDefaultCredentials
                                 } -ArgumentList $SiteUrl
     } finally {
         Disconnect-RemoteSession $remoteSession

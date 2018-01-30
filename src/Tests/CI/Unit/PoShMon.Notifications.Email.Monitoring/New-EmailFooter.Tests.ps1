@@ -2,7 +2,7 @@ $rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPa
 Remove-Module PoShMon -ErrorAction SilentlyContinue
 Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 
-Describe "New-HtmlFooter" {
+Describe "New-EmailFooter" {
     InModuleScope PoShMon {
 
         class ModuleMock {
@@ -28,7 +28,7 @@ Describe "New-HtmlFooter" {
 
             $totalElapsedTime = (Get-Date).Subtract((Get-Date).AddMinutes(-3))
 
-            $actual = New-HtmlFooter $poShMonConfiguration $totalElapsedTime
+            $actual = New-EmailFooter $poShMonConfiguration $totalElapsedTime
 
             $actual.IndexOf("<b>Skipped Tests:</b> ABC, DEF") -gt 0 | Should Be $true
         }
@@ -47,7 +47,9 @@ Describe "New-HtmlFooter" {
 
             $totalElapsedTime = (Get-Date).Subtract((Get-Date).AddMinutes(-3))
 
-            $actual = New-HtmlFooter $poShMonConfiguration $totalElapsedTime
+            $actual = New-EmailFooter $poShMonConfiguration $totalElapsedTime
+
+            #Write-Host $actual
 
             $actual.IndexOf("<b>Skipped Tests:</b> None") -gt 0 | Should Be $true
         }
@@ -67,7 +69,7 @@ Describe "New-HtmlFooter" {
 
             $totalElapsedTime = (Get-Date).Subtract((Get-Date).AddMinutes(-3))
 
-            $actual = New-HtmlFooter $poShMonConfiguration $totalElapsedTime
+            $actual = New-EmailFooter $poShMonConfiguration $totalElapsedTime
 
             $actual.IndexOf("<b>Skipped Tests:</b> None") -gt 0 | Should Be $true
         }
@@ -87,7 +89,7 @@ Describe "New-HtmlFooter" {
 
             $totalElapsedTime = (Get-Date).Subtract((Get-Date).AddMinutes(-3))
 
-            $actual = New-HtmlFooter $poShMonConfiguration $totalElapsedTime
+            $actual = New-EmailFooter $poShMonConfiguration $totalElapsedTime
 
             $actual.IndexOf("<b>Skipped Tests:</b> None") -gt 0 | Should Be $true
         }

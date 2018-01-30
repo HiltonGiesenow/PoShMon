@@ -2,19 +2,20 @@
 {
     [CmdletBinding()]
     Param(
-		[hashtable]$PoShMonConfiguration,
-		[hashtable]$NotificationSink,
-		[string]$Subject,
-		[string]$Body,
+        [hashtable]$PoShMonConfiguration,
+        [hashtable]$O365TeamsNotificationSink,
+        [string]$Subject,
+        [string]$Body,
         [bool]$Critical
     )
 
-	$combinedMessageBody = $Subject + $Body
-	
+    $combinedMessageBody = $subject + $body
+    
+    #$headers = @{"accept"="application/json"; "Content-Type"="application/json"}
     $finalMessageBody = "{""text"": ""$combinedMessageBody""}"
 
     $params = @{
-        Uri = $NotificationSink.TeamsWebHookUrl
+        Uri = $O365TeamsNotificationSink.TeamsWebHookUrl
         Headers = @{"accept"="application/json"; "Content-Type"="application/json"}
         Method = "Post"
         Body = $finalMessageBody
@@ -27,5 +28,6 @@
     if ([string]::IsNullOrEmpty($PoShMonConfiguration.General.ProxyAddress) -eq $false)
         { $params.Add("Proxy", $PoShMonConfiguration.General.ProxyAddress) }
 
+    #$response = Invoke-WebRequest -Uri $O365TeamsNotificationSink.TeamsWebHookUrl -Headers $headers -Body $finalMessageBody -Method Post
     $response = Invoke-WebRequest @params
  }

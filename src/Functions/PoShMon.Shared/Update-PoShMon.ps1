@@ -10,7 +10,7 @@ Function Update-PoShMon
 
     if ($currentVersion.Version -eq $galleryVersion.Version)
     {
-        Write-Verbose "Latest version already installed, skipping update"
+        Write-Host "Latest version already installed, skipping update"
     } else {
         if ((Get-Module PoShMon))
             { Remove-Module PoShMon -ErrorAction SilentlyContinue }
@@ -21,7 +21,7 @@ Function Update-PoShMon
         
         if ($upgradedVersion.Version -eq $galleryVersion.Version)
         {
-            Write-Verbose "PoShMon version upgraded to $($upgradedVersion.Version.ToString())"
+            Write-Host "PoShMon version upgraded to $($upgradedVersion.Version.ToString())"
         } else {
             "Upgrade failed"
         }

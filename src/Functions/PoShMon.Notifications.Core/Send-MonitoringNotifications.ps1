@@ -19,41 +19,43 @@
         }
     }    
 
-	$params = @{
-		PoShMonConfiguration = $PoShMonConfiguration
-		TestOutputValues = $TestOutputValues
-		TotalElapsedTime = $TotalElapsedTime
-		SendNotificationsWhen = $SendNotificationsWhen
-		Critical = $atLeastOneFailure
-		NotificationSink = $null
-	}
-
     foreach ($notificationSink in $NotificationSinks)
     {
-		$params.NotificationSink = $notificationSink
-		
         if ($notificationSink.TypeName -eq 'PoShMon.ConfigurationItems.Notifications.Email')
         {
-			Send-EmailMonitoringMessage @params
+                Send-PoShMonEmail `
+                                -PoShMonConfiguration $PoShMonConfiguration `
+                                -EmailNotificationSink $notificationSink `
+                                -Subject (New-EmailSubject $PoShMonConfiguration $TestOutputValues) `
+                                -Body (New-EmailBody $PoShMonConfiguration $SendNotificationsWhen $TestOutputValues $TotalElapsedTime) `
+                                -Critical $atLeastOneFailure
         }
         elseif ($notificationSink.TypeName -eq 'PoShMon.ConfigurationItems.Notifications.Pushbullet')
         {
-			Send-PushbulletMonitoringMessage @params
+                Send-PushbulletMessage `
+                                -PoShMonConfiguration $PoShMonConfiguration `
+                                -PushbulletNotificationSink $notificationSink `
+                                -Subject (New-PushbulletMessageSubject $PoShMonConfiguration $TestOutputValues) `
+                                -Body (New-PushbulletMessageBody $PoShMonConfiguration $SendNotificationsWhen $TestOutputValues $TotalElapsedTime) `
+                                -Critical $atLeastOneFailure
         }
         elseif ($notificationSink.TypeName -eq 'PoShMon.ConfigurationItems.Notifications.O365Teams')
         {
-			Send-O365TeamsMonitoringMessage @params
-		}
-		elseif ($notificationSink.TypeName -eq 'PoShMon.ConfigurationItems.Notifications.Twilio')
-		{
-			Send-TwilioMonitoringMessage @params
-		}
-        elseif ($notificationSink.TypeName -eq 'PoShMon.ConfigurationItems.Notifications.OperationValidationFramework')
-        {
-			Invoke-OperationValidationFrameworkScan @params
-		}
-		else
-		{
+                Send-O365TeamsMessage `
+                                -PoShMonConfiguration $PoShMonConfiguration `
+                                -O365TeamsNotificationSink $notificationSink `
+                                -Subject (New-O365TeamsMessageSubject $PoShMonConfiguration $TestOutputValues) `
+                                -Body (New-O365TeamsMessageBody $PoShMonConfiguration $SendNotificationsWhen $TestOutputValues $TotalElapsedTime) `
+                                -Critical $atLeastOneFailure
+         }
+         elseif ($notificationSink.TypeName -eq 'PoShMon.ConfigurationItems.Notifications.OperationValidationFramework')
+         {
+                Invoke-OperationValidationFrameworkScan `
+                                -PoShMonConfiguration $PoShMonConfiguration `
+                                -OperationValidationFrameworkNotificationSink $notificationSink `
+                                -TestOutputValues $TestOutputValues `
+                                -Critical $atLeastOneFailure
+         } else {
             Write-Error "Notitication Sink '$($notificationSink.TypeName)' type not found"
         }
     }

@@ -1,4 +1,4 @@
-Function New-NotificationsConfig
+Function Notifications
 {
     [CmdletBinding()]
     param(
