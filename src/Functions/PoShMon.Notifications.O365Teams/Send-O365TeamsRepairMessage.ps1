@@ -1,0 +1,15 @@
+Function Send-O365TeamsRepairMessage
+{
+    [CmdletBinding()]
+    Param(
+		[hashtable]$PoShMonConfiguration,
+		[object[]]$RepairOutputValues,
+		[hashtable]$NotificationSink
+    )
+
+	$subject = New-ShortRepairMessageSubject -PoShMonConfiguration $PoShMonConfiguration -RepairOutputValues $RepairOutputValues
+	$body = New-ShortRepairMessageBody -PoShMonConfiguration $PoShMonConfiguration -RepairOutputValues $RepairOutputValues
+
+	Send-O365TeamsMessage -PoShMonConfiguration $PoShMonConfiguration -NotificationSink $NotificationSink `
+							 -Subject $Subject -Body $Body -Critical $false
+}

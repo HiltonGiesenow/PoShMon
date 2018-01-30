@@ -18,7 +18,7 @@ Function Test-EventLogs
 
         foreach ($serverName in $PoShMonConfiguration.General.ServerNames)
         {
-            $itemOutputValues = @()
+			$serverHasEntries = $false
         
             $eventLogEntryGroups = Get-GroupedEventLogItemsBySeverity -ComputerName $serverName -SeverityCode $SeverityCode -WmiStartDate $wmiStartDateWmi
 
@@ -32,7 +32,8 @@ Function Test-EventLogs
 
                     if ($EventIDIgnoreList.Count -eq 0 -or $EventIDIgnoreList.ContainsKey($currentEntry.EventCode) -eq $false)
                     {
-                        $mainOutput.NoIssuesFound = $false
+						$mainOutput.NoIssuesFound = $false
+						$serverHasEntries = $true
 
                         Write-Warning ("`t`t" + $currentEntry.EventCode.ToString() + ' : ' + $eventLogEntryGroup.Count + ' : ' + $currentEntry.SourceName + ' : ' + $currentEntry.User + ' : ' + $currentEntry.ConvertToDateTime($currentEntry.TimeGenerated) + ' - ' + $currentEntry.Message)
                 
@@ -49,7 +50,7 @@ Function Test-EventLogs
                 }
             }
 
-            if ($mainOutput.NoIssuesFound)
+            if ($serverHasEntries -eq $false)
             {
                 Write-Verbose "`t`tNo Entries Found In Time Specified"
 

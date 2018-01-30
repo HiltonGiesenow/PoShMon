@@ -36,9 +36,9 @@ Function New-PoShMonConfiguration
     }
 
     if ($newConfiguration.General -eq $null)
-        { $newConfiguration.General = General -ServerNames $Env:COMPUTERNAME }
+        { $newConfiguration.General = New-GeneralConfig -ServerNames $Env:COMPUTERNAME }
     if ($newConfiguration.OperatingSystem -eq $null)
-        { $newConfiguration.OperatingSystem = OperatingSystem }
+        { $newConfiguration.OperatingSystem = New-OSConfig }
 
     return $newConfiguration
 }

@@ -1,0 +1,213 @@
+﻿<Project Synchronized="False" SyncFilter="*.ps1;*.psm1;*.psd1;*.ps1xml;*.psf;*.pss;*.xml;*.help.txt">
+  <Version>2.0</Version>
+  <FileID>197aa610-a6d9-47ad-ac60-b799790d4069</FileID>
+  <ProjectType>1</ProjectType>
+  <Folders>
+    <Folder>Functions\PoShMon.Configuration</Folder>
+    <Folder>Functions</Folder>
+    <Folder>Functions\PoShMon.Monitoring.Core</Folder>
+    <Folder>Functions\PoShMon.Monitoring.OfficeOnlineServer</Folder>
+    <Folder>Functions\PoShMon.Monitoring.OS</Folder>
+    <Folder>Functions\PoShMon.Monitoring.SharePoint</Folder>
+    <Folder>Functions\PoShMon.Monitoring.Web</Folder>
+    <Folder>Functions\PoShMon.Notifications.Core</Folder>
+    <Folder>Functions\PoShMon.Notifications.Email.Exceptions</Folder>
+    <Folder>Functions\PoShMon.Notifications.Email.Monitoring</Folder>
+    <Folder>Functions\PoShMon.Notifications.Email.Repairs</Folder>
+    <Folder>Functions\PoShMon.Notifications.Email.Shared</Folder>
+    <Folder>Functions\PoShMon.Notifications.O365Teams</Folder>
+    <Folder>Functions\PoShMon.Notifications.OperationValidationFramework</Folder>
+    <Folder>Functions\PoShMon.Notifications.Pushbullet</Folder>
+    <Folder>Functions\PoShMon.SelfHealing.Core</Folder>
+    <Folder>Functions\PoShMon.Shared</Folder>
+    <Folder>Samples</Folder>
+    <Folder>Samples\Scheduled Task Definitions</Folder>
+    <Folder>Tests</Folder>
+    <Folder>Tests\CI\Integration\PoShMon.Monitoring.Core</Folder>
+    <Folder>Tests\CI</Folder>
+    <Folder>Tests\CI\Integration</Folder>
+    <Folder>Tests\CI\Integration\PoShMon.Monitoring.OS</Folder>
+    <Folder>Tests\CI\Integration\PoShMon.Monitoring.SharePoint</Folder>
+    <Folder>Tests\CI\Integration\PoShMon.Monitoring.Web</Folder>
+    <Folder>Tests\CI\Integration\PoShMon.Notifications</Folder>
+    <Folder>Tests\CI\Integration\PoShMon.Notifications.Email</Folder>
+    <Folder>Tests\CI\Integration\PoShMon.SelfHealing.Core</Folder>
+    <Folder>Tests\CI\Unit\PoShMon.Configuration</Folder>
+    <Folder>Tests\CI\Unit</Folder>
+    <Folder>Tests\CI\Unit\PoShMon.Monitoring.OS</Folder>
+    <Folder>Tests\CI\Unit\PoShMon.Monitoring.SharePoint</Folder>
+    <Folder>Tests\CI\Unit\PoShMon.Monitoring.Web</Folder>
+    <Folder>Tests\CI\Unit\PoShMon.Notifications.Email.Monitoring</Folder>
+    <Folder>Tests\CI\Unit\PoShMon.Notifications.O365Teams</Folder>
+    <Folder>Tests\CI\Unit\PoShMon.Notifications.Pushbullet</Folder>
+    <Folder>Tests\Non-CI\ExternalDependencies\PoShMon.Notifications.Email.Monitoring</Folder>
+    <Folder>Tests\Non-CI</Folder>
+    <Folder>Tests\Non-CI\ExternalDependencies</Folder>
+    <Folder>Tests\Non-CI\ExternalDependencies\PoShMon.Notifications.O365Teams</Folder>
+    <Folder>Tests\Non-CI\ExternalDependencies\PoShMon.Notifications.Pushbullet</Folder>
+    <Folder>Tests\Non-CI\PoShMon.Notifications.OperationValidationFramework</Folder>
+    <Folder>Tests\Resources</Folder>
+  </Folders>
+  <Files>
+    <File Build="2">PoShMon.psd1</File>
+    <File Build="0">PoShMon.psm1</File>
+    <File Build="1">.gitignore</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Generate_Module_Manifest_ps1">Generate Module Manifest.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-PoShMonConfiguration_ps1">Functions\PoShMon.Configuration\New-PoShMonConfiguration.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Compare-SkippedTestsToActual_ps1">Functions\PoShMon.Monitoring.Core\Compare-SkippedTestsToActual.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Complete-TimedOutput_ps1">Functions\PoShMon.Monitoring.Core\Complete-TimedOutput.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Confirm-NoIssuesFound_ps1">Functions\PoShMon.Monitoring.Core\Confirm-NoIssuesFound.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Get-InitialOutput_ps1">Functions\PoShMon.Monitoring.Core\Get-InitialOutput.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Get-InitialOutputWithTimer_ps1">Functions\PoShMon.Monitoring.Core\Get-InitialOutputWithTimer.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Invoke-Merges_ps1">Functions\PoShMon.Monitoring.Core\Invoke-Merges.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Invoke-MonitoringCore_ps1">Functions\PoShMon.Monitoring.Core\Invoke-MonitoringCore.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Invoke-Tests_ps1">Functions\PoShMon.Monitoring.Core\Invoke-Tests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Optimize-Output_ps1">Functions\PoShMon.Monitoring.Core\Optimize-Output.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Remove-SkippedTests_ps1">Functions\PoShMon.Monitoring.Core\Remove-SkippedTests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Get-OOSTestNames_ps1">Functions\PoShMon.Monitoring.OfficeOnlineServer\Get-OOSTestNames.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Get-OOSTests_ps1">Functions\PoShMon.Monitoring.OfficeOnlineServer\Get-OOSTests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Get-ServersInOOSFarm_ps1">Functions\PoShMon.Monitoring.OfficeOnlineServer\Get-ServersInOOSFarm.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Invoke-OOSMonitoring_ps1">Functions\PoShMon.Monitoring.OfficeOnlineServer\Invoke-OOSMonitoring.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Test-OOSWindowsServiceState_ps1">Functions\PoShMon.Monitoring.OfficeOnlineServer\Test-OOSWindowsServiceState.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Get-GroupedEventLogItemsBySeverity_ps1">Functions\PoShMon.Monitoring.OS\Get-GroupedEventLogItemsBySeverity.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Get-OSMerges_ps1">Functions\PoShMon.Monitoring.OS\Get-OSMerges.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Get-OSTestNames_ps1">Functions\PoShMon.Monitoring.OS\Get-OSTestNames.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Get-OSTests_ps1">Functions\PoShMon.Monitoring.OS\Get-OSTests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Invoke-OSMonitoring_ps1">Functions\PoShMon.Monitoring.OS\Invoke-OSMonitoring.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Merge-WinOSTests_ps1">Functions\PoShMon.Monitoring.OS\Merge-WinOSTests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Test-ComputerTime_ps1">Functions\PoShMon.Monitoring.OS\Test-ComputerTime.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Test-CPULoad_ps1">Functions\PoShMon.Monitoring.OS\Test-CPULoad.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Test-DriveSpace_ps1">Functions\PoShMon.Monitoring.OS\Test-DriveSpace.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Test-EventLogs_ps1">Functions\PoShMon.Monitoring.OS\Test-EventLogs.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Test-Memory_ps1">Functions\PoShMon.Monitoring.OS\Test-Memory.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Test-ServiceState_ps1">Functions\PoShMon.Monitoring.OS\Test-ServiceState.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Test-ServiceStatePartial_ps1">Functions\PoShMon.Monitoring.OS\Test-ServiceStatePartial.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Get-ServersInSPFarm_ps1">Functions\PoShMon.Monitoring.SharePoint\Get-ServersInSPFarm.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Get-SPMerges_ps1">Functions\PoShMon.Monitoring.SharePoint\Get-SPMerges.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Get-SPResolutions_ps1">Functions\PoShMon.Monitoring.SharePoint\Get-SPResolutions.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Get-SPServerForRemoteServer_ps1">Functions\PoShMon.Monitoring.SharePoint\Get-SPServerForRemoteServer.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Get-SPTestNames_ps1">Functions\PoShMon.Monitoring.SharePoint\Get-SPTestNames.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Get-SPTests_ps1">Functions\PoShMon.Monitoring.SharePoint\Get-SPTests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Invoke-SPMonitoring_ps1">Functions\PoShMon.Monitoring.SharePoint\Invoke-SPMonitoring.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Resolve-HighCPUWhileSearchRunning_ps1">Functions\PoShMon.Monitoring.SharePoint\Resolve-HighCPUWhileSearchRunning.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Test-FarmHealth_ps1">Functions\PoShMon.Monitoring.SharePoint\Test-FarmHealth.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Test-SPDatabaseHealth_ps1">Functions\PoShMon.Monitoring.SharePoint\Test-SPDatabaseHealth.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Test-SPDistributedCacheHealth_ps1">Functions\PoShMon.Monitoring.SharePoint\Test-SPDistributedCacheHealth.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Test-SPJobHealth_ps1">Functions\PoShMon.Monitoring.SharePoint\Test-SPJobHealth.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Test-SPSearchHealth_ps1">Functions\PoShMon.Monitoring.SharePoint\Test-SPSearchHealth.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Test-SPServerStatus_ps1">Functions\PoShMon.Monitoring.SharePoint\Test-SPServerStatus.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Test-SPUPSSyncHealth_ps1">Functions\PoShMon.Monitoring.SharePoint\Test-SPUPSSyncHealth.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Test-SPWindowsServiceState_ps1">Functions\PoShMon.Monitoring.SharePoint\Test-SPWindowsServiceState.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Invoke-RemoteWebRequest_ps1">Functions\PoShMon.Monitoring.Web\Invoke-RemoteWebRequest.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Test-WebSites_ps1">Functions\PoShMon.Monitoring.Web\Test-WebSites.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Initialize-Notifications_ps1">Functions\PoShMon.Notifications.Core\Initialize-Notifications.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Initialize-RepairNotifications_ps1">Functions\PoShMon.Notifications.Core\Initialize-RepairNotifications.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Send-ExceptionNotifications_ps1">Functions\PoShMon.Notifications.Core\Send-ExceptionNotifications.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Send-MonitoringNotifications_ps1">Functions\PoShMon.Notifications.Core\Send-MonitoringNotifications.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Send-RepairNotifications_ps1">Functions\PoShMon.Notifications.Core\Send-RepairNotifications.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-EmailExceptionBody_ps1">Functions\PoShMon.Notifications.Email.Exceptions\New-EmailExceptionBody.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-EmailExceptionSubject_ps1">Functions\PoShMon.Notifications.Email.Exceptions\New-EmailExceptionSubject.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-EmailBody_ps1">Functions\PoShMon.Notifications.Email.Monitoring\New-EmailBody.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-EmailFooter_ps1">Functions\PoShMon.Notifications.Email.Monitoring\New-EmailFooter.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-EmailHeader_ps1">Functions\PoShMon.Notifications.Email.Monitoring\New-EmailHeader.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-EmailSubject_ps1">Functions\PoShMon.Notifications.Email.Monitoring\New-EmailSubject.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-OutputHeadersEmailBody_ps1">Functions\PoShMon.Notifications.Email.Monitoring\New-OutputHeadersEmailBody.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-OutputValuesEmailBody_ps1">Functions\PoShMon.Notifications.Email.Monitoring\New-OutputValuesEmailBody.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-TestOutputEmailBody_ps1">Functions\PoShMon.Notifications.Email.Monitoring\New-TestOutputEmailBody.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-EmailRepairBody_ps1">Functions\PoShMon.Notifications.Email.Repairs\New-EmailRepairBody.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-EmailRepairFooter_ps1">Functions\PoShMon.Notifications.Email.Repairs\New-EmailRepairFooter.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-EmailRepairHeader_ps1">Functions\PoShMon.Notifications.Email.Repairs\New-EmailRepairHeader.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-EmailRepairOutputBody_ps1">Functions\PoShMon.Notifications.Email.Repairs\New-EmailRepairOutputBody.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-EmailRepairSubject_ps1">Functions\PoShMon.Notifications.Email.Repairs\New-EmailRepairSubject.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Send-PoShMonEmail_ps1">Functions\PoShMon.Notifications.Email.Shared\Send-PoShMonEmail.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-O365TeamsExceptionBody_ps1">Functions\PoShMon.Notifications.O365Teams\New-O365TeamsExceptionBody.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-O365TeamsExceptionSubject_ps1">Functions\PoShMon.Notifications.O365Teams\New-O365TeamsExceptionSubject.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-O365TeamsMessageBody_ps1">Functions\PoShMon.Notifications.O365Teams\New-O365TeamsMessageBody.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-O365TeamsMessageSubject_ps1">Functions\PoShMon.Notifications.O365Teams\New-O365TeamsMessageSubject.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-O365TeamsRepairMessageBody_ps1">Functions\PoShMon.Notifications.O365Teams\New-O365TeamsRepairMessageBody.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-O365TeamsRepairMessageSubject_ps1">Functions\PoShMon.Notifications.O365Teams\New-O365TeamsRepairMessageSubject.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Send-O365TeamsMessage_ps1">Functions\PoShMon.Notifications.O365Teams\Send-O365TeamsMessage.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Invoke-OperationValidationFrameworkScan_ps1">Functions\PoShMon.Notifications.OperationValidationFramework\Invoke-OperationValidationFrameworkScan.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-PushbulletExceptionBody_ps1">Functions\PoShMon.Notifications.Pushbullet\New-PushbulletExceptionBody.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-PushbulletExceptionSubject_ps1">Functions\PoShMon.Notifications.Pushbullet\New-PushbulletExceptionSubject.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-PushbulletMessageBody_ps1">Functions\PoShMon.Notifications.Pushbullet\New-PushbulletMessageBody.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-PushbulletMessageSubject_ps1">Functions\PoShMon.Notifications.Pushbullet\New-PushbulletMessageSubject.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-PushbulletRepairMessageBody_ps1">Functions\PoShMon.Notifications.Pushbullet\New-PushbulletRepairMessageBody.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-PushbulletRepairMessageSubject_ps1">Functions\PoShMon.Notifications.Pushbullet\New-PushbulletRepairMessageSubject.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Send-PushbulletMessage_ps1">Functions\PoShMon.Notifications.Pushbullet\Send-PushbulletMessage.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Invoke-Repairs_ps1">Functions\PoShMon.SelfHealing.Core\Invoke-Repairs.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Repair-Environment_ps1">Functions\PoShMon.SelfHealing.Core\Repair-Environment.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Repair-WindowsServiceState_Sample_ps1">Functions\PoShMon.SelfHealing.Core\Repair-WindowsServiceState_Sample.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Add-Scripts_ps1">Functions\PoShMon.Shared\Add-Scripts.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Connect-PrimaryServer_ps1">Functions\PoShMon.Shared\Connect-PrimaryServer.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Connect-RemoteSession_ps1">Functions\PoShMon.Shared\Connect-RemoteSession.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Disconnect-RemoteSession_ps1">Functions\PoShMon.Shared\Disconnect-RemoteSession.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Get-VersionUpgradeInformation_ps1">Functions\PoShMon.Shared\Get-VersionUpgradeInformation.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Invoke-RemoteCommand_ps1">Functions\PoShMon.Shared\Invoke-RemoteCommand.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Update-PoShMon_ps1">Functions\PoShMon.Shared\Update-PoShMon.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Self-Healing_With_PoShMon_ps1">Samples\Self-Healing With PoShMon.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-SPMonitoring_Critical_ps1">Samples\SPMonitoring_Critical.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-SPMonitoring_Daily_ps1">Samples\SPMonitoring_Daily.ps1</File>
+    <File Build="2">Samples\Scheduled Task Definitions\SPMonitoring_Critical.xml</File>
+    <File Build="2">Samples\Scheduled Task Definitions\SPMonitoring_Daily.xml</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-appveyorCITests_ps1">Tests\appveyorCITests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-PoShMon_Tests_ps1">Tests\PoShMon.Tests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Dummy-Merger_ps1">Tests\CI\Integration\PoShMon.Monitoring.Core\Dummy-Merger.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Dummy-Resolver_ps1">Tests\CI\Integration\PoShMon.Monitoring.Core\Dummy-Resolver.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Dummy-Test_ps1">Tests\CI\Integration\PoShMon.Monitoring.Core\Dummy-Test.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Dummy-TestWithException_ps1">Tests\CI\Integration\PoShMon.Monitoring.Core\Dummy-TestWithException.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Invoke-MonitoringCore_Tests_ps1">Tests\CI\Integration\PoShMon.Monitoring.Core\Invoke-MonitoringCore.Tests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Invoke-OSMonitoring_Tests_ps1">Tests\CI\Integration\PoShMon.Monitoring.OS\Invoke-OSMonitoring.Tests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Invoke-SPMonitoring_Tests_ps1">Tests\CI\Integration\PoShMon.Monitoring.SharePoint\Invoke-SPMonitoring.Tests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Test-WebSite_Tests_ps1">Tests\CI\Integration\PoShMon.Monitoring.Web\Test-WebSite.Tests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Initialize-Notifications_Tests_ps1">Tests\CI\Integration\PoShMon.Notifications\Initialize-Notifications.Tests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Send-MonitoringNotifications_Tests_ps1">Tests\CI\Integration\PoShMon.Notifications\Send-MonitoringNotifications.Tests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Send-RepairNotifications_Tests_ps1">Tests\CI\Integration\PoShMon.Notifications\Send-RepairNotifications.Tests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-EmailBody_Tests_ps1">Tests\CI\Integration\PoShMon.Notifications.Email\New-EmailBody.Tests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Dummy-Repair_ps1">Tests\CI\Integration\PoShMon.SelfHealing.Core\Dummy-Repair.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Dummy-Repair2_ps1">Tests\CI\Integration\PoShMon.SelfHealing.Core\Dummy-Repair2.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Failing-Repair_ps1">Tests\CI\Integration\PoShMon.SelfHealing.Core\Failing-Repair.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Repair-Environment_Tests_ps1">Tests\CI\Integration\PoShMon.SelfHealing.Core\Repair-Environment.Tests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-PoShMonConfiguration_Tests_ps1">Tests\CI\Unit\PoShMon.Configuration\New-PoShMonConfiguration.Tests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-O365Teams_Tests_ps1">Tests\CI\Unit\PoShMon.Configuration\O365Teams.Tests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Invoke-OSMonitoring_Tests_ps1_2">Tests\CI\Unit\PoShMon.Monitoring.OS\Invoke-OSMonitoring.Tests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Merge-WinOSTests_Tests_ps1">Tests\CI\Unit\PoShMon.Monitoring.OS\Merge-WinOSTests.Tests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Test-ComputerTime_Tests_ps1">Tests\CI\Unit\PoShMon.Monitoring.OS\Test-ComputerTime.Tests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Test-CPULoad_Tests_ps1">Tests\CI\Unit\PoShMon.Monitoring.OS\Test-CPULoad.Tests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Test-DriveSpace_Tests_ps1">Tests\CI\Unit\PoShMon.Monitoring.OS\Test-DriveSpace.Tests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Test-EventLogs_Tests_ps1">Tests\CI\Unit\PoShMon.Monitoring.OS\Test-EventLogs.Tests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Test-Memory_Tests_ps1">Tests\CI\Unit\PoShMon.Monitoring.OS\Test-Memory.Tests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Test-ServiceState_Tests_ps1">Tests\CI\Unit\PoShMon.Monitoring.OS\Test-ServiceState.Tests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Resolve-HighCPUWhileSearchRunning_Tests_ps1">Tests\CI\Unit\PoShMon.Monitoring.SharePoint\Resolve-HighCPUWhileSearchRunning.Tests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Test-FarmHealth_Tests_ps1">Tests\CI\Unit\PoShMon.Monitoring.SharePoint\Test-FarmHealth.Tests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Test-SPDatabaseHealth_Tests_ps1">Tests\CI\Unit\PoShMon.Monitoring.SharePoint\Test-SPDatabaseHealth.Tests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Test-SPDistributedCacheHealth_Tests_ps1">Tests\CI\Unit\PoShMon.Monitoring.SharePoint\Test-SPDistributedCacheHealth.Tests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Test-SPJobHealth_Tests_ps1">Tests\CI\Unit\PoShMon.Monitoring.SharePoint\Test-SPJobHealth.Tests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Test-SPSearchHealth_Tests_ps1">Tests\CI\Unit\PoShMon.Monitoring.SharePoint\Test-SPSearchHealth.Tests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Test-SPServerStatus_Tests_ps1">Tests\CI\Unit\PoShMon.Monitoring.SharePoint\Test-SPServerStatus.Tests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Test-SPUPSSyncHealth_Tests_ps1">Tests\CI\Unit\PoShMon.Monitoring.SharePoint\Test-SPUPSSyncHealth.Tests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Test-SPWindowsServiceState_Tests_ps1">Tests\CI\Unit\PoShMon.Monitoring.SharePoint\Test-SPWindowsServiceState.Tests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Test-WebSite_Tests_ps1_2">Tests\CI\Unit\PoShMon.Monitoring.Web\Test-WebSite.Tests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-EmailFooter_Tests_ps1">Tests\CI\Unit\PoShMon.Notifications.Email.Monitoring\New-EmailFooter.Tests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-O365TeamsMessageBody_Tests_ps1">Tests\CI\Unit\PoShMon.Notifications.O365Teams\New-O365TeamsMessageBody.Tests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-PushbulletMessageBody_Tests_ps1">Tests\CI\Unit\PoShMon.Notifications.Pushbullet\New-PushbulletMessageBody.Tests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-New-EmailBody_Tests_ps1_2">Tests\Non-CI\ExternalDependencies\PoShMon.Notifications.Email.Monitoring\New-EmailBody.Tests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Send-O365TeamsMessage_Tests_ps1">Tests\Non-CI\ExternalDependencies\PoShMon.Notifications.O365Teams\Send-O365TeamsMessage.Tests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Send-PushbulletMessage_Tests_ps1">Tests\Non-CI\ExternalDependencies\PoShMon.Notifications.Pushbullet\Send-PushbulletMessage.Tests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Invoke-OperationValidationFrameworkScan_Tests_ps1">Tests\Non-CI\PoShMon.Notifications.OperationValidationFramework\Invoke-OperationValidationFrameworkScan.Tests.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Invoke-OperationValidationFrameworkScan_TestHarness_ps1">Tests\Resources\Invoke-OperationValidationFrameworkScan.TestHarness.ps1</File>
+    <File Build="1" Shared="False" ReferenceFunction="Invoke-Test-Module_ps1">Test-Module.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Email_ps1">Functions\PoShMon.Configuration\Email.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Extensibility_ps1">Functions\PoShMon.Configuration\Extensibility.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-General_ps1">Functions\PoShMon.Configuration\General.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Notifications_ps1">Functions\PoShMon.Configuration\Notifications.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-O365Teams_ps1">Functions\PoShMon.Configuration\O365Teams.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-OperatingSystem_ps1">Functions\PoShMon.Configuration\OperatingSystem.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-OperationValidationFramework_ps1">Functions\PoShMon.Configuration\OperationValidationFramework.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Pushbullet_ps1">Functions\PoShMon.Configuration\Pushbullet.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-SharePoint_ps1">Functions\PoShMon.Configuration\SharePoint.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-WebSite_ps1">Functions\PoShMon.Configuration\WebSite.ps1</File>
+    <File Build="2" Shared="True" ReferenceFunction="Invoke-Get-SPCacheHostInfo_ps1">Functions\PoShMon.Monitoring.SharePoint\Get-SPCacheHostInfo.ps1</File>
+  </Files>
+  <StartupScript>C:\Users\Jerris\PoShMon\src\Test-Module.ps1</StartupScript>
+</Project>

@@ -85,7 +85,7 @@ Describe "Resolve-HighCPUWhileSearchRunning" {
 
             $actual = Resolve-HighCPUWhileSearchRunning $poShMonConfiguration $testMonitoringOutput
         
-            Assert-VerifiableMocks
+            Assert-VerifiableMock
 
             $testMonitoringOutput.Count | Should Be 2
             $testMonitoringOutput[0].OutputValues[1].Highlight[0] | Should Be "CPULoad"
@@ -151,7 +151,7 @@ Describe "Resolve-HighCPUWhileSearchRunning" {
 
             $actual = Resolve-HighCPUWhileSearchRunning $poShMonConfiguration $testMonitoringOutput
         
-            Assert-VerifiableMocks
+            Assert-VerifiableMock
 
             $testMonitoringOutput.Count | Should Be 2
             $testMonitoringOutput[0].OutputValues[1].Highlight[0] | Should Be "CPULoad"
@@ -217,7 +217,7 @@ Describe "Resolve-HighCPUWhileSearchRunning" {
 
             $actual = Resolve-HighCPUWhileSearchRunning $poShMonConfiguration $testMonitoringOutput
         
-            Assert-VerifiableMocks
+            Assert-VerifiableMock
 
             $testMonitoringOutput.Count | Should Be 2
             $testMonitoringOutput[0].OutputValues[1].Highlight.Count | Should Be 0

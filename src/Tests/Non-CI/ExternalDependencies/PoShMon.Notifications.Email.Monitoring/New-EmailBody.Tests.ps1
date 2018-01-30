@@ -2,8 +2,8 @@ $rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPa
 Remove-Module PoShMon -ErrorAction SilentlyContinue
 Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 
-Describe "New-EmailBody" {
-    It "Should return a the correct html for given test output"  {
+Describe "New-HtmlBody" {
+    It "Should return a the correct html for given test output"  -Skip {
 
         $poShMonConfiguration = New-PoShMonConfiguration {
                         General `
@@ -80,10 +80,18 @@ Describe "New-EmailBody" {
 
         $totalElapsedTime = (Get-Date).Subtract((Get-Date).AddMinutes(-3))
 
-        $currentVersion = (Get-Module PoShmon).Version.ToString()
-        $expected = '<head><title>SharePoint Monitoring Report</title></head><body><h1>SharePoint Monitoring Report</h1><p><h1>Grouped Test (60.00 Seconds)</h1><table border="1"><thead><tr><th align="left" colspan="2"><h2>Server 1</h2></th></tr><tr><th align="left">Message</th><th align="left">Event ID</th></tr></thead><tbody><tr><td valign="top" align="left">Message 1</td><td valign="top" align="right">123</td></tr><tr><td valign="top" align="left">Message 2</td><td valign="top" align="right">456</td></tr></tbody><thead><tr><th align="left" colspan="2"><h2>Server 2</h2></th></tr><tr><th align="left">Message</th><th align="left">Event ID</th></tr></thead><tbody><tr><td valign="top" align="left">Message 3</td><td valign="top" align="right">789</td></tr></tbody></table><p><h1>Ungrouped Test (60.00 Seconds)</h1><table border="1"><thead><tr><th align="left">State</th><th align="left">Component</th></tr></thead><tbody><tr><td valign="top" align="left">State 1</td><td valign="top" align="right">123</td></tr><tr><td valign="top" align="left">State 2</td><td valign="top" align="right">456</td></tr></tbody></table><p>Skipped Tests: SPServerStatus, WindowsServiceState, SPFailingTimerJobs, SPDatabaseHealth, SPSearchHealth, SPDistributedCacheHealth, WebTests</p><p>Total Elapsed Time (Seconds): 180.00 (3.00 Minutes)</p><p>PoShMon Version: ' + $currentVersion + '</p></body>'
+        Mock -CommandName Get-Module -Verifiable -MockWith {
+            return @(
+                        [pscustomobject]@{
+                            version = "1.2.3"
+                        }
+                    )
+        }
 
-        $actual = New-EmailBody $poShMonConfiguration "All" $testMonitoringOutput $totalElapsedTime -Verbose
+        #$currentVersion = (Get-Module PoShmon).Version.ToString()
+        $expected = '<head><title>SharePoint Monitoring Report</title></head><body><h1>SharePoint Monitoring Report</h1><p><h1>Grouped Test (60.00 Seconds)</h1><table border="1"><thead><tr><th align="left" colspan="2"><h2>Server 1</h2></th></tr><tr><th align="left">Message</th><th align="left">Event ID</th></tr></thead><tbody><tr><td valign="top" align="left">Message 1</td><td valign="top" align="right">123</td></tr><tr><td valign="top" align="left">Message 2</td><td valign="top" align="right">456</td></tr></tbody><thead><tr><th align="left" colspan="2"><h2>Server 2</h2></th></tr><tr><th align="left">Message</th><th align="left">Event ID</th></tr></thead><tbody><tr><td valign="top" align="left">Message 3</td><td valign="top" align="right">789</td></tr></tbody></table><p><h1>Ungrouped Test (60.00 Seconds)</h1><table border="1"><thead><tr><th align="left">State</th><th align="left">Component</th></tr></thead><tbody><tr><td valign="top" align="left">State 1</td><td valign="top" align="right">123</td></tr><tr><td valign="top" align="left">State 2</td><td valign="top" align="right">456</td></tr></tbody></table><p>Skipped Tests: SPServerStatus, WindowsServiceState, SPFailingTimerJobs, SPDatabaseHealth, SPSearchHealth, SPDistributedCacheHealth, WebTests</p><p>Total Elapsed Time (Seconds): 180.00 (3.00 Minutes)</p><p>PoShMon Version: 1.2.3</p></body>'
+
+        $actual = New-HtmlBody $poShMonConfiguration "All" $testMonitoringOutput $totalElapsedTime -Verbose
 
         $htmlFile = "C:\Temp\emailhtml.htm"
         $actual | Out-File $htmlFile -Force
@@ -93,7 +101,7 @@ Describe "New-EmailBody" {
         #$actual | Should Be $expected
     }
 
-    It "Should return a the correct html for given test output [if the output structure changes]" -Skip {
+    It "Should return a the correct html for given test output [if the output structure changes]" {
 
         $poShMonConfiguration = New-PoShMonConfiguration {
                         General `
@@ -151,10 +159,22 @@ Describe "New-EmailBody" {
 
         $totalElapsedTime = (Get-Date).Subtract((Get-Date).AddMinutes(-3))
 
-        $currentVersion = (Get-Module PoShmon).Version.ToString()
-        $expected = '<head><title>SharePoint Monitoring Report</title></head><body><h1>SharePoint Monitoring Report</h1><p><h1>Grouped Test (60.00 Seconds)</h1><table border="1"><thead><tr><th align="left" colspan="2"><h2>Server 1</h2></th></tr><tr><th align="left">Message</th><th align="left">Event ID</th></tr></thead><tbody><tr><td valign="top" align="left">Message 1</td><td valign="top" align="right">123</td></tr><tr><td valign="top" align="left">Message 2</td><td valign="top" align="right">456</td></tr></tbody><thead><tr><th align="left" colspan="2"><h2>Server 2</h2></th></tr><tr><th align="left">Message</th><th align="left">Event ID</th></tr></thead><tbody><tr><td valign="top" align="left">Message 3</td><td valign="top" align="right">789</td></tr></tbody></table><p><h1>Ungrouped Test (60.00 Seconds)</h1><table border="1"><thead><tr><th align="left">State</th><th align="left">Component</th></tr></thead><tbody><tr><td valign="top" align="left">State 1</td><td valign="top" align="right">123</td></tr><tr><td valign="top" align="left">State 2</td><td valign="top" align="right">456</td></tr></tbody></table><p>Skipped Tests: SPServerStatus, WindowsServiceState, SPFailingTimerJobs, SPDatabaseHealth, SPSearchHealth, SPDistributedCacheHealth, WebTests</p><p>Total Elapsed Time (Seconds): 180.00 (3.00 Minutes)</p><p>PoShMon Version: ' + $currentVersion + '</p></body>'
+        Mock -CommandName Get-Module -Verifiable -MockWith {
+            return @(
+                        [pscustomobject]@{
+                            version = "1.2.3"
+                        }
+                    )
+        }
 
-        $actual = New-EmailBody $poShMonConfiguration "All" $testMonitoringOutput $totalElapsedTime -Verbose
+        $expected = '<head><title>SharePoint Monitoring Report</title></head><body><h1>SharePoint Monitoring Report</h1><p><h1>Grouped Test (60.00 Seconds)</h1><table border="1"><thead><tr><th align="left" colspan="2"><h2>Server 1</h2></th></tr><tr><th align="left">Message</th><th align="left">Event ID</th></tr></thead><tbody><tr><td valign="top" align="left">Message 1</td><td valign="top" align="right">123</td></tr><tr><td valign="top" align="left">Message 2</td><td valign="top" align="right">456</td></tr></tbody><thead><tr><th align="left" colspan="2"><h2>Server 2</h2></th></tr><tr><th align="left">Message</th><th align="left">Event ID</th></tr></thead><tbody><tr><td valign="top" align="left">Message 3</td><td valign="top" align="right">789</td></tr></tbody></table><p><h1>Ungrouped Test (60.00 Seconds)</h1><table border="1"><thead><tr><th align="left">State</th><th align="left">Component</th></tr></thead><tbody><tr><td valign="top" align="left">State 1</td><td valign="top" align="right">123</td></tr><tr><td valign="top" align="left">State 2</td><td valign="top" align="right">456</td></tr></tbody></table><p>Skipped Tests: SPServerStatus, WindowsServiceState, SPFailingTimerJobs, SPDatabaseHealth, SPSearchHealth, SPDistributedCacheHealth, WebTests</p><p>Total Elapsed Time (Seconds): 180.00 (3.00 Minutes)</p><p>PoShMon Version: 1.2.3</p></body>'
+
+        $actual = New-HtmlBody $poShMonConfiguration "All" $testMonitoringOutput $totalElapsedTime -Verbose
+
+        $htmlFile = "C:\Temp\emailhtml.htm"
+        $actual | Out-File $htmlFile -Force
+
+        Start-Process $htmlFile
 
         $actual | Should Be $expected
     }
@@ -200,7 +220,7 @@ Describe "New-EmailBody" {
         $currentVersion = (Get-Module PoShmon).Version.ToString()
         $expected = '<head><title>SharePoint Monitoring Report</title></head><body><h1>SharePoint Monitoring Report</h1><p><h1>Test1 (60.00 Seconds)</h1><table border="1"><thead><tr><th align="left">State</th><th align="left">Component</th></tr></thead><tbody><tr><td valign="top" align="left">State 1</td><td valign="top" align="right">123</td></tr><tr><td valign="top" align="left">State 2</td><td valign="top" align="right">456</td></tr></tbody></table><p><h1>Test2 - Failed</h1><table border="1"><tbody><tr><td>An Exception Occurred</td></tr><tr><td>System.Exception: Something went wrong</td></tr></tbody></table><p>Skipped Tests: SPServerStatus, WindowsServiceState, SPFailingTimerJobs, SPDatabaseHealth, SPSearchHealth, SPDistributedCacheHealth, WebTests</p><p>Total Elapsed Time (Seconds): 180.00 (3.00 Minutes)</p><p>PoShMon Version: ' + $currentVersion + '</p></body>'
 
-        $actual = New-EmailBody $poShMonConfiguration "All" $testMonitoringOutput $totalElapsedTime -Verbose
+        $actual = New-HtmlBody $poShMonConfiguration "All" $testMonitoringOutput $totalElapsedTime -Verbose
 
         $actual | Should Be $expected
     }

@@ -58,7 +58,7 @@ Describe "Invoke-OSMonitoring" {
 
         $actual = Invoke-OSMonitoring $poShMonConfiguration -Verbose
 
-        Assert-VerifiableMocks
+        Assert-VerifiableMock
     }
 }
 
@@ -67,46 +67,8 @@ Describe "Invoke-OSMonitoring2" {
 
         $poShMonConfiguration = New-PoShMonConfiguration {}
         
-        <#
-        Mock -CommandName Invoke-Tests -ModuleName PoShMon -Verifiable -MockWith {
-            Begin
-            {
-                $outputValues = @()
-            }
-
-            Process
-            {
-                foreach ($test in $TestToRuns)
-                {
-                    $outputValues += @{
-                                    "SectionHeader" = "Mock Test: $test"
-                                    "OutputHeaders" = @{ 'Item1' = 'Item 1'; }
-                                    "NoIssuesFound" = $false
-                                    "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
-                                    "OutputValues" = @(
-                                                        @{
-                                                            "Item1" = 123
-                                                            "State" = "State 1"
-                                                        }
-                                                    )
-                                }
-                }
-            }
-    
-            End
-            {
-                return $outputValues
-            }
-        }
-        Mock -CommandName Initialize-Notifications -ModuleName PoShMon -Verifiable -MockWith {
-            Write-Verbose "Tests Run:"
-            $TestOutputValues | % { Write-Verbose "`t$($_.SectionHeader)" }
-            return
-        }
-        #>
-        
-        $actual = Invoke-OSMonitoring $poShMonConfiguration -Verbose
-
-        Assert-VerifiableMocks
+		$actual = Invoke-OSMonitoring $poShMonConfiguration -Verbose
+		
+		0 | Should Not Be $null 
     }
 }

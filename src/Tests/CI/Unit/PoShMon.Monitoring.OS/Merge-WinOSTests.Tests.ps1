@@ -5,6 +5,8 @@ Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 Describe "Merge-WinOSTests" {
     It "Should return a matching output structure" {
 
+        $currentTime = Get-Date
+
         $poShMonConfiguration = New-PoShMonConfiguration {
                     General -EnvironmentName 'SharePoint' -PrimaryServerName 'Server1'
                 }
@@ -14,7 +16,7 @@ Describe "Merge-WinOSTests" {
                 "SectionHeader" = "Server CPU Load Review"
                 "OutputHeaders" = [ordered]@{ 'ServerName' = 'Server Name'; 'CPULoad' = 'CPU Load (%)' }
                 "NoIssuesFound" = $true
-                "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
+                "ElapsedTime" = $currentTime.Subtract($currentTime.AddMinutes(-1))
                 "OutputValues" = @(
                                     [pscustomobject]@{
                                         "ServerName" = "Server1"
@@ -30,7 +32,7 @@ Describe "Merge-WinOSTests" {
                 "SectionHeader" = "Memory Review"
                 "OutputHeaders" = [ordered]@{ 'ServerName' = 'Server Name'; 'TotalMemory' = 'Total Memory (GB)'; 'FreeMemory' = 'Free Memory (GB) (%)' }
                 "NoIssuesFound" = $false
-                "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
+                "ElapsedTime" = $currentTime.Subtract($currentTime.AddMinutes(-1))
                 "OutputValues" = @(
                                     [pscustomobject]@{
                                         "ServerName" = "Server1"
@@ -50,7 +52,7 @@ Describe "Merge-WinOSTests" {
                 "SectionHeader" = "Another Test"
                 "OutputHeaders" = [ordered]@{ 'ComponentName' = 'Component'; 'State' = 'State' }
                 "NoIssuesFound" = $false
-                "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
+                "ElapsedTime" = $currentTime.Subtract($currentTime.AddMinutes(-1))
                 "OutputValues" = @(
                                     @{
                                         "ComponentName" = 123
@@ -89,14 +91,14 @@ Describe "Merge-WinOSTests" {
                 }
 
         $currentTime = Get-Date
-        $lastBootTime = (Get-Date).AddDays(-1)
+        $lastBootTime = $currentTime.AddDays(-1)
 
         $testMonitoringOutput = [System.Collections.ArrayList]@(
             @{
                 "SectionHeader" = "Server CPU Load Review"
                 "OutputHeaders" = [ordered]@{ 'ServerName' = 'Server Name'; 'CPULoad' = 'CPU Load (%)' }
                 "NoIssuesFound" = $true
-                "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
+                "ElapsedTime" = $currentTime.Subtract($currentTime.AddMinutes(-1))
                 "OutputValues" = @(
                                     [pscustomobject]@{
                                         "ServerName" = "Server1"
@@ -112,7 +114,7 @@ Describe "Merge-WinOSTests" {
                 "SectionHeader" = "Memory Review"
                 "OutputHeaders" = [ordered]@{ 'ServerName' = 'Server Name'; 'TotalMemory' = 'Total Memory (GB)'; 'FreeMemory' = 'Free Memory (GB) (%)' }
                 "NoIssuesFound" = $false
-                "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-2))
+                "ElapsedTime" = $currentTime.Subtract($currentTime.AddMinutes(-2))
                 "OutputValues" = @(
                                     [pscustomobject]@{
                                         "ServerName" = "Server1"
@@ -132,7 +134,7 @@ Describe "Merge-WinOSTests" {
                 "SectionHeader" = "Server Clock Review"
                 "OutputHeaders" = [ordered]@{ 'ServerName' = 'Server Name'; 'CurrentTime' = 'Current Time'; 'LastBootUptime' = 'Last Boot Time'; }
                 "NoIssuesFound" = $false
-                "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-3))
+                "ElapsedTime" = $currentTime.Subtract($currentTime.AddMinutes(-3))
                 "OutputValues" = @(
                                     [pscustomobject]@{
                                         "ServerName" = "Server1"
@@ -152,7 +154,7 @@ Describe "Merge-WinOSTests" {
                 "SectionHeader" = "Another Test"
                 "OutputHeaders" = [ordered]@{ 'ComponentName' = 'Component'; 'State' = 'State' }
                 "NoIssuesFound" = $false
-                "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
+                "ElapsedTime" = $currentTime.Subtract($currentTime.AddMinutes(-1))
                 "OutputValues" = @(
                                     [pscustomobject]@{
                                         "ComponentName" = 123
@@ -199,14 +201,14 @@ Describe "Merge-WinOSTests" {
                 }
 
         $currentTime = Get-Date
-        $lastBootTime = (Get-Date).AddDays(-1)
+        $lastBootTime = $currentTime.AddDays(-1)
 
         $testMonitoringOutput = [System.Collections.ArrayList]@(
             @{
                 "SectionHeader" = "Server CPU Load Review"
                 "OutputHeaders" = [ordered]@{ 'ServerName' = 'Server Name'; 'CPULoad' = 'CPU Load (%)' }
                 "NoIssuesFound" = $true
-                "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
+                "ElapsedTime" = $currentTime.Subtract($currentTime.AddMinutes(-1))
                 "OutputValues" = @(
                                     [pscustomobject]@{
                                         "ServerName" = "Server1"
@@ -224,7 +226,7 @@ Describe "Merge-WinOSTests" {
                 "SectionHeader" = "Memory Review"
                 "OutputHeaders" = [ordered]@{ 'ServerName' = 'Server Name'; 'TotalMemory' = 'Total Memory (GB)'; 'FreeMemory' = 'Free Memory (GB) (%)' }
                 "NoIssuesFound" = $true
-                "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-2))
+                "ElapsedTime" = $currentTime.Subtract($currentTime.AddMinutes(-2))
                 "OutputValues" = @(
                                     [pscustomobject]@{
                                         "ServerName" = "Server1"
@@ -244,7 +246,7 @@ Describe "Merge-WinOSTests" {
                 "SectionHeader" = "Server Clock Review"
                 "OutputHeaders" = [ordered]@{ 'ServerName' = 'Server Name'; 'CurrentTime' = 'Current Time'; 'LastBootUptime' = 'Last Boot Time'; }
                 "NoIssuesFound" = $true
-                "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-3))
+                "ElapsedTime" = $currentTime.Subtract($currentTime.AddMinutes(-3))
                 "OutputValues" = @(
                                     [pscustomobject]@{
                                         "ServerName" = "Server1"
@@ -264,7 +266,7 @@ Describe "Merge-WinOSTests" {
                 "SectionHeader" = "Another Test"
                 "OutputHeaders" = [ordered]@{ 'ComponentName' = 'Component'; 'State' = 'State' }
                 "NoIssuesFound" = $false
-                "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
+                "ElapsedTime" = $currentTime.Subtract($currentTime.AddMinutes(-1))
                 "OutputValues" = @(
                                     [pscustomobject]@{
                                         "ComponentName" = 123
@@ -308,14 +310,14 @@ Describe "Merge-WinOSTests" {
                 }
 
         $currentTime = Get-Date
-        $lastBootTime = (Get-Date).AddDays(-1)
+        $lastBootTime = $currentTime.AddDays(-1)
 
         $testMonitoringOutput = [System.Collections.ArrayList]@(
             @{
                 "SectionHeader" = "Memory Review"
                 "OutputHeaders" = [ordered]@{ 'ServerName' = 'Server Name'; 'TotalMemory' = 'Total Memory (GB)'; 'FreeMemory' = 'Free Memory (GB) (%)' }
                 "NoIssuesFound" = $true
-                "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-20))
+                "ElapsedTime" = $currentTime.Subtract($currentTime.AddMinutes(-20))
                 "OutputValues" = @(
                                     [pscustomobject]@{
                                         "ServerName" = "Server1"
@@ -335,7 +337,7 @@ Describe "Merge-WinOSTests" {
                 "SectionHeader" = "Another Test"
                 "OutputHeaders" = [ordered]@{ 'ComponentName' = 'Component'; 'State' = 'State' }
                 "NoIssuesFound" = $false
-                "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
+                "ElapsedTime" = $currentTime.Subtract($currentTime.AddMinutes(-1))
                 "OutputValues" = @(
                                     [pscustomobject]@{
                                         "ComponentName" = 123

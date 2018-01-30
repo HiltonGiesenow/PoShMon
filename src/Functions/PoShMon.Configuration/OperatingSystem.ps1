@@ -1,4 +1,4 @@
-Function OperatingSystem
+Function New-OSConfig
 {
     [CmdletBinding(DefaultParameterSetName="All")]
     param(

@@ -673,7 +673,7 @@ Describe "Test-SPUPSSyncHealth" {
 
             $actual = Test-SPUPSSyncHealth $poShMonConfiguration
         
-            Assert-VerifiableMocks
+            Assert-VerifiableMock
 
             $actual.NoIssuesFound | Should Be $true
         }
@@ -831,7 +831,7 @@ Describe "Test-SPUPSSyncHealth" {
 
             $actual = Test-SPUPSSyncHealth $poShMonConfiguration -WarningAction SilentlyContinue
         
-            Assert-VerifiableMocks
+            Assert-VerifiableMock
 
             $actual.NoIssuesFound | Should Be $false
 
@@ -1239,7 +1239,7 @@ Describe "Test-SPUPSSyncHealth" {
 
             $actual = Test-SPUPSSyncHealth $poShMonConfiguration -WarningAction SilentlyContinue
         
-            Assert-VerifiableMocks
+            Assert-VerifiableMock
 
             $actual.NoIssuesFound | Should Be $false
 
