@@ -290,6 +290,27 @@ Describe "Test-CPULoad-Scope2" {
 }
 Describe "Test-CPULoad-Scope3" {
     InModuleScope PoShMon {
+
+        class CounterSampleMock {
+            [string]$Path
+            [double]$CookedValue
+
+            CounterSampleMock ([string]$NewPath, [double]$NewCookedValue) {
+                $this.Path = $NewPath;
+                $this.CookedValue = $NewCookedValue;
+            }
+        }
+
+        class CounterResultsMock {
+            [datetime]$Timestamp
+            [CounterSampleMock[]]$CounterSamples
+
+            CounterResultsMock ([datetime]$NewTimestamp, [CounterSampleMock[]]$NewCounterSamples) {
+                $this.Timestamp = $NewTimestamp;
+                $this.CounterSamples = $NewCounterSamples;
+            }
+        }
+
         It "Should only call 'Get-Counter' with 'Computername' parameter for computers other than the current machine - 3 in total" {
         
             Mock -CommandName Get-Counter -ParameterFilter { $Computername -eq $null } -MockWith {
