@@ -35,8 +35,8 @@ Describe "Test-CPULoad" {
         It "Should return a matching output structure" {
     
             Mock -CommandName Get-Counter -MockWith {
-                $sample1 = [CounterSampleMock]::new("\\Server1\\processor(_total)\% processor time", 12.345)
-                $sample2 = [CounterSampleMock]::new("\\Server1\\processor(_total)\% processor time", 56.789)
+                $sample1 = [CounterSampleMock]::new("\\Server1\processor(_total)\% processor time", 12.345)
+                $sample2 = [CounterSampleMock]::new("\\Server1\processor(_total)\% processor time", 56.789)
                 $samples = @($sample1, $sample2)
                 $timestamp = Get-Date
                 return [CounterResultsMock]::new($timestamp, $samples)
@@ -70,8 +70,8 @@ Describe "Test-CPULoad" {
         It "Should write the expected Verbose output" {
     
             Mock -CommandName Get-Counter -MockWith {
-                $sample1 = [CounterSampleMock]::new("\\Server1\\processor(_total)\% processor time", 12.345)
-                $sample2 = [CounterSampleMock]::new("\\Server2\\processor(_total)\% processor time", 56.789)
+                $sample1 = [CounterSampleMock]::new("\\Server1\processor(_total)\% processor time", 12.345)
+                $sample2 = [CounterSampleMock]::new("\\Server2\processor(_total)\% processor time", 56.789)
                 $samples = @($sample1, $sample2)
                 $timestamp = Get-Date
                 return [CounterResultsMock]::new($timestamp, $samples)
@@ -95,8 +95,8 @@ Describe "Test-CPULoad" {
         It "Should write the expected Warning output" {
     
             Mock -CommandName Get-Counter -MockWith {
-                $sample1 = [CounterSampleMock]::new("\\Server1\\processor(_total)\% processor time", 12.345)
-                $sample2 = [CounterSampleMock]::new("\\Server1\\processor(_total)\% processor time", 97.789)
+                $sample1 = [CounterSampleMock]::new("\\Server1\processor(_total)\% processor time", 12.345)
+                $sample2 = [CounterSampleMock]::new("\\Server1\processor(_total)\% processor time", 97.789)
                 $samples = @($sample1, $sample2)
                 $timestamp = Get-Date
                 return [CounterResultsMock]::new($timestamp, $samples)
@@ -116,8 +116,8 @@ Describe "Test-CPULoad" {
         It "Should not warn on CPU below threshold" {
 
             Mock -CommandName Get-Counter -MockWith {
-                $sample1 = [CounterSampleMock]::new("\\Server1\\processor(_total)\% processor time", 12.345)
-                $sample2 = [CounterSampleMock]::new("\\Server1\\processor(_total)\% processor time", 56.789)
+                $sample1 = [CounterSampleMock]::new("\\Server1\processor(_total)\% processor time", 12.345)
+                $sample2 = [CounterSampleMock]::new("\\Server1\processor(_total)\% processor time", 56.789)
                 $samples = @($sample1, $sample2)
                 $timestamp = Get-Date
                 return [CounterResultsMock]::new($timestamp, $samples)
@@ -138,8 +138,8 @@ Describe "Test-CPULoad" {
         It "Should warn on CPU above threshold" {
         
             Mock -CommandName Get-Counter -MockWith {
-                $sample1 = [CounterSampleMock]::new("\\Server1\\processor(_total)\% processor time", 12.345)
-                $sample2 = [CounterSampleMock]::new("\\Server1\\processor(_total)\% processor time", 97.789)
+                $sample1 = [CounterSampleMock]::new("\\Server1\processor(_total)\% processor time", 12.345)
+                $sample2 = [CounterSampleMock]::new("\\Server1\processor(_total)\% processor time", 97.789)
                 $samples = @($sample1, $sample2)
                 $timestamp = Get-Date
                 return [CounterResultsMock]::new($timestamp, $samples)
@@ -160,8 +160,8 @@ Describe "Test-CPULoad" {
         It "Should use the configuration threshold properly" {
         
             Mock -CommandName Get-Counter -MockWith {
-                $sample1 = [CounterSampleMock]::new("\\Server1\\processor(_total)\% processor time", 12.345)
-                $sample2 = [CounterSampleMock]::new("\\Server1\\processor(_total)\% processor time", 57.789)
+                $sample1 = [CounterSampleMock]::new("\\Server1\processor(_total)\% processor time", 12.345)
+                $sample2 = [CounterSampleMock]::new("\\Server1\processor(_total)\% processor time", 57.789)
                 $samples = @($sample1, $sample2)
                 $timestamp = Get-Date
                 return [CounterResultsMock]::new($timestamp, $samples)
@@ -262,7 +262,7 @@ Describe "Test-CPULoad-Scope2" {
         
             Mock -CommandName Get-Counter -ParameterFilter { $Computername -eq $null } -MockWith {
 				if ($Computername -eq $null) { $Computername = $Env:COMPUTERNAME }
-                $sample1 = [CounterSampleMock]::new("\\$Computername\\processor(_total)\% processor time", 12.345)
+                $sample1 = [CounterSampleMock]::new("\\$Computername\processor(_total)\% processor time", 12.345)
                 $timestamp = Get-Date
                 return [CounterResultsMock]::new($timestamp, $sample1)
             }
@@ -283,15 +283,18 @@ Describe "Test-CPULoad-Scope2" {
         
 			$actual.OutputValues.Count | Should Be 2
 
-			Assert-MockCalled -CommandName Get-Counter -ParameterFilter { $Computername -eq $null } -Times 1
-			Assert-MockCalled -CommandName Get-Counter -ParameterFilter { $Computername -eq "TestOtherServer" } -Times 1
+			Assert-MockCalled -CommandName Get-Counter -ParameterFilter { $Computername -eq $null } -Times 1 -Exactly
+			Assert-MockCalled -CommandName Get-Counter -ParameterFilter { $Computername -eq "TestOtherServer" } -Times 1 -Exactly
 		}
-
+	}
+}
+Describe "Test-CPULoad-Scope3" {
+    InModuleScope PoShMon {
         It "Should only call 'Get-Counter' with 'Computername' parameter for computers other than the current machine - 3 in total" {
         
             Mock -CommandName Get-Counter -ParameterFilter { $Computername -eq $null } -MockWith {
 				if ($Computername -eq $null) { $Computername = $Env:COMPUTERNAME }
-                $sample1 = [CounterSampleMock]::new("\\$Computername\\processor(_total)\% processor time", 12.345)
+                $sample1 = [CounterSampleMock]::new("\\$Computername\processor(_total)\% processor time", 12.345)
                 $timestamp = Get-Date
                 return [CounterResultsMock]::new($timestamp, $sample1)
             }
@@ -314,12 +317,12 @@ Describe "Test-CPULoad-Scope2" {
         
 			$actual.OutputValues.Count | Should Be 3
 
-			Assert-MockCalled -CommandName Get-Counter -ParameterFilter { $Computername -eq $null } -Times 1
-			Assert-MockCalled -CommandName Get-Counter -ParameterFilter { $Computername -eq "TestOtherServer1" -or $Computername -eq "TestOtherServer2" } -Times 1
+			Assert-MockCalled -CommandName Get-Counter -ParameterFilter { $Computername -eq $null } -Times 1 -Exactly
+			Assert-MockCalled -CommandName Get-Counter -ParameterFilter { $Computername -eq "TestOtherServer1" -or $Computername -eq "TestOtherServer2" } -Times 1 -Exactly
 		}
 	}
 }
-Describe "Test-CPULoad-Scope3" {
+Describe "Test-CPULoad-Scope4" {
     InModuleScope PoShMon {
 
         class CounterSampleMock {
@@ -346,7 +349,7 @@ Describe "Test-CPULoad-Scope3" {
         
             Mock -CommandName Get-Counter -ParameterFilter { $Computername -eq $null } -MockWith {
 				if ($Computername -eq $null) { $Computername = $Env:COMPUTERNAME }
-                $sample1 = [CounterSampleMock]::new("\\$Computername\\processor(_total)\% processor time", 12.345)
+                $sample1 = [CounterSampleMock]::new("\\$Computername\processor(_total)\% processor time", 12.345)
                 $timestamp = Get-Date
                 return [CounterResultsMock]::new($timestamp, $sample1)
             }
