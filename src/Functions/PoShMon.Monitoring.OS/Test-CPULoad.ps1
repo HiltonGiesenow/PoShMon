@@ -25,8 +25,11 @@ Function Test-CPULoad
         #    { $serverName = "localhost" }
         #else
 		#    { $serverName = $counterResult.Path.Substring(2, $counterResult.Path.LastIndexOf("\\") - 2).ToUpper() }
-		$serverName = $counterResult.Path.Substring(2, $counterResult.Path.LastIndexOf("\\") - 2).ToUpper()
-        $cpuLoad = $counterResult.CookedValue
+		if ($counterResult.Path.Substring(2).LastIndexOf("\\") -gt -1)
+			{ $serverName = $counterResult.Path.Substring(2, $counterResult.Path.LastIndexOf("\\") - 2).ToUpper() }
+		else
+			{ $serverName = $counterResult.Path.Substring(2, $counterResult.Path.Substring(2).IndexOf("\")).ToUpper() }
+		$cpuLoad = $counterResult.CookedValue
         $highlight = @()
 
         $cpuPercentValue = $(($cpuLoad / 100).ToString("00%"))
