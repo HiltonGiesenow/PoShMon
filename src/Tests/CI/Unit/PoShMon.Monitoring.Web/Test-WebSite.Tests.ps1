@@ -51,7 +51,7 @@ Describe "Test-Website" {
 
             $actual = Test-WebSites $poShMonConfiguration
 
-            Assert-VerifiableMock
+            Assert-VerifiableMocks
 
             $actual.Keys.Count | Should Be 5
             $actual.ContainsKey("NoIssuesFound") | Should Be $true
@@ -107,10 +107,10 @@ Describe "Test-Website" {
 
         It "Should test directly and on each server" {
 
-            Mock -CommandName Invoke-WebRequest -Verifiable -MockWith {
+            Mock -CommandName Invoke-WebRequest -MockWith {
                 return [WebRequestMock]::new(200, "OK", "Some Text")
             }
-            Mock -CommandName Invoke-RemoteWebRequest -ModuleName PoShMon -Verifiable -MockWith {
+            Mock -CommandName Invoke-RemoteWebRequest -ModuleName PoShMon -MockWith {
                 return [RemoteWebRequestMock]::new(200, "OK", "Some Text", $serverName)
             }
 
@@ -125,7 +125,7 @@ Describe "Test-Website" {
 
             $actual = Test-WebSites $poShMonConfiguration
 
-            Assert-VerifiableMock
+            Assert-VerifiableMocks
 
             $actual.NoIssuesFound | Should Be $true
             $actual.OutputValues.Count | Should Be 3
@@ -158,7 +158,7 @@ Describe "Test-Website" {
 
             $actual = Test-WebSites $poShMonConfiguration
 
-            Assert-VerifiableMock
+            Assert-VerifiableMocks
 
             $actual.NoIssuesFound | Should Be $false
             $actual.OutputValues[1].Highlight | Should Be 'Outcome'
@@ -189,7 +189,7 @@ Describe "Test-Website" {
 
             $actual = Test-WebSites $poShMonConfiguration
 
-            Assert-VerifiableMock
+            Assert-VerifiableMocks
 
             $actual.NoIssuesFound | Should Be $false
             $actual.OutputValues[0].Highlight.Count | Should Be 0
@@ -198,39 +198,6 @@ Describe "Test-Website" {
             $actual.OutputValues[1].Outcome | Should Be 'Specified Page Content Found'
             $actual.OutputValues[2].Highlight | Should Be 'Outcome'
             $actual.OutputValues[2].Outcome | Should Be 'Specified Page Content Not Found'
-		}
-	}
-}
-Describe "Test-Website-NewScope" {
-    InModuleScope PoShMon {
-		It "Should test Direct on local server (if run locally) and remotely on others" {
-
-            Mock -CommandName Invoke-WebRequest -MockWith  {
-                return [WebRequestMock]::new(200, "OK", "Some Text")
-            }
-            Mock -CommandName Invoke-RemoteWebRequest -ModuleName PoShMon -MockWith {
-                return [RemoteWebRequestMock]::new(200, "OK", "Some Text", $serverName)
-            }
-
-            $poShMonConfiguration = New-PoShMonConfiguration {
-                    General `
-                        -ServerNames $env:COMPUTERNAME,'Server2','Server3'
-                    WebSite `
-                        -WebsiteDetails @{
-                                            "http://my.website.com" = "Some Text"
-                                         }
-                }
-
-            $actual = Test-WebSites $poShMonConfiguration
-
-            $actual.NoIssuesFound | Should Be $true
-            $actual.OutputValues.Count | Should Be 3
-            $actual.OutputValues[0].ServerName | Should Be '(Direct)'
-			$actual.OutputValues[1].ServerName | Should Be 'Server2'
-			$actual.OutputValues[2].ServerName | Should Be 'Server3'
-			
-			Assert-MockCalled -CommandName Invoke-WebRequest -Times 1 -Exactly
-			Assert-MockCalled -CommandName Invoke-RemoteWebRequest -Times 2 -Exactly 
         }
     }
 }

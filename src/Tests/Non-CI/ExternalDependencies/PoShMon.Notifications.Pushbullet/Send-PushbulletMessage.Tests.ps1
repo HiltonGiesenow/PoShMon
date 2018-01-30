@@ -76,7 +76,7 @@ if (Test-Path $pushbulletConfigPath) # only run this test if there's a config to
 
             $totalElapsedTime = (Get-Date).Subtract((Get-Date).AddMinutes(-3))
 
-            $actual = Send-PushbulletMessage $poShMonConfiguration $poShMonConfiguration.Notifications.Sinks "Test Subject" "Test Body"
+            $actual = Send-PushbulletMessage $poShMonConfiguration $poShMonConfiguration.Notifications.Sinks "subject" "body message"
 
         }
 

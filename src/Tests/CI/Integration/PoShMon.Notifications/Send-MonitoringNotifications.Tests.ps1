@@ -7,13 +7,13 @@ $o365TeamsConfigPath = [Environment]::GetFolderPath("MyDocuments") + "\o365Teams
 Describe "Send-MonitoringNotifications" {
     InModuleScope PoShMon {
 
-        #Mock -CommandName Get-Module -Verifiable -MockWith {
-        #    return @(
-        ##                [pscustomobject]@{
-        #                    Version = "1.2.3"
-        #                }
-        #            )
-        #}
+        Mock -CommandName Get-Module -Verifiable -MockWith {
+            return @(
+                        [pscustomobject]@{
+                            Version = "1.2.3"
+                        }
+                    )
+        }
 
         It "Should send notifications to the specified channels (email, Pushbullet, O365 Teams)" {
 
@@ -83,69 +83,20 @@ Describe "Send-MonitoringNotifications" {
 
             $totalElapsedTime = (Get-Date).Subtract((Get-Date).AddMinutes(-3))
 
-            Mock -CommandName Send-EmailMonitoringMessage -ModuleName PoShMon -Verifiable -MockWith {
+            Mock -CommandName Send-PoShMonEmail -ModuleName PoShMon -Verifiable -MockWith {
                 return
             }
-            Mock -CommandName Send-PushbulletMonitoringMessage -ModuleName PoShMon -Verifiable -MockWith {
+            Mock -CommandName Send-PushbulletMessage -ModuleName PoShMon -Verifiable -MockWith {
                 return
             }
-            Mock -CommandName Send-O365TeamsMonitoringMessage -ModuleName PoShMon -Verifiable -MockWith {
+            Mock -CommandName Send-O365TeamsMessage -ModuleName PoShMon -Verifiable -MockWith {
                 return
             }
 
             $actual = Send-MonitoringNotifications $poShMonConfiguration $poShMonConfiguration.Notifications.Sinks "All" $testMonitoringOutput $totalElapsedTime
 
-            Assert-VerifiableMock
+            Assert-VerifiableMocks
         }
-
-        It "Should mark failures as Critical" {
-
-            #$o365TeamsConfig = Get-Content -Raw -Path $o365TeamsConfigPath | ConvertFrom-Json
-
-            $poShMonConfiguration = New-PoShMonConfiguration {
-                            General `
-                                -EnvironmentName 'SharePoint' `
-                                -MinutesToScanHistory 60 `
-                                -PrimaryServerName 'APPServer1' `
-                                -ConfigurationName SpFarmPosh `
-                                -SkipVersionUpdateCheck `
-                                -TestsToSkip 'SPServerStatus','WindowsServiceState','SPFailingTimerJobs','SPDatabaseHealth','SPSearchHealth','SPDistributedCacheHealth','WebTests'
-                            Notifications -When OnlyOnFailure {
-                                Email -ToAddress "hilton@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
-                                Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
-                            }
-                        }
-
-            $testMonitoringOutput = @(
-                @{
-                    "SectionHeader" = "Grouped Test With A Long Name"
-                    "OutputHeaders" = @{ 'EventID' = 'Event ID'; 'Message' ='Message' }
-                    "NoIssuesFound" = $false
-                    "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
-                    "OutputValues" = @()
-                }
-                @{
-                    "SectionHeader" = "Ungrouped Test"
-                    "OutputHeaders" = @{ 'ComponentName' = 'Component'; 'State' = 'State' }
-                    "NoIssuesFound" = $false
-                    "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
-                    "OutputValues" = @()
-                }
-            )
-
-            $totalElapsedTime = (Get-Date).Subtract((Get-Date).AddMinutes(-3))
-
-            Mock -CommandName Send-EmailMonitoringMessage -ModuleName PoShMon -Verifiable -MockWith { return } -ParameterFilter { $Critical -eq $true }
-            Mock -CommandName Send-PushbulletMonitoringMessage -ModuleName PoShMon -Verifiable -MockWith { return } -ParameterFilter { $Critical -eq $true }
-
-            $actual = Send-MonitoringNotifications $poShMonConfiguration $poShMonConfiguration.Notifications.Sinks $poShMonConfiguration.Notifications.When $testMonitoringOutput $totalElapsedTime
-        
-            Assert-VerifiableMock
-        }
-    }
-}
-Describe "Send-MonitoringNotifications-New-Scope" {
-    InModuleScope PoShMon {
 
         It "Should send notifications to ONLY the specified channels (email, Pushbullet, O365 Teams)" {
 
@@ -216,30 +167,62 @@ Describe "Send-MonitoringNotifications-New-Scope" {
 
             $totalElapsedTime = (Get-Date).Subtract((Get-Date).AddMinutes(-3))
 
-            Mock -CommandName Send-EmailMonitoringMessage -ModuleName PoShMon -Verifiable -MockWith {
+            Mock -CommandName Send-PoShMonEmail -ModuleName PoShMon -Verifiable -MockWith {
                 return
             }
-            Mock -CommandName Send-PushbulletMonitoringMessage -ModuleName PoShMon -Verifiable -MockWith {
-                return
-            }
-            Mock -CommandName Send-O365TeamsMonitoringMessage -ModuleName PoShMon -MockWith {
+            Mock -CommandName Send-PushbulletMessage -ModuleName PoShMon -Verifiable -MockWith {
                 return
             }
 
             $actual = Send-MonitoringNotifications $poShMonConfiguration $poShMonConfiguration.Notifications.Sinks "All" $testMonitoringOutput $totalElapsedTime
         
-            Assert-VerifiableMock
-            Assert-MockCalled -CommandName Send-O365TeamsMonitoringMessage -Times 0
+            Assert-VerifiableMocks
         }
 
-    }
-}
-Describe "Send-MonitoringNotifications-New-Scope2" {
-    InModuleScope PoShMon {
+        It "Should mark failures as Critical" {
 
-        Mock -CommandName Send-EmailMonitoringMessage -ModuleName PoShMon -Verifiable -MockWith { return } -ParameterFilter { $Critical -eq $false }
-        Mock -CommandName Send-PushbulletMonitoringMessage -ModuleName PoShMon -Verifiable -MockWith { return } -ParameterFilter { $Critical -eq $false }
+            #$o365TeamsConfig = Get-Content -Raw -Path $o365TeamsConfigPath | ConvertFrom-Json
 
+            $poShMonConfiguration = New-PoShMonConfiguration {
+                            General `
+                                -EnvironmentName 'SharePoint' `
+                                -MinutesToScanHistory 60 `
+                                -PrimaryServerName 'APPServer1' `
+                                -ConfigurationName SpFarmPosh `
+                                -SkipVersionUpdateCheck `
+                                -TestsToSkip 'SPServerStatus','WindowsServiceState','SPFailingTimerJobs','SPDatabaseHealth','SPSearchHealth','SPDistributedCacheHealth','WebTests'
+                            Notifications -When OnlyOnFailure {
+                                Email -ToAddress "hilton@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
+                                Pushbullet -AccessToken "TestAccessToken" -DeviceId "TestDeviceID"
+                            }
+                        }
+
+            $testMonitoringOutput = @(
+                @{
+                    "SectionHeader" = "Grouped Test With A Long Name"
+                    "OutputHeaders" = @{ 'EventID' = 'Event ID'; 'Message' ='Message' }
+                    "NoIssuesFound" = $false
+                    "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
+                    "OutputValues" = @()
+                }
+                @{
+                    "SectionHeader" = "Ungrouped Test"
+                    "OutputHeaders" = @{ 'ComponentName' = 'Component'; 'State' = 'State' }
+                    "NoIssuesFound" = $false
+                    "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
+                    "OutputValues" = @()
+                }
+            )
+
+            $totalElapsedTime = (Get-Date).Subtract((Get-Date).AddMinutes(-3))
+
+            Mock -CommandName Send-PoShMonEmail -ModuleName PoShMon -Verifiable -MockWith { return } -ParameterFilter { $Critical -eq $true }
+            Mock -CommandName Send-PushbulletMessage -ModuleName PoShMon -Verifiable -MockWith { return } -ParameterFilter { $Critical -eq $true }
+
+            $actual = Send-MonitoringNotifications $poShMonConfiguration $poShMonConfiguration.Notifications.Sinks $poShMonConfiguration.Notifications.When $testMonitoringOutput $totalElapsedTime
+        
+            Assert-VerifiableMocks
+        }
 
         It "Should mark non-failures as NOT Critical" {
 
@@ -278,10 +261,12 @@ Describe "Send-MonitoringNotifications-New-Scope2" {
 
             $totalElapsedTime = (Get-Date).Subtract((Get-Date).AddMinutes(-3))
 
+            Mock -CommandName Send-PoShMonEmail -ModuleName PoShMon -Verifiable -MockWith { return } -ParameterFilter { $Critical -eq $false }
+            Mock -CommandName Send-PushbulletMessage -ModuleName PoShMon -Verifiable -MockWith { return } -ParameterFilter { $Critical -eq $false }
 
             $actual = Send-MonitoringNotifications $poShMonConfiguration $poShMonConfiguration.Notifications.Sinks $poShMonConfiguration.Notifications.When $testMonitoringOutput $totalElapsedTime
         
-            Assert-VerifiableMock
+            Assert-VerifiableMocks
         }
 
         It "Should mark failures as NOT Critical when 'All' set" {
@@ -321,9 +306,12 @@ Describe "Send-MonitoringNotifications-New-Scope2" {
 
             $totalElapsedTime = (Get-Date).Subtract((Get-Date).AddMinutes(-3))
 
+            Mock -CommandName Send-PoShMonEmail -ModuleName PoShMon -Verifiable -MockWith { return } -ParameterFilter { $Critical -eq $false }
+            Mock -CommandName Send-PushbulletMessage -ModuleName PoShMon -Verifiable -MockWith { return } -ParameterFilter { $Critical -eq $false }
+
             $actual = Send-MonitoringNotifications $poShMonConfiguration $poShMonConfiguration.Notifications.Sinks $poShMonConfiguration.Notifications.When $testMonitoringOutput $totalElapsedTime
         
-            Assert-VerifiableMock
+            Assert-VerifiableMocks
         }
     }
 }

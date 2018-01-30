@@ -1,4 +1,4 @@
-Function New-ExtensibilityConfig
+Function Extensibility
 {
     [CmdletBinding()]
     param(

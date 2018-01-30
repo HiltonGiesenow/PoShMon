@@ -1,4 +1,4 @@
-Function New-WebSiteConfig
+Function WebSite
 {
     [CmdletBinding()]
     param(
