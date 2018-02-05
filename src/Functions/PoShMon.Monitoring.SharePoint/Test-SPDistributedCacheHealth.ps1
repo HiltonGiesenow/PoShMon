@@ -6,24 +6,18 @@ Function Test-SPDistributedCacheHealth
         [hashtable]$PoShMonConfiguration
     )
 
-    $mainOutput = Get-InitialOutputWithTimer -SectionHeader "Distributed Cache Status" -OutputHeaders ([ordered]@{ 'Server' = 'Server'; 'SharePointStatus' = 'SharePoint Status'; 'CacheClusterMemberStatus' = 'Cache Cluster Member Status' })
+    $mainOutput = Get-InitialOutputWithTimer -SectionHeader "Distributed Cache Status" -OutputHeaders ([ordered]@{ 'Server' = 'Server'; 'Status' = 'Status' })
 
     $cacheServers = Invoke-RemoteCommand -PoShMonConfiguration $PoShMonConfiguration -ScriptBlock {
                                 return Get-SPServiceInstance | ? {($_.service.tostring()) -eq "SPDistributedCacheService Name=AppFabricCachingService"} | select Server, Status
                             }
+    # Possible extensions:
+    <#
+    Use-CacheCluster
+        Get-CacheHost
 
-    $clusterResponse = $null
-
-    $firstOnlineServer = $cacheServers | Where-Object { $_.Status.Value -eq "Online" } | Select -First 1
-
-    if ($firstOnlineServer -ne $null) #i.e. no healthy servers found
-    {
-        $clusterResponse = Get-SPCacheHostInfo -PoShMonConfiguration $PoShMonConfiguration -FirstSPCacheServer $firstOnlineServer
-    } else {
-        Write-Warning "`tNo healthy servers found in cache cluster from Get-SPServiceInstance"
-
-        $mainOutput.NoIssuesFound = $false #TODO: this won't return a specified response
-    }
+        Get-CacheClusterHealth
+    #>
 
     foreach ($cacheServer in $cacheServers)
     {
@@ -37,38 +31,19 @@ Function Test-SPDistributedCacheHealth
 
             Write-Warning ("`t" + $cacheServer.Server.DisplayName + " is listed as " + $cacheServer.Status.Value)
 
-            $highlight += 'SharePointStatus'
-        }
-
-        $clusterServer = $clusterResponse | Where HostName -Like ($cacheServer.Server.DisplayName + "*")
-        
-        if ($clusterServer -ne $null)
-        {
-            Write-Verbose "`t`t$($clusterServer.HostName) : $($clusterServer.Status)"
-            
-            $clusterMemberUpDown = $clusterServer.Status
-
-            if ($clusterServer.Status -ne "Up")
-            {
-                Write-Warning ("`t" + $clusterServer.HostName + " is listed as " + $clusterServer.Status)
-
-                $highlight += 'CacheClusterMemberStatus'
-
-                $mainOutput.NoIssuesFound = $false
-            }
-        } else {
-            Write-Warning "`tCache cluster entry not found for $($cacheServer.Server.DisplayName)"
-            
-            $clusterMemberUpDown = "[Not Found]"
+            $highlight += 'Status'
         }
 
         $mainOutput.OutputValues += [pscustomobject]@{
             'Server' = $cacheServer.Server.DisplayName;
-            'SharePointStatus' = $cacheServer.Status.Value;
-            'CacheClusterMemberStatus' = $clusterMemberUpDown;
+            'Status' = $cacheServer.Status.Value;
             'Highlight' = $highlight
         }
     }
 
     return (Complete-TimedOutput $mainOutput)
 }
+
+<#
+    $output = Test-SPDistributedCacheHealth $remoteSession -Verbose
+#>

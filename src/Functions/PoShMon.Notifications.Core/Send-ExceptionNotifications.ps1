@@ -10,14 +10,6 @@
 
     $bodyAction = if ($Action -eq "Monitoring") { "monitor" } else { "repair" }
 
-	$params = @{
-		PoShMonConfiguration = $PoShMonConfiguration
-		NotificationSink = $null
-		Exception = $Exception
-		SubjectAction = $Action
-		BodyAction = $bodyAction
-	}
-
     if ($PoShMonConfiguration["Notifications"].Count -gt 0)
     {
         foreach ($configurationItem in $PoShMonConfiguration["Notifications"])
@@ -26,26 +18,33 @@
             {
                 foreach ($notificationSink in $configurationItem.Sinks)
                 {
-					$params.NotificationSink = $notificationSink
-
-					if ($notificationSink.TypeName -eq 'PoShMon.ConfigurationItems.Notifications.Email')
+                    if ($notificationSink.TypeName -eq 'PoShMon.ConfigurationItems.Notifications.Email')
                     {
-						Send-EmailExceptionMessage @params
+                            Send-PoShMonEmail `
+                                            -PoShMonConfiguration $PoShMonConfiguration `
+                                            -EmailNotificationSink $notificationSink `
+                                            -Subject (New-EmailExceptionSubject $PoShMonConfiguration $Action) `
+                                            -Body (New-EmailExceptionBody $Exception $bodyAction) `
+                                            -Critical $true
                     }
                     elseif ($notificationSink.TypeName -eq 'PoShMon.ConfigurationItems.Notifications.Pushbullet')
                     {
-						Send-PushbulletExceptionMessage @params
+                            Send-PushbulletMessage `
+                                            -PoShMonConfiguration $PoShMonConfiguration `
+                                            -PushbulletNotificationSink $notificationSink `
+                                            -Subject (New-PushbulletExceptionSubject $PoShMonConfiguration $Action) `
+                                            -Body (New-PushbulletExceptionBody $Exception $bodyAction) `
+                                            -Critical $true
                     }
                     elseif ($notificationSink.TypeName -eq 'PoShMon.ConfigurationItems.Notifications.O365Teams')
                     {
-						Send-O365TeamsExceptionMessage @params
-					}
-                    elseif ($notificationSink.TypeName -eq 'PoShMon.ConfigurationItems.Notifications.Twilio')
-                    {
-						Send-TwilioExceptionMessage @params
-					}
-					else
-					{
+                            Send-O365TeamsMessage `
+                                            -PoShMonConfiguration $PoShMonConfiguration `
+                                            -O365TeamsNotificationSink $notificationSink `
+                                            -Subject (New-O365TeamsExceptionSubject $PoShMonConfiguration $Action) `
+                                            -Body (New-O365TeamsExceptionBody $Exception $bodyAction) `
+                                            -Critical $true
+                    } else {
                         Write-Error "Notitication Sink '$notificationSink.TypeName' type not found"
                     }
                 }

@@ -7,7 +7,7 @@ Function Get-VersionUpgradeInformation
 
     if ($PoShMonConfiguration.General.SkipVersionUpdateCheck)
     {
-        return "version check skipped"
+        return "Version check skipped"
     } else {
         $currentVersion = Get-Module PoShMon -ListAvailable | Select -First 1 | Sort Version 
 
@@ -16,13 +16,13 @@ Function Get-VersionUpgradeInformation
 
             if ($currentVersion.Version -lt $galleryVersion.Version)
             {
-                return "new version available - run 'Update-PoShMon' command"
+                return "New version available - run 'Update-PoShMon' command"
             } else {
-                return "latest version installed"
+                return "Latest version installed"
             }           
         }
         catch {
-            return "version update information not available (check Internet access for RunAs account)"
+            return "Version Update information not available (check Internet access for RunAs account)"
         }
     }
 }

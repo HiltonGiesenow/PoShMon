@@ -66,7 +66,7 @@ $releaseNotes = "
 * Fixed bug in cpu test for standalone 'minimal config test
 
 0.10.1
-* Added Proxy settings to enable Pushbullet and 0365 Teams connectivity
+* Added Proxy settings to enable PushBullet and 0365 Teams connectivity
 * Introduced a 'minimum configuration' for local machine monitoring
 * Fixed bug in SharePoint UPS Sync monitor
 * Added Resolver for High CPU usage while SharePoint Search Index is running

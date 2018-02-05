@@ -1,4 +1,4 @@
-Function New-GeneralConfig
+Function General
 {
     [CmdletBinding(DefaultParameterSetName='PrimaryServer')]
     param(
