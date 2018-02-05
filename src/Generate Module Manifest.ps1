@@ -20,7 +20,7 @@ For more information, documentation etc. visit https://github.com/HiltonGiesenow
 
 $releaseNotes = "
 0.15.1
-* Adding capability to run without and config (to scan local machine)
+* Adding capability to run without any config (to scan local machine)
 * Minor wording change
 
 0.15.0
