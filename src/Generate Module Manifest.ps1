@@ -12,7 +12,7 @@ Some of the key features / benefits of PoShMon are:
 - Specialized SharePoint monitoring
 - Specialized Office Online Server monitoring
 - Supports frequent/critical as well as comprehensive daily monitoring
-- Email, Pushbullet (mobile) and Office 365 Teams ('Chat-ops') notifications
+- Email, Pushbullet (mobile), Office 365 Teams ('Chat-ops') and Twilio (SMS) notifications
 - Provides a framework for 'self-healing' systems
 - Support for Operation Validation Framework (OVF)
 
