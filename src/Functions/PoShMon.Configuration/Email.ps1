@@ -1,4 +1,4 @@
-Function Email
+Function New-EmailConfig
 {
     [CmdletBinding()]
     param(

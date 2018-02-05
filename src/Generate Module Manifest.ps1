@@ -1,4 +1,4 @@
-﻿$version = "0.15.1"
+﻿$version = "1.0.0"
 $manifestPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPath "\PoShMon.psd1"
 
 Remove-Item -Path $manifestPath -ErrorAction SilentlyContinue
@@ -19,8 +19,21 @@ Some of the key features / benefits of PoShMon are:
 For more information, documentation etc. visit https://github.com/HiltonGiesenow/PoShMon as well as the Samples folder within the module itself."
 
 $releaseNotes = "
+1.0.0
+* Official 1.0.0 release
+* Added SMS notification via Twilio
+* Improved SharePoint Distributed Cache health test
+* Fixed some unit tests
+* Fixed Unsupported Verbs warning
+* Notification refactor
+* Fixed failing Websites test for cookie prompt
+* Fixed CPU test failing on local machine
+* Fixed CPU test bug for group of servers
+* Fixed EventLog test bug
+* Improved failure message for Windows Service tests
+
 0.15.1
-* Adding capability to run without and config (to scan local machine)
+* Adding capability to run without any config (to scan local machine)
 * Minor wording change
 
 0.15.0
@@ -53,7 +66,7 @@ $releaseNotes = "
 * Fixed bug in cpu test for standalone 'minimal config test
 
 0.10.1
-* Added Proxy settings to enable PushBullet and 0365 Teams connectivity
+* Added Proxy settings to enable Pushbullet and 0365 Teams connectivity
 * Introduced a 'minimum configuration' for local machine monitoring
 * Fixed bug in SharePoint UPS Sync monitor
 * Added Resolver for High CPU usage while SharePoint Search Index is running
@@ -65,18 +78,6 @@ $releaseNotes = "
 0.9.2
 * Fixed bug in email output
 * Fixed bug with not terminating Remote sessions correctly
-
-0.9.1
-* Fixed a bug crossing hour and day boundaries for Server Time test
-* Fixed a bug with Services on server testing in non-SharePoint environments
-
-0.9.0
-* Added a Server Time test for servers drifting apart
-* Add an 'update' notification for new versions of PoShMon
-* Add an 'Update' command to make updating PoShMon easier
-* Add Try..Catch error handling to each Test method
-* Switched to dynamically invoking test methods by name
-* Created a shared 'Core' monitoring function
 "
 
 New-ModuleManifest -Path $manifestPath -ModuleVersion $version -RootModule "PoShMon.psm1" -Guid '6e6cb274-1bed-4540-b288-95bc638bf679' -Author "Hilton Giesenow" -CompanyName "Experts Inside" -FunctionsToExport '*' -Copyright "2016 Hilton Giesenow, All Rights Reserved" -ProjectUri "https://github.com/HiltonGiesenow/PoShMon" -LicenseUri "https://github.com/HiltonGiesenow/PoShMon/blob/master/LICENSE" -Description $description -Tags 'Monitoring','Server','Farm','SharePoint' -ReleaseNotes $releaseNotes -Verbose

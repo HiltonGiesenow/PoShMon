@@ -7,7 +7,7 @@ Function Invoke-SPMonitoring
     )
     
     if ($PoShMonConfiguration -eq $null) { $PoShMonConfiguration = New-PoShMonConfiguration {} }
-    if ($PoShMonConfiguration.SharePoint -eq $null) { $PoShMonConfiguration.SharePoint = SharePoint }
+    if ($PoShMonConfiguration.SharePoint -eq $null) { $PoShMonConfiguration.SharePoint = New-SharePointConfig }
 
     $outputValues = Invoke-MonitoringCore `
                         -PoShMonConfiguration $PoShMonConfiguration `

@@ -9,18 +9,27 @@ Function Test-CPULoad
 
     $mainOutput = Get-InitialOutputWithTimer -SectionHeader "Server CPU Load Review" -OutputHeaders ([ordered]@{ 'ServerName' = 'Server Name'; 'CPULoad' = 'CPU Load (%)' })
 
-    if ($PoShMonConfiguration.General.ServerNames -eq $env:COMPUTERNAME)
-        { $results = Get-Counter "\processor(_total)\% processor time" }
-    else
-        { $results = Get-Counter "\processor(_total)\% processor time" -Computername $PoShMonConfiguration.General.ServerNames }
+	$results = @()
+	# handle the case where the current machine is one of the items or the sole item
+    if ($PoShMonConfiguration.General.ServerNames | Where-Object { $_ -eq $env:COMPUTERNAME } )
+    	{ $results += Get-Counter "\processor(_total)\% processor time" }
+	
+	#handle any remaining machines
+	$remainingComputerNames = $PoShMonConfiguration.General.ServerNames | Where-Object { $_ -ne $env:COMPUTERNAME }
+	if ($remainingComputerNames.Count -gt 0)
+		{ $results += Get-Counter "\processor(_total)\% processor time" -Computername $remainingComputerNames }
 
     foreach ($counterResult in $results.CounterSamples)
     {
-        if ($PoShMonConfiguration.General.ServerNames -eq "localhost" -or $PoShMonConfiguration.General.ServerNames -eq $env:COMPUTERNAME)
-            { $serverName = "localhost" }
-        else
-            { $serverName = $counterResult.Path.Substring(2, $counterResult.Path.LastIndexOf("\\") - 2).ToUpper() }
-        $cpuLoad = $counterResult.CookedValue
+        #if (($PoShMonConfiguration.General.ServerNames | Where-Object { $_ -eq 'localhost' } ) -or ($PoShMonConfiguration.General.ServerNames | Where-Object { $_ -eq $env:COMPUTERNAME } ))
+        #    { $serverName = "localhost" }
+        #else
+		#    { $serverName = $counterResult.Path.Substring(2, $counterResult.Path.LastIndexOf("\\") - 2).ToUpper() }
+		if ($counterResult.Path.Substring(2).LastIndexOf("\\") -gt -1)
+			{ $serverName = $counterResult.Path.Substring(2, $counterResult.Path.LastIndexOf("\\") - 2).ToUpper() }
+		else
+			{ $serverName = $counterResult.Path.Substring(2, $counterResult.Path.Substring(2).IndexOf("\")).ToUpper() }
+		$cpuLoad = $counterResult.CookedValue
         $highlight = @()
 
         $cpuPercentValue = $(($cpuLoad / 100).ToString("00%"))

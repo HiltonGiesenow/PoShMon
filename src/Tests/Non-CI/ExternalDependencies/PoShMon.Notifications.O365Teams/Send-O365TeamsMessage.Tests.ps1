@@ -74,7 +74,7 @@ if (Test-Path $o365TeamsConfigPath) # only run this test if there's a config to 
 
             $totalElapsedTime = (Get-Date).Subtract((Get-Date).AddMinutes(-3))
 
-            $actual = Send-O365TeamsMessage $poShMonConfiguration $poShMonConfiguration.Notifications.Sinks "All" $testMonitoringOutput $totalElapsedTime
+            $actual = Send-O365TeamsMessage $poShMonConfiguration $poShMonConfiguration.Notifications.Sinks "Test Subject" "Test Body"
         }
     }
 }

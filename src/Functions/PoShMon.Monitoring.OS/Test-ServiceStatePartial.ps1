@@ -26,7 +26,7 @@ Function Test-ServiceStatePartial
             $NoIssuesFound = $false
             $highlight += "Status"
 
-            Write-Host "Service '$service' on $serverName Not Found!" -ForegroundColor Red
+            Write-Warning "Service '$service' on $serverName not found!"
 
             $outputItem = @{
                 'DisplayName' = "[Not Found]";
@@ -40,9 +40,10 @@ Function Test-ServiceStatePartial
                 $NoIssuesFound = $false
                 $highlight += "Status"
 
-                Write-Host "'$service' on $serverName state incorrect - expected $ServiceState" -ForegroundColor Red
+				Write-Warning "Service '$service' on $serverName is in an incorrect state - expected '$ServiceState', but found '$($serviceFound.Status)'"
+
             } else {
-                Write-Verbose "`t`t'$service' found and in correct state"
+                Write-Verbose "`t`t'$service' found and in correct state ('$ServiceState')"
             }
 
             $outputItem = [pscustomobject]@{
