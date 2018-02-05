@@ -100,7 +100,7 @@ Of course there are loads of monitoring systems and tools out there, both paid a
 * Improved SharePoint Distributed Cache health test
 * Fixed some unit tests
 * Fixed Unsupported Verbs warning
-* Notication refactor
+* Notification refactor
 * Fixed failing Websites test for cookie prompt
 * Fixed CPU test failing on local machine
 * Fixed CPU test bug for group of servers
