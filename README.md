@@ -94,6 +94,19 @@ Of course there are loads of monitoring systems and tools out there, both paid a
 ---
 
 ## Release Notes
+1.0.0
+* Official 1.0.0 release
+* Added SMS notification via Twilio
+* Improved SharePoint Distributed Cache health test
+* Fixed some unit tests
+* Fixed Unsupported Verbs warning
+* Notication refactor
+* Fixed failing Websites test for cookie prompt
+* Fixed CPU test failing on local machine
+* Fixed CPU test bug for group of servers
+* Fixed EventLog test bug
+* Improved failure message for Windows Service tests
+
 0.15.1
 * Adding capability to run without any config (to scan local machine)
 * Minor wording change
@@ -136,9 +149,5 @@ Of course there are loads of monitoring systems and tools out there, both paid a
 * Added option for harddrive space to track by percent
 * Add a check for any invalid TestsToSkip
 * Fixed bug in Update-PoShMon
-
-0.9.2
-* Fixed bug in email output
-* Fixed bug with not terminating Remote sessions correctly
 
 See [here](https://github.com/HiltonGiesenow/PoShMon/wiki/Changelog) for full Changelog
