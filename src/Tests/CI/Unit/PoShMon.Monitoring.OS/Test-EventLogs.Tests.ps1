@@ -311,3 +311,87 @@ Describe "Test-EventLogs-NewScope" {
         }
     }
 }
+
+Describe "Test-EventLogs-IgnoreListScope" {
+	InModuleScope PoShMon {
+
+        class EventLogItemMock {
+            [int]$EventCode
+            [string]$SourceName
+            [string]$User
+            [datetime]$TimeGenerated
+            [string]$Message
+
+            EventLogItemMock ([int]$NewEventCode, [String]$NewSourceName, [String]$NewUser, [datetime]$NewTimeGenerated, [String]$NewMessage) {
+                $this.EventCode = $NewEventCode;
+                $this.SourceName = $NewSourceName;
+                $this.User = $NewUser;
+                $this.TimeGenerated = $NewTimeGenerated;
+                $this.Message = $NewMessage;
+            }
+
+            [string] ConvertToDateTime([datetime]$something) {
+                return $something.ToString()
+            }
+		}
+		
+		Mock -CommandName Get-WmiObject -MockWith {
+			$eventsCollection = @()
+
+			if ($ComputerName -eq 'Server1')
+			{
+				$date = Get-Date -Year 2017 -Month 1 -Day 1 -Hour 9 -Minute 30 -Second 15
+
+				$eventsCollection += [EventLogItemMock]::new(123, "Test App", "domain\user1", $date, "Sample Message")
+				$eventsCollection += [EventLogItemMock]::new(456, "Test App", "domain\user1", $date.AddMinutes(-1), "Another Sample Message")
+				$eventsCollection += [EventLogItemMock]::new(456, "Test App", "domain\user1", $date.AddMinutes(-2), "Another Sample Message")
+				$eventsCollection += [EventLogItemMock]::new(789, "Test App", "domain\user1", $date.AddMinutes(-2), "3rd Sample Message")
+			}
+
+			return $eventsCollection
+		}
+
+        It "Should Show All Items for No Ignore" {
+
+            $poShMonConfiguration = New-PoShMonConfiguration {
+                            General -ServerNames 'Server1'
+                            OperatingSystem
+                        }
+
+            $actual = Test-EventLogs $poShMonConfiguration -WarningAction SilentlyContinue
+        
+            $actual.NoIssuesFound | Should Be $false
+
+            $actual.OutputValues.Count  | Should Be 3
+            $actual.OutputValues[0].ServerName  | Should Be "Server1"
+            $actual.OutputValues[0].Message  | Should Be "Sample Message"
+            $actual.OutputValues[0].InstanceCount  | Should Be 1
+            $actual.OutputValues[1].ServerName  | Should Be "Server1"
+            $actual.OutputValues[1].Message  | Should Be "Another Sample Message"
+			$actual.OutputValues[1].InstanceCount  | Should Be 2
+            $actual.OutputValues[2].ServerName  | Should Be "Server1"
+            $actual.OutputValues[2].Message  | Should Be "3rd Sample Message"
+			$actual.OutputValues[2].InstanceCount  | Should Be 1
+		}
+
+		It "Should NOT show items marked for Ignore" {
+
+            $poShMonConfiguration = New-PoShMonConfiguration {
+                            General -ServerNames 'Server1'
+                            OperatingSystem -EventIDIgnoreList @{ "456" = "foo"}
+                        }
+
+            $actual = Test-EventLogs $poShMonConfiguration -WarningAction SilentlyContinue
+        
+            $actual.NoIssuesFound | Should Be $false
+
+            $actual.OutputValues.Count  | Should Be 2
+            $actual.OutputValues[0].ServerName  | Should Be "Server1"
+            $actual.OutputValues[0].Message  | Should Be "Sample Message"
+            $actual.OutputValues[0].InstanceCount  | Should Be 1
+            $actual.OutputValues[1].ServerName  | Should Be "Server1"
+            $actual.OutputValues[1].Message  | Should Be "3rd Sample Message"
+			$actual.OutputValues[1].InstanceCount  | Should Be 1
+		}
+    }
+}

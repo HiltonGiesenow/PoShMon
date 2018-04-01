@@ -30,7 +30,9 @@ Function Test-EventLogs
                 {
                     $currentEntry = $eventLogEntryGroup.Group[0]
 
-                    if ($EventIDIgnoreList.Count -eq 0 -or $EventIDIgnoreList.ContainsKey($currentEntry.EventCode) -eq $false)
+					#if ($EventIDIgnoreList.Count -eq 0 -or $EventIDIgnoreList.ContainsKey($currentEntry.EventCode) -eq $false)
+					if ($PoShMonConfiguration.OperatingSystem.EventIDIgnoreList.Count -eq 0 -or `
+					 	$PoShMonConfiguration.OperatingSystem.EventIDIgnoreList.ContainsKey($currentEntry.EventCode.ToString()) -eq $false)
                     {
 						$mainOutput.NoIssuesFound = $false
 						$serverHasEntries = $true
