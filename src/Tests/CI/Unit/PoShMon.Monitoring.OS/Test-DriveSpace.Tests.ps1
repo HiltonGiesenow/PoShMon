@@ -6,7 +6,7 @@ Describe "Test-DriveSpace" {
     InModuleScope PoShMon {
 
         class DiskMock {
-            [string]$DeviceID
+			[string]$DeviceID
             [int]$DriveType
             [string]$ProviderName
             [UInt64]$Size
@@ -14,7 +14,7 @@ Describe "Test-DriveSpace" {
             [string]$VolumeName
 
             DiskMock ([string]$NewDeviceID, [int]$NewDriveType, [String]$NewProviderName, [UInt64]$NewSize, [UInt64]$NewFreeSpace, [String]$NewVolumeName) {
-                $this.DeviceID = $NewDeviceID;
+				$this.DeviceID = $NewDeviceID;
                 $this.DriveType = $NewDriveType;
                 $this.ProviderName = $NewProviderName;
                 $this.Size = $NewSize;
@@ -52,7 +52,7 @@ Describe "Test-DriveSpace" {
             $actual.ContainsKey("ElapsedTime") | Should Be $true
             $actual.ContainsKey("GroupBy") | Should Be $true
             $headers = $actual.OutputHeaders
-            $headers.Keys.Count | Should Be 3
+            $headers.Keys.Count | Should Be 4
             #$valuesGroup1 = $actual.OutputValues[0]
             #$valuesGroup1.Keys.Count | Should Be 2
             #$values1 = $valuesGroup1.GroupOutputValues[0]
@@ -62,6 +62,7 @@ Describe "Test-DriveSpace" {
             #$values1.ContainsKey("FreeSpace") | Should Be $true
             #$values1.ContainsKey("Highlight") | Should Be $true
             $actual.OutputValues[0].DriveLetter | Should Be "C:"
+            $actual.OutputValues[0].DriveName | Should Be "MyCDrive"
             $actual.OutputValues[0].TotalSpace | Should Be "50.00"
             $actual.OutputValues[0].FreeSpace | Should Be "15.00 (30%)"
             $actual.OutputValues[0].Highlight.Count | Should Be 0

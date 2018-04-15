@@ -7,7 +7,7 @@ Function Test-DriveSpace
 
     if ($PoShMonConfiguration.OperatingSystem -eq $null) { throw "'OperatingSystem' configuration not set properly on PoShMonConfiguration parameter." }
 
-    $mainOutput = Get-InitialOutputWithTimer -SectionHeader "Harddrive Space Review" -GroupBy 'ServerName' -OutputHeaders ([ordered]@{ 'DriveLetter' = 'Drive Letter'; 'TotalSpace' = 'Total Space (GB)'; 'FreeSpace' = 'Free Space (GB) (%)' })
+    $mainOutput = Get-InitialOutputWithTimer -SectionHeader "Harddrive Space Review" -GroupBy 'ServerName' -OutputHeaders ([ordered]@{ 'DriveLetter' = 'Drive Letter'; 'DriveName' = 'Drive Name'; 'TotalSpace' = 'Total Space (GB)'; 'FreeSpace' = 'Free Space (GB) (%)' })
 
     foreach ($serverName in $PoShMonConfiguration.General.ServerNames)
     {
@@ -44,7 +44,8 @@ Function Test-DriveSpace
 
             # $outputItem = @{
             $mainOutput.OutputValues += [pscustomobject]@{
-                'ServerName' = $serverName;
+				'ServerName' = $serverName;
+				'DriveName' = $drive.VolumeName;
                 'DriveLetter' = $drive.DeviceID;
                 'TotalSpace' = $totalSpace.ToString(".00");
                 'FreeSpace' = $freeSpace.ToString(".00") + " (" + $freeSpacePercent.ToString("00") + "%)";
