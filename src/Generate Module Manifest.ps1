@@ -1,4 +1,4 @@
-﻿$version = "1.0.0"
+﻿$version = "1.1.0"
 $manifestPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPath "\PoShMon.psd1"
 
 Remove-Item -Path $manifestPath -ErrorAction SilentlyContinue
@@ -19,6 +19,11 @@ Some of the key features / benefits of PoShMon are:
 For more information, documentation etc. visit https://github.com/HiltonGiesenow/PoShMon as well as the Samples folder within the module itself."
 
 $releaseNotes = "
+1.1.0
+* Added ability to create ad-hoc html report
+* For Drive Space Test, Add Volume Name to Output
+* Added html formatting to Exception emails
+
 1.0.0
 * Official 1.0.0 release
 * Added SMS notification via Twilio
