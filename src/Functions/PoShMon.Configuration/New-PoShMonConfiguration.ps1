@@ -40,5 +40,7 @@ Function New-PoShMonConfiguration
     if ($newConfiguration.OperatingSystem -eq $null)
         { $newConfiguration.OperatingSystem = New-OSConfig }
 
+	$Global:PoShMonConfiguration = $newConfiguration # save for later in case it's needed
+
     return $newConfiguration
 }
