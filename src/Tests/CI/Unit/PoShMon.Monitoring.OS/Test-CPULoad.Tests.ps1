@@ -395,6 +395,5 @@ Describe "Test-CPULoad-Scope4" {
 			Assert-MockCalled -CommandName Get-Counter -ParameterFilter { $Computername -ne $null } -Times 0
 		}
 
-
     }
 }
