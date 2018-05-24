@@ -20,7 +20,7 @@ Function New-HtmlFooter
     else
         { $emailSection += ($SkippedTests -join ", ") + "" }
 
-    if ($TotalElapsedTime -ne $null)
+    if ($TotalElapsedTime -ne $null -and $TotalElapsedTime.Ticks -gt 0)
          { $emailSection += "<br/><b>Total Elapsed Time (Seconds):</b> $("{0:F2}" -f $TotalElapsedTime.TotalSeconds) ($("{0:F2}" -f $TotalElapsedTime.TotalMinutes) Minutes)" }
 
     $currentVersion = Get-Module PoShMon -ListAvailable | Select -First 1 | Sort Version #TODO: This logic might be wrong - might need to do the sort first. Needs to be tested
