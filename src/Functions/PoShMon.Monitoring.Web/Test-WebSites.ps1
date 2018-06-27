@@ -16,6 +16,8 @@ Function Test-WebSites
 
         $allServersExceptLocal = $PoShMonConfiguration.General.ServerNames | Where-Object { $_ -ne $env:COMPUTERNAME }
 
+		if ($allServersExceptLocal -ne $null -and $allServersExceptLocal.GetType().Name -eq "String") { $allServersExceptLocal = ,$allServersExceptLocal } #convert to proper array
+
         For ($i = -1; $i -lt $allServersExceptLocal.Count; $i++) {
         
             $serverName = '(Direct)'
