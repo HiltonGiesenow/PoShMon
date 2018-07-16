@@ -6,7 +6,7 @@ Function Write-PoShMonHtmlReport {
 		[hashtable]$PoShMonConfiguration = $null,
 		[TimeSpan]$TotalElapsedTime = (New-TimeSpan),
 		[string]$OutputFilePath,
-		[boolean]$OverwriteFileIfExists = $false
+		[switch]$OverwriteFileIfExists = $false
 	)
 
 	if ($PoShMonConfiguration -eq $null)
