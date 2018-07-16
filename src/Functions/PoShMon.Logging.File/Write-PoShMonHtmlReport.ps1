@@ -1,4 +1,4 @@
-Function Write-ReportToFile {
+Function Write-PoShMonHtmlReport {
     [CmdletBinding()]
     Param(
 		[Parameter(Position=0, Mandatory=$true, ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)]
@@ -15,7 +15,7 @@ Function Write-ReportToFile {
 		$PoShMonConfiguration = $Global:PoShMonConfiguration
 	}
 
-	if ($TotalElapsedTime.Ticks -eq 0)
+	if ($TotalElapsedTime -eq $null -or $TotalElapsedTime.Ticks -eq 0)
 	{
 		Write-Verbose "No TotalElapsedTime supplied, using Global one created previously"	
 		$TotalElapsedTime = $Global:TotalElapsedPoShMonTime
