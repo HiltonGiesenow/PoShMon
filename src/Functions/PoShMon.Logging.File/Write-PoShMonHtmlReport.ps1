@@ -1,7 +1,6 @@
 Function Write-PoShMonHtmlReport {
     [CmdletBinding()]
     Param(
-		[Parameter(Position=0, Mandatory=$true, ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)]
 		[System.Collections.ArrayList]$PoShMonOutputValues,
 		[hashtable]$PoShMonConfiguration = $null,
 		[TimeSpan]$TotalElapsedTime = (New-TimeSpan),
