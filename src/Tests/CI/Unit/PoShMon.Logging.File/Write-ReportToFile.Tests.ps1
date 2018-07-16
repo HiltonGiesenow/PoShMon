@@ -11,6 +11,7 @@ Describe "Write-PoShMonHtmlReport" {
 		}
 
 		Mock -CommandName Out-File -Verifiable -MockWith {
+			Write-Host $NoClobber
 			return;
 		}
 
@@ -60,6 +61,31 @@ Describe "Write-PoShMonHtmlReport" {
 
 			Assert-MockCalled -CommandName New-HtmlBody -ParameterFilter { $TotalElapsedTime.TotalMilliseconds -eq 123000 }
 			Assert-MockCalled -CommandName Out-File
+		}
+
+		It "Passes in NoClobber correctly" {
+
+			$PoShMonConfigurationGlobal = New-PoShMonConfiguration { General -EnvironmentName "Global Test" }
+			$Global:TotalElapsedPoShMonTime = New-TimeSpan -Minutes 1 -Seconds 2
+			$TestTimeSpan = New-TimeSpan -Minutes 2 -Seconds 3
+
+			$testMonitoringOutput = @()
+			$testMonitoringOutput | Write-PoShMonHtmlReport -OutputFilePath "C:\Temp\PoShMonReport.html" -TotalElapsedTime $TestTimeSpan
+
+			Assert-MockCalled -CommandName Out-File -ParameterFilter { $NoClobber -eq $true }
+
+		}
+
+		It "Passes in NoClobber correctly for FALSE" {
+
+			$PoShMonConfigurationGlobal = New-PoShMonConfiguration { General -EnvironmentName "Global Test" }
+			$Global:TotalElapsedPoShMonTime = New-TimeSpan -Minutes 1 -Seconds 2
+			$TestTimeSpan = New-TimeSpan -Minutes 2 -Seconds 3
+
+			$testMonitoringOutput = @()
+			$testMonitoringOutput | Write-PoShMonHtmlReport -OutputFilePath "C:\Temp\PoShMonReport.html" -TotalElapsedTime $TestTimeSpan -OverwriteFileIfExists:$true
+
+			Assert-MockCalled -CommandName Out-File -ParameterFilter { $NoClobber -eq $false }
 		}
 	}
 }
