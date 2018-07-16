@@ -1,12 +1,11 @@
-Function Write-ReportToFile {
+Function Write-PoShMonHtmlReport {
     [CmdletBinding()]
     Param(
-		[Parameter(Position=0, Mandatory=$true, ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)]
 		[System.Collections.ArrayList]$PoShMonOutputValues,
 		[hashtable]$PoShMonConfiguration = $null,
 		[TimeSpan]$TotalElapsedTime = (New-TimeSpan),
 		[string]$OutputFilePath,
-		[boolean]$OverwriteFileIfExists = $false
+		[switch]$OverwriteFileIfExists = $false
 	)
 
 	if ($PoShMonConfiguration -eq $null)
@@ -15,7 +14,7 @@ Function Write-ReportToFile {
 		$PoShMonConfiguration = $Global:PoShMonConfiguration
 	}
 
-	if ($TotalElapsedTime.Ticks -eq 0)
+	if ($TotalElapsedTime -eq $null -or $TotalElapsedTime.Ticks -eq 0)
 	{
 		Write-Verbose "No TotalElapsedTime supplied, using Global one created previously"	
 		$TotalElapsedTime = $Global:TotalElapsedPoShMonTime

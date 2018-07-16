@@ -14,7 +14,11 @@ Function Test-WebSites
    
         $mainOutput = Get-InitialOutputWithTimer -SectionHeader "Web Test - $siteUrl" -OutputHeaders ([ordered]@{ 'ServerName' = 'Server'; 'StatusCode' = 'Status Code'; 'Outcome' = 'Outcome' })
 
-        For ($i = -1; $i -lt $PoShMonConfiguration.General.ServerNames.Count; $i++) {
+        $allServersExceptLocal = $PoShMonConfiguration.General.ServerNames | Where-Object { $_ -ne $env:COMPUTERNAME }
+
+		if ($allServersExceptLocal -ne $null -and $allServersExceptLocal.GetType().Name -eq "String") { $allServersExceptLocal = ,$allServersExceptLocal } #convert to proper array
+
+        For ($i = -1; $i -lt $allServersExceptLocal.Count; $i++) {
         
             $serverName = '(Direct)'
 			$highlight = @()
@@ -26,7 +30,7 @@ Function Test-WebSites
 
                 $webRequest = Invoke-WebRequest $siteUrl -UseDefaultCredentials -UseBasicParsing
             } else {
-                $serverName = $PoShMonConfiguration.General.ServerNames[$i]
+                $serverName = $allServersExceptLocal[$i]
 			
 				if ($serverName -ne $env:COMPUTERNAME)
 				{

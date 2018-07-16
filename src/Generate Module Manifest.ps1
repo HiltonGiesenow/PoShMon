@@ -1,4 +1,4 @@
-﻿$version = "1.1.0"
+﻿$version = "1.1.1"
 $manifestPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPath "\PoShMon.psd1"
 
 Remove-Item -Path $manifestPath -ErrorAction SilentlyContinue
@@ -19,9 +19,14 @@ Some of the key features / benefits of PoShMon are:
 For more information, documentation etc. visit https://github.com/HiltonGiesenow/PoShMon as well as the Samples folder within the module itself."
 
 $releaseNotes = "
+1.1.1
+* Various bug fixes in Web tests
+* Renamed html ad hoc report function
+* Various bug fixes in html ad hoc report function
+
 1.1.0
 * Added ability to create ad-hoc html report
-* For Drive Space Test, Add Volume Name to Output
+* For Drive Space test, added Volume Name to output
 * Added html formatting to Exception emails
 
 1.0.0
@@ -80,9 +85,6 @@ $releaseNotes = "
 * Add a check for any invalid TestsToSkip
 * Fixed bug in Update-PoShMon
 
-0.9.2
-* Fixed bug in email output
-* Fixed bug with not terminating Remote sessions correctly
 "
 
 New-ModuleManifest -Path $manifestPath -ModuleVersion $version -RootModule "PoShMon.psm1" -Guid '6e6cb274-1bed-4540-b288-95bc638bf679' -Author "Hilton Giesenow" -CompanyName "Experts Inside" -FunctionsToExport '*' -Copyright "2016 Hilton Giesenow, All Rights Reserved" -ProjectUri "https://github.com/HiltonGiesenow/PoShMon" -LicenseUri "https://github.com/HiltonGiesenow/PoShMon/blob/master/LICENSE" -Description $description -Tags 'Monitoring','Server','Farm','SharePoint' -ReleaseNotes $releaseNotes -Verbose

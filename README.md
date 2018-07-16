@@ -94,9 +94,14 @@ Of course there are loads of monitoring systems and tools out there, both paid a
 ---
 
 ## Release Notes
+1.1.1
+* Various bug fixes in Web tests
+* Renamed html ad hoc report function
+* Various bug fixes in html ad hoc report function
+
 1.1.0
 * Added ability to create ad-hoc html report
-* For Drive Space Test, Add Volume Name to Output
+* For Drive Space test, added Volume Name to output
 * Added html formatting to Exception emails
 
 1.0.0

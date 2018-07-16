@@ -1,6 +1,14 @@
 {
     "version": "0.4.0",
     "configurations": [
+	{
+		"type": "PowerShell",
+		"request": "launch",
+		"name": "PowerShell Launch Current File",
+		"script": "${file}",
+		"args": [],
+		"cwd": "${file}"
+	},
         {
             "name": "PowerShell",
             "type": "PowerShell",

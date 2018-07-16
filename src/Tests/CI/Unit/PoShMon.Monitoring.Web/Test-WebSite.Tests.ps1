@@ -231,6 +231,123 @@ Describe "Test-Website-NewScope" {
 			
 			Assert-MockCalled -CommandName Invoke-WebRequest -Times 1 -Exactly
 			Assert-MockCalled -CommandName Invoke-RemoteWebRequest -Times 2 -Exactly 
-        }
+		}
     }
+}
+Describe "Test-Website-NewScope2" {
+    InModuleScope PoShMon {
+
+        class WebRequestMock {
+            [int]$StatusCode
+            [string]$StatusDescription
+            [string]$Content
+
+            WebRequestMock ([int]$NewStatusCode, [String]$NewStatusDescription, [String]$NewContent) {
+                $this.StatusCode = $NewStatusCode;
+                $this.StatusDescription = $NewStatusDescription;
+                $this.Content = $NewContent;
+            }
+        }
+
+        class RemoteWebRequestMock {
+            [int]$StatusCode
+            [string]$StatusDescription
+            [string]$Content
+            [string]$ServerName
+
+            RemoteWebRequestMock ([int]$NewStatusCode, [String]$NewStatusDescription, [String]$NewContent, [String]$NewServerName) {
+                $this.StatusCode = $NewStatusCode;
+                $this.StatusDescription = $NewStatusDescription;
+                $this.Content = $NewContent;
+                $this.ServerName = $NewServerName;
+            }
+        }
+
+        Mock -CommandName Invoke-WebRequest -MockWith  {
+            return [WebRequestMock]::new(200, "OK", "Some Text")
+        }
+        Mock -CommandName Invoke-RemoteWebRequest -ModuleName PoShMon -MockWith {
+            return [RemoteWebRequestMock]::new(200, "OK", "Some Text", $serverName)
+        }
+
+		It "Should test Direct on local server and stop if no other servers" {
+
+            $poShMonConfiguration = New-PoShMonConfiguration {
+                    General `
+                        -ServerNames $env:COMPUTERNAME
+                    WebSite `
+                        -WebsiteDetails @{
+                                            "http://my.website.com" = "Some Text"
+                                         }
+                }
+
+            $actual = Test-WebSites $poShMonConfiguration
+
+            $actual.NoIssuesFound | Should Be $true
+            $actual.OutputValues.Count | Should Be 1
+            $actual.OutputValues[0].ServerName | Should Be '(Direct)'
+			
+			Assert-MockCalled -CommandName Invoke-WebRequest -Times 1 -Exactly
+			Assert-MockCalled -CommandName Invoke-RemoteWebRequest -Times 0 -Exactly 
+        }
+	}
+}
+	Describe "Test-Website-NewScope3" {
+		InModuleScope PoShMon {
+	
+			class WebRequestMock {
+				[int]$StatusCode
+				[string]$StatusDescription
+				[string]$Content
+	
+				WebRequestMock ([int]$NewStatusCode, [String]$NewStatusDescription, [String]$NewContent) {
+					$this.StatusCode = $NewStatusCode;
+					$this.StatusDescription = $NewStatusDescription;
+					$this.Content = $NewContent;
+				}
+			}
+	
+			class RemoteWebRequestMock {
+				[int]$StatusCode
+				[string]$StatusDescription
+				[string]$Content
+				[string]$ServerName
+	
+				RemoteWebRequestMock ([int]$NewStatusCode, [String]$NewStatusDescription, [String]$NewContent, [String]$NewServerName) {
+					$this.StatusCode = $NewStatusCode;
+					$this.StatusDescription = $NewStatusDescription;
+					$this.Content = $NewContent;
+					$this.ServerName = $NewServerName;
+				}
+			}
+	
+			Mock -CommandName Invoke-WebRequest -MockWith  {
+				return [WebRequestMock]::new(200, "OK", "Some Text")
+			}
+			Mock -CommandName Invoke-RemoteWebRequest -ModuleName PoShMon -MockWith {
+				return [RemoteWebRequestMock]::new(200, "OK", "Some Text", $serverName)
+			}
+	
+			It "Should test Direct on local server correctly for just one more server" {
+	
+				$poShMonConfiguration = New-PoShMonConfiguration {
+						General `
+							-ServerNames $env:COMPUTERNAME,'Server2'
+						WebSite `
+							-WebsiteDetails @{
+												"http://my.website.com" = "Some Text"
+											 }
+					}
+	
+				$actual = Test-WebSites $poShMonConfiguration
+	
+				$actual.NoIssuesFound | Should Be $true
+				$actual.OutputValues.Count | Should Be 2
+				$actual.OutputValues[0].ServerName | Should Be '(Direct)'
+				$actual.OutputValues[1].ServerName | Should Be 'Server2'
+				
+				Assert-MockCalled -CommandName Invoke-WebRequest -Times 1 -Exactly
+				Assert-MockCalled -CommandName Invoke-RemoteWebRequest -ParameterFilter { $ServerName -eq 'Server2' } -Times 1 -Exactly 
+			}
+		}
 }
