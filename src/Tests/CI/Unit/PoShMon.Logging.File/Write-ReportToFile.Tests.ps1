@@ -11,7 +11,6 @@ Describe "Write-PoShMonHtmlReport" {
 		}
 
 		Mock -CommandName Out-File -Verifiable -MockWith {
-			Write-Host $NoClobber
 			return;
 		}
 
@@ -20,7 +19,7 @@ Describe "Write-PoShMonHtmlReport" {
 			$PoShMonConfigurationGlobal = New-PoShMonConfiguration { General -EnvironmentName "Global Test" }
 
 			$testMonitoringOutput = @()
-			$testMonitoringOutput | Write-PoShMonHtmlReport -OutputFilePath "C:\Temp\PoShMonReport.html"
+			Write-PoShMonHtmlReport -PoShMonOutputValues $testMonitoringOutput -OutputFilePath "C:\Temp\PoShMonReport.html"
 
 			Assert-MockCalled -CommandName New-HtmlBody -ParameterFilter { $PoShMonConfiguration.General.EnvironmentName -eq "Global Test" }
 			Assert-MockCalled -CommandName Out-File
@@ -32,7 +31,7 @@ Describe "Write-PoShMonHtmlReport" {
 			$Global:TotalElapsedPoShMonTime = New-TimeSpan -Minutes 1 -Seconds 2
 
 			$testMonitoringOutput = @()
-			$testMonitoringOutput | Write-PoShMonHtmlReport -OutputFilePath "C:\Temp\PoShMonReport.html"
+			Write-PoShMonHtmlReport -PoShMonOutputValues $testMonitoringOutput -OutputFilePath "C:\Temp\PoShMonReport.html"
 
 			Assert-MockCalled -CommandName New-HtmlBody -ParameterFilter { $TotalElapsedTime.TotalMilliseconds -eq 62000 }
 			Assert-MockCalled -CommandName Out-File
@@ -44,7 +43,7 @@ Describe "Write-PoShMonHtmlReport" {
 			$PoShMonConfigurationGlobal = New-PoShMonConfiguration { General -EnvironmentName "Global Test" }
 
 			$testMonitoringOutput = @()
-			$testMonitoringOutput | Write-PoShMonHtmlReport -OutputFilePath "C:\Temp\PoShMonReport.html" -PoShMonConfiguration $PoShMonConfigurationTest
+			Write-PoShMonHtmlReport -PoShMonOutputValues $testMonitoringOutput -OutputFilePath "C:\Temp\PoShMonReport.html" -PoShMonConfiguration $PoShMonConfigurationTest
 
 			Assert-MockCalled -CommandName New-HtmlBody -ParameterFilter { $PoShMonConfiguration.General.EnvironmentName -eq "Instance Test" }
 			Assert-MockCalled -CommandName Out-File
@@ -57,7 +56,7 @@ Describe "Write-PoShMonHtmlReport" {
 			$TestTimeSpan = New-TimeSpan -Minutes 2 -Seconds 3
 
 			$testMonitoringOutput = @()
-			$testMonitoringOutput | Write-PoShMonHtmlReport -OutputFilePath "C:\Temp\PoShMonReport.html" -TotalElapsedTime $TestTimeSpan
+			Write-PoShMonHtmlReport -PoShMonOutputValues $testMonitoringOutput -OutputFilePath "C:\Temp\PoShMonReport.html" -TotalElapsedTime $TestTimeSpan
 
 			Assert-MockCalled -CommandName New-HtmlBody -ParameterFilter { $TotalElapsedTime.TotalMilliseconds -eq 123000 }
 			Assert-MockCalled -CommandName Out-File
@@ -70,7 +69,7 @@ Describe "Write-PoShMonHtmlReport" {
 			$TestTimeSpan = New-TimeSpan -Minutes 2 -Seconds 3
 
 			$testMonitoringOutput = @()
-			$testMonitoringOutput | Write-PoShMonHtmlReport -OutputFilePath "C:\Temp\PoShMonReport.html" -TotalElapsedTime $TestTimeSpan
+			Write-PoShMonHtmlReport -PoShMonOutputValues $testMonitoringOutput -OutputFilePath "C:\Temp\PoShMonReport.html" -TotalElapsedTime $TestTimeSpan
 
 			Assert-MockCalled -CommandName Out-File -ParameterFilter { $NoClobber -eq $true }
 
@@ -83,7 +82,67 @@ Describe "Write-PoShMonHtmlReport" {
 			$TestTimeSpan = New-TimeSpan -Minutes 2 -Seconds 3
 
 			$testMonitoringOutput = @()
-			$testMonitoringOutput | Write-PoShMonHtmlReport -OutputFilePath "C:\Temp\PoShMonReport.html" -TotalElapsedTime $TestTimeSpan -OverwriteFileIfExists:$true
+			Write-PoShMonHtmlReport -PoShMonOutputValues $testMonitoringOutput -OutputFilePath "C:\Temp\PoShMonReport.html" -TotalElapsedTime $TestTimeSpan -OverwriteFileIfExists:$true
+
+			Assert-MockCalled -CommandName Out-File -ParameterFilter { $NoClobber -eq $false }
+		}
+
+		It "Writes All Output in One Go" {
+
+			$PoShMonConfigurationGlobal = New-PoShMonConfiguration { General -EnvironmentName "Global Test" }
+			$Global:TotalElapsedPoShMonTime = New-TimeSpan -Minutes 1 -Seconds 2
+			$TestTimeSpan = New-TimeSpan -Minutes 2 -Seconds 3
+
+			$testMonitoringOutput = @(
+                @{
+                    "SectionHeader" = "Grouped Test"
+                    "OutputHeaders" = @{ 'EventID' = 'Event ID'; 'Message' ='Message' }
+                    "NoIssuesFound" = $true
+                    "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
+                    "OutputValues" = @(
+                                        @{
+                                            "GroupName" = "Server 1"
+                                            "GroupOutputValues" = @(
+                                                @{
+                                                    "EventID" = 123
+                                                    "Message" = "Message 1"
+                                                },
+                                                @{
+                                                    "EventID" = 456
+                                                    "Message" = "Message 2"
+                                                }
+                                            )
+                                        },
+                                        @{
+                                            "GroupName" = "Server 2"
+                                            "GroupOutputValues" = @(
+                                                @{
+                                                    "EventID" = 789
+                                                    "Message" = "Message 3"
+                                                }
+                                            )
+                                        }
+                                    )
+                }
+                @{
+                    "SectionHeader" = "Ungrouped Test"
+                    "OutputHeaders" = @{ 'ComponentName' = 'Component'; 'State' = 'State' }
+                    "NoIssuesFound" = $false
+                    "ElapsedTime" = (Get-Date).Subtract((Get-Date).AddMinutes(-1))
+                    "OutputValues" = @(
+                                        @{
+                                            "ComponentName" = 123
+                                            "State" = "State 1"
+                                        },
+                                        @{
+                                            "ComponentName" = 456
+                                            "State" = "State 2"
+                                        }
+                                    )
+                }
+			)
+			
+			Write-PoShMonHtmlReport -PoShMonOutputValues $testMonitoringOutput -OutputFilePath "C:\Temp\PoShMonReport.html" -TotalElapsedTime $TestTimeSpan -OverwriteFileIfExists:$true
 
 			Assert-MockCalled -CommandName Out-File -ParameterFilter { $NoClobber -eq $false }
 		}
