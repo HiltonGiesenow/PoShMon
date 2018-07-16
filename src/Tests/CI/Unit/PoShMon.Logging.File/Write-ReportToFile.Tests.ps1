@@ -2,7 +2,7 @@ $rootPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPa
 Remove-Module PoShMon -ErrorAction SilentlyContinue
 Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 
-Describe "Write-ReportToFile" {
+Describe "Write-PoShMonHtmlReport" {
 
 	InModuleScope PoShMon {
 
@@ -19,7 +19,7 @@ Describe "Write-ReportToFile" {
 			$PoShMonConfigurationGlobal = New-PoShMonConfiguration { General -EnvironmentName "Global Test" }
 
 			$testMonitoringOutput = @()
-			$testMonitoringOutput | Write-ReportToFile -OutputFilePath "C:\Temp\PoShMonReport.html"
+			$testMonitoringOutput | Write-PoShMonHtmlReport -OutputFilePath "C:\Temp\PoShMonReport.html"
 
 			Assert-MockCalled -CommandName New-HtmlBody -ParameterFilter { $PoShMonConfiguration.General.EnvironmentName -eq "Global Test" }
 			Assert-MockCalled -CommandName Out-File
@@ -31,7 +31,7 @@ Describe "Write-ReportToFile" {
 			$Global:TotalElapsedPoShMonTime = New-TimeSpan -Minutes 1 -Seconds 2
 
 			$testMonitoringOutput = @()
-			$testMonitoringOutput | Write-ReportToFile -OutputFilePath "C:\Temp\PoShMonReport.html"
+			$testMonitoringOutput | Write-PoShMonHtmlReport -OutputFilePath "C:\Temp\PoShMonReport.html"
 
 			Assert-MockCalled -CommandName New-HtmlBody -ParameterFilter { $TotalElapsedTime.TotalMilliseconds -eq 62000 }
 			Assert-MockCalled -CommandName Out-File
@@ -43,7 +43,7 @@ Describe "Write-ReportToFile" {
 			$PoShMonConfigurationGlobal = New-PoShMonConfiguration { General -EnvironmentName "Global Test" }
 
 			$testMonitoringOutput = @()
-			$testMonitoringOutput | Write-ReportToFile -OutputFilePath "C:\Temp\PoShMonReport.html" -PoShMonConfiguration $PoShMonConfigurationTest
+			$testMonitoringOutput | Write-PoShMonHtmlReport -OutputFilePath "C:\Temp\PoShMonReport.html" -PoShMonConfiguration $PoShMonConfigurationTest
 
 			Assert-MockCalled -CommandName New-HtmlBody -ParameterFilter { $PoShMonConfiguration.General.EnvironmentName -eq "Instance Test" }
 			Assert-MockCalled -CommandName Out-File
@@ -56,7 +56,7 @@ Describe "Write-ReportToFile" {
 			$TestTimeSpan = New-TimeSpan -Minutes 2 -Seconds 3
 
 			$testMonitoringOutput = @()
-			$testMonitoringOutput | Write-ReportToFile -OutputFilePath "C:\Temp\PoShMonReport.html" -TotalElapsedTime $TestTimeSpan
+			$testMonitoringOutput | Write-PoShMonHtmlReport -OutputFilePath "C:\Temp\PoShMonReport.html" -TotalElapsedTime $TestTimeSpan
 
 			Assert-MockCalled -CommandName New-HtmlBody -ParameterFilter { $TotalElapsedTime.TotalMilliseconds -eq 123000 }
 			Assert-MockCalled -CommandName Out-File
