@@ -23,8 +23,7 @@ Function Invoke-MonitoringCore
 
     try {
         # Auto-Discover Servers
-        if ($FarmDiscoveryFunctionName -ne $null -and $FarmDiscoveryFunctionName -ne '')
-            { $PoShMonConfiguration.General.ServerNames = & $FarmDiscoveryFunctionName $PoShMonConfiguration }
+        $PoShMonConfiguration.General.ServerNames = AutoDiscover-ServerNames $PoShMonConfiguration $FarmDiscoveryFunctionName
 
         # Perform the actual main monitoring tests
         $outputValues = $TestList | `
