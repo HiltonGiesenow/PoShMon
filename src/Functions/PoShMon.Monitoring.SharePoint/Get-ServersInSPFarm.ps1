@@ -22,7 +22,8 @@ Function Get-ServersInSPFarm
 
         # Auto-Discover Servers
         $serverNames = Invoke-Command -Session $remoteSession -ScriptBlock {
-                                                        Get-SPServer | Where Role -ne "Invalid" | Select -ExpandProperty Name }
+                                                        Get-SPServer | Where Role -ne "Invalid" | Select -ExpandProperty Name
+                                                    } -ErrorAction Stop
 
         return $serverNames
 

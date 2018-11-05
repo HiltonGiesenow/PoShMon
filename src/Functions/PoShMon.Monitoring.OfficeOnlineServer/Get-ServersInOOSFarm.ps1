@@ -12,7 +12,7 @@ Function Get-ServersInOOSFarm
         # Auto-Discover Servers
         $serverNames = Invoke-Command -Session $remoteSession -ScriptBlock {
                             Get-OfficeWebAppsFarm | Select -ExpandProperty Machines | Select -ExpandProperty MachineName
-                        }
+                        } -ErrorAction Stop
 
         return $serverNames
 
