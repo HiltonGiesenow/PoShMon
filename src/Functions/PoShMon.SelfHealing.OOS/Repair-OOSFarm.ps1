@@ -1,19 +1,20 @@
-Function Repair-Environment
+Function Repair-OOSFarm
 {
     [CmdletBinding()]
     Param(
         [hashtable]$PoShMonConfiguration,
-        [System.Collections.ArrayList]$PoShMonOutputValues,
-        [string[]]$RepairScripts
+        [System.Collections.ArrayList]$PoShMonOutputValues
     )
 
-    $repairFunctionNames = Import-RepairScripts $RepairScripts
+    $repairFunctionNames = 'Repair-W3ServiceOnOOSHost'
 
     #try {
         $repairOutput = Invoke-Repairs $repairFunctionNames $PoShMonConfiguration $PoShMonOutputValues
     #} catch {
     #    Send-ExceptionNotifications -PoShMonConfiguration $PoShMonConfiguration -Exception $_.Exception -Action "Repairing"
     #}
+
+    #Initialize-RepairNotifications -PoShMonConfiguration $PoShMonConfiguration -RepairOutputValues $repairOutput
 
     return $repairOutput
 }

@@ -85,7 +85,7 @@ Describe "Test-ComputerTime" {
 
             $output.Count | Should Be 3
             $output[0].ToString() | Should Be "Initiating 'Server Clock Review' Test..."
-            $output[1].ToString() | Should Be "`tServer1: 10:15"
+            $output[1].ToString() | Should Be "`tServer1: 10:15" #
             $output[2].ToString() | Should Be "Complete 'Server Clock Review' Test, Issues Found: No"
 
         }
