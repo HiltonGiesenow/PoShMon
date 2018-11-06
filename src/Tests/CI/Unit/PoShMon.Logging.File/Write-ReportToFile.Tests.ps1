@@ -28,7 +28,7 @@ Describe "Write-PoShMonHtmlReport" {
 		It "Should pick up the Global TimeSpan object if one is not passed in" {
 
 			$PoShMonConfigurationGlobal = New-PoShMonConfiguration { General -EnvironmentName "Global Test" }
-			$Global:TotalElapsedPoShMonTime = New-TimeSpan -Minutes 1 -Seconds 2
+			$Global:PoShMon_TotalElapsedTime = New-TimeSpan -Minutes 1 -Seconds 2
 
 			$testMonitoringOutput = @()
 			Write-PoShMonHtmlReport -PoShMonOutputValues $testMonitoringOutput -OutputFilePath "C:\Temp\PoShMonReport.html"
@@ -52,7 +52,7 @@ Describe "Write-PoShMonHtmlReport" {
 		It "Should use the provided TimeSpan object if one is passed in" {
 
 			$PoShMonConfigurationGlobal = New-PoShMonConfiguration { General -EnvironmentName "Global Test" }
-			$Global:TotalElapsedPoShMonTime = New-TimeSpan -Minutes 1 -Seconds 2
+			$Global:PoShMon_TotalElapsedTime = New-TimeSpan -Minutes 1 -Seconds 2
 			$TestTimeSpan = New-TimeSpan -Minutes 2 -Seconds 3
 
 			$testMonitoringOutput = @()
@@ -65,7 +65,7 @@ Describe "Write-PoShMonHtmlReport" {
 		It "Passes in NoClobber correctly" {
 
 			$PoShMonConfigurationGlobal = New-PoShMonConfiguration { General -EnvironmentName "Global Test" }
-			$Global:TotalElapsedPoShMonTime = New-TimeSpan -Minutes 1 -Seconds 2
+			$Global:PoShMon_TotalElapsedTime = New-TimeSpan -Minutes 1 -Seconds 2
 			$TestTimeSpan = New-TimeSpan -Minutes 2 -Seconds 3
 
 			$testMonitoringOutput = @()
@@ -78,7 +78,7 @@ Describe "Write-PoShMonHtmlReport" {
 		It "Passes in NoClobber correctly for FALSE" {
 
 			$PoShMonConfigurationGlobal = New-PoShMonConfiguration { General -EnvironmentName "Global Test" }
-			$Global:TotalElapsedPoShMonTime = New-TimeSpan -Minutes 1 -Seconds 2
+			$Global:PoShMon_TotalElapsedTime = New-TimeSpan -Minutes 1 -Seconds 2
 			$TestTimeSpan = New-TimeSpan -Minutes 2 -Seconds 3
 
 			$testMonitoringOutput = @()
@@ -90,7 +90,7 @@ Describe "Write-PoShMonHtmlReport" {
 		It "Writes All Output in One Go" {
 
 			$PoShMonConfigurationGlobal = New-PoShMonConfiguration { General -EnvironmentName "Global Test" }
-			$Global:TotalElapsedPoShMonTime = New-TimeSpan -Minutes 1 -Seconds 2
+			$Global:PoShMon_TotalElapsedTime = New-TimeSpan -Minutes 1 -Seconds 2
 			$TestTimeSpan = New-TimeSpan -Minutes 2 -Seconds 3
 
 			$testMonitoringOutput = @(

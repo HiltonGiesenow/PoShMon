@@ -52,7 +52,7 @@ Function Invoke-MonitoringCore
         $stopWatch.Stop()
     }
 
-	$Global:TotalElapsedPoShMonTime = $stopWatch.Elapsed
+	$Global:PoShMon_TotalElapsedTime = $stopWatch.Elapsed
 
     Initialize-Notifications -PoShMonConfiguration $PoShMonConfiguration -TestOutputValues $outputValues -TotalElapsedTime $stopWatch.Elapsed
 
