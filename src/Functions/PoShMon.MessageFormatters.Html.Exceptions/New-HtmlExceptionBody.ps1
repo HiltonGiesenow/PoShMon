@@ -9,7 +9,7 @@ Function New-HtmlExceptionBody
 
 	$emailBody = ""
 	
-    $emailBody += New-HtmlHeader $PoShMonConfiguration ' - <span style="color:darkred">Exception Occurred</span>'
+    $emailBody += New-HtmlHeader $PoShMonConfiguration 'PoShMon Monitoring - <span style="color:darkred">Exception Occurred</span>'
 
     $emailBody += '<div style="width:99%; border: 5px solid #FFFFFF; background-color: #FCCFC5; padding: 5px">'
 

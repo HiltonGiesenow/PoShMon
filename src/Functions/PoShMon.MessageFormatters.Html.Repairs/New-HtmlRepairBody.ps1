@@ -8,14 +8,14 @@ Function New-HtmlRepairBody
 
     $emailBody = ''
             
-    $emailBody += New-HtmlRepairHeader "$($PoShMonConfiguration.General.EnvironmentName) Repairs Report"
+    $emailBody += New-HtmlHeader $PoShMonConfiguration "PoShMon Repairs Report"
 
     foreach ($repairOutputValue in $RepairOutputValues)
     {
         $emailBody += New-HtmlRepairOutputBody -Output $repairOutputValue
     }
 
-    $emailBody += New-HtmlRepairFooter
+    $emailBody += New-HtmlFooter $PoShMonConfiguration
 
     return $emailBody
 }
