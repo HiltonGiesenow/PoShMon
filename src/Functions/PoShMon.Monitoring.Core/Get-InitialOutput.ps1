@@ -11,7 +11,7 @@ Function Get-InitialOutput
 
     Write-Verbose "Initiating '$SectionHeader' Test..."
 
-    $initialOutput =  @{
+    $initialOutput = @{
                         "SectionHeader" = $sectionHeader;
                         "NoIssuesFound" = $true;
                         "OutputHeaders" = $OutputHeaders;

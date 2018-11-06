@@ -1,4 +1,4 @@
-Function Dummy-Repair2
+Function Global:Dummy-Repair2
 {
     [CmdletBinding()]
     Param(
