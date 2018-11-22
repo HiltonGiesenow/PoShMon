@@ -137,6 +137,7 @@ Describe "Test-EventLogs" {
         
             $actual.NoIssuesFound | Should Be $false
         }
+
         It "Should group per server" -Skip { #no longer valid
         
             Mock -CommandName Get-WmiObject -MockWith {
@@ -168,6 +169,7 @@ Describe "Test-EventLogs" {
             $actual.OutputValues[1].Message  | Should Be "Another Sample Message"
             $actual.OutputValues[1].InstanceCount  | Should Be 1
         }
+
         It "Should group on EventID and Message" {
 
             Mock -CommandName Get-WmiObject -MockWith {
@@ -273,7 +275,8 @@ Describe "Test-EventLogs-NewScope" {
 			$actual.OutputValues[3].ServerName  | Should Be "Server3"
             $actual.OutputValues[3].Message  | Should Be $null
             $actual.OutputValues[3].InstanceCount  | Should Be $null
-		}
+        }
+        
         It "Should write the expected Warning output - Failing Server in Group" {
 
             $poShMonConfiguration = New-PoShMonConfiguration {
@@ -289,7 +292,8 @@ Describe "Test-EventLogs-NewScope" {
             $output.Count | Should Be 2
             $output[0].ToString() | Should Be "`t`t123 : 2 : Test App : domain\user1 : $($date.ToString()) - Sample Message"
             $output[1].ToString() | Should Be "`t`t123 : 1 : Test App : domain\user1 : $($date.AddMinutes(-2).ToString()) - Another Sample Message"
-		}
+        }
+        
         It "Should write the expected Verbose output - Failing Server in Group" {
 
             $poShMonConfiguration = New-PoShMonConfiguration {
