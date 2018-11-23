@@ -30,9 +30,20 @@ Function Test-EventLogs
                 {
                     $currentEntry = $eventLogEntryGroup.Group[0]
 
+                    $markedForIgnore = $false
+                    if ($PoShMonConfiguration.OperatingSystem.EventLogIgnores -ne $null)
+                    {
+                        foreach ($EventLogIgnore in $PoShMonConfiguration.OperatingSystem.EventLogIgnores)
+                        {
+                            if ($EventLogIgnore.EventID -eq $currentEntry.EventCode -and ($EventLogIgnore.IgnoreIfLessThan -eq 0 -or $eventLogEntryGroup.Count -lt $EventLogIgnore.IgnoreIfLessThan))
+                                { $markedForIgnore = $true }
+                        }
+                    }
+
 					#if ($EventIDIgnoreList.Count -eq 0 -or $EventIDIgnoreList.ContainsKey($currentEntry.EventCode) -eq $false)
-					if ($PoShMonConfiguration.OperatingSystem.EventIDIgnoreList.Count -eq 0 -or `
-					 	$PoShMonConfiguration.OperatingSystem.EventIDIgnoreList.ContainsKey($currentEntry.EventCode.ToString()) -eq $false)
+					#if ($PoShMonConfiguration.OperatingSystem.EventIDIgnoreList.Count -eq 0 -or `
+                    # 	$PoShMonConfiguration.OperatingSystem.EventIDIgnoreList.ContainsKey($currentEntry.EventCode.ToString()) -eq $false)
+                    if ($markedForIgnore -eq $false)
                     {
 						$mainOutput.NoIssuesFound = $false
 						$serverHasEntries = $true

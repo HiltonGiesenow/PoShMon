@@ -162,12 +162,12 @@ Describe "Test-EventLogs" {
         
             $actual.NoIssuesFound | Should Be $false
 
-            $actual.OutputValues.Count  | Should Be 6
-            $actual.OutputValues[0].ServerName  | Should Be "Server1"
-            $actual.OutputValues[0].Message  | Should Be "Sample Message"
-            $actual.OutputValues[0].InstanceCount  | Should Be 2
-            $actual.OutputValues[1].Message  | Should Be "Another Sample Message"
-            $actual.OutputValues[1].InstanceCount  | Should Be 1
+            $actual.OutputValues.Count | Should Be 6
+            $actual.OutputValues[0].ServerName | Should Be "Server1"
+            $actual.OutputValues[0].Message | Should Be "Sample Message"
+            $actual.OutputValues[0].InstanceCount | Should Be 2
+            $actual.OutputValues[1].Message | Should Be "Another Sample Message"
+            $actual.OutputValues[1].InstanceCount | Should Be 1
         }
 
         It "Should group on EventID and Message" {
@@ -194,20 +194,20 @@ Describe "Test-EventLogs" {
         
             $actual.NoIssuesFound | Should Be $false
 
-            $actual.OutputValues.Count  | Should Be 6
-            $actual.OutputValues[0].ServerName  | Should Be "Server1"
-            $actual.OutputValues[0].Message  | Should Be "Sample Message"
-            $actual.OutputValues[0].InstanceCount  | Should Be 2
-            $actual.OutputValues[1].ServerName  | Should Be "Server1"
-            $actual.OutputValues[1].Message  | Should Be "Another Sample Message"
-            $actual.OutputValues[1].InstanceCount  | Should Be 1
+            $actual.OutputValues.Count | Should Be 6
+            $actual.OutputValues[0].ServerName | Should Be "Server1"
+            $actual.OutputValues[0].Message | Should Be "Sample Message"
+            $actual.OutputValues[0].InstanceCount | Should Be 2
+            $actual.OutputValues[1].ServerName | Should Be "Server1"
+            $actual.OutputValues[1].Message | Should Be "Another Sample Message"
+            $actual.OutputValues[1].InstanceCount | Should Be 1
 
-            $actual.OutputValues[3].ServerName  | Should Be "Server2"
-            $actual.OutputValues[3].Message  | Should Be "Sample Message"
-            $actual.OutputValues[3].InstanceCount  | Should Be 2
-            $actual.OutputValues[4].ServerName  | Should Be "Server2"
-            $actual.OutputValues[4].Message  | Should Be "Another Sample Message"
-            $actual.OutputValues[4].InstanceCount  | Should Be 1
+            $actual.OutputValues[3].ServerName | Should Be "Server2"
+            $actual.OutputValues[3].Message | Should Be "Sample Message"
+            $actual.OutputValues[3].InstanceCount | Should Be 2
+            $actual.OutputValues[4].ServerName | Should Be "Server2"
+            $actual.OutputValues[4].Message | Should Be "Another Sample Message"
+            $actual.OutputValues[4].InstanceCount | Should Be 1
 		}
 	}
 }
@@ -260,21 +260,21 @@ Describe "Test-EventLogs-NewScope" {
         
             $actual.NoIssuesFound | Should Be $false
 
-            $actual.OutputValues.Count  | Should Be 4
-            $actual.OutputValues[0].ServerName  | Should Be "Server1"
-            $actual.OutputValues[0].Message  | Should Be $null
-            $actual.OutputValues[0].InstanceCount  | Should Be $null
+            $actual.OutputValues.Count | Should Be 4
+            $actual.OutputValues[0].ServerName | Should Be "Server1"
+            $actual.OutputValues[0].Message | Should Be $null
+            $actual.OutputValues[0].InstanceCount | Should Be $null
 
-            $actual.OutputValues[1].ServerName  | Should Be "Server2"
-            $actual.OutputValues[1].Message  | Should Be "Sample Message"
-            $actual.OutputValues[1].InstanceCount  | Should Be 2
-            $actual.OutputValues[2].ServerName  | Should Be "Server2"
-            $actual.OutputValues[2].Message  | Should Be "Another Sample Message"
-			$actual.OutputValues[2].InstanceCount  | Should Be 1
+            $actual.OutputValues[1].ServerName | Should Be "Server2"
+            $actual.OutputValues[1].Message | Should Be "Sample Message"
+            $actual.OutputValues[1].InstanceCount | Should Be 2
+            $actual.OutputValues[2].ServerName | Should Be "Server2"
+            $actual.OutputValues[2].Message | Should Be "Another Sample Message"
+			$actual.OutputValues[2].InstanceCount | Should Be 1
 
-			$actual.OutputValues[3].ServerName  | Should Be "Server3"
-            $actual.OutputValues[3].Message  | Should Be $null
-            $actual.OutputValues[3].InstanceCount  | Should Be $null
+			$actual.OutputValues[3].ServerName | Should Be "Server3"
+            $actual.OutputValues[3].Message | Should Be $null
+            $actual.OutputValues[3].InstanceCount | Should Be $null
         }
         
         It "Should write the expected Warning output - Failing Server in Group" {
@@ -366,36 +366,181 @@ Describe "Test-EventLogs-IgnoreListScope" {
         
             $actual.NoIssuesFound | Should Be $false
 
-            $actual.OutputValues.Count  | Should Be 3
-            $actual.OutputValues[0].ServerName  | Should Be "Server1"
-            $actual.OutputValues[0].Message  | Should Be "Sample Message"
-            $actual.OutputValues[0].InstanceCount  | Should Be 1
-            $actual.OutputValues[1].ServerName  | Should Be "Server1"
-            $actual.OutputValues[1].Message  | Should Be "Another Sample Message"
-			$actual.OutputValues[1].InstanceCount  | Should Be 2
-            $actual.OutputValues[2].ServerName  | Should Be "Server1"
-            $actual.OutputValues[2].Message  | Should Be "3rd Sample Message"
-			$actual.OutputValues[2].InstanceCount  | Should Be 1
+            $actual.OutputValues.Count | Should Be 3
+            $actual.OutputValues[0].ServerName | Should Be "Server1"
+            $actual.OutputValues[0].Message | Should Be "Sample Message"
+            $actual.OutputValues[0].InstanceCount | Should Be 1
+            $actual.OutputValues[1].ServerName | Should Be "Server1"
+            $actual.OutputValues[1].Message | Should Be "Another Sample Message"
+			$actual.OutputValues[1].InstanceCount | Should Be 2
+            $actual.OutputValues[2].ServerName | Should Be "Server1"
+            $actual.OutputValues[2].Message | Should Be "3rd Sample Message"
+			$actual.OutputValues[2].InstanceCount | Should Be 1
 		}
 
-		It "Should NOT show items marked for Ignore" {
+		It "Should NOT show items marked for Ignore (using deprecated EventIDIgnoreList)" {
 
             $poShMonConfiguration = New-PoShMonConfiguration {
-                            General -ServerNames 'Server1'
-                            OperatingSystem -EventIDIgnoreList @{ "456" = "foo"}
-                        }
+                                        General -ServerNames 'Server1'
+                                        OperatingSystem -EventIDIgnoreList @{ "456" = "foo"}
+                                    }
 
             $actual = Test-EventLogs $poShMonConfiguration -WarningAction SilentlyContinue
         
             $actual.NoIssuesFound | Should Be $false
 
-            $actual.OutputValues.Count  | Should Be 2
-            $actual.OutputValues[0].ServerName  | Should Be "Server1"
-            $actual.OutputValues[0].Message  | Should Be "Sample Message"
-            $actual.OutputValues[0].InstanceCount  | Should Be 1
-            $actual.OutputValues[1].ServerName  | Should Be "Server1"
-            $actual.OutputValues[1].Message  | Should Be "3rd Sample Message"
-			$actual.OutputValues[1].InstanceCount  | Should Be 1
-		}
+            $actual.OutputValues.Count | Should Be 2
+            $actual.OutputValues[0].ServerName | Should Be "Server1"
+            $actual.OutputValues[0].Message | Should Be "Sample Message"
+            $actual.OutputValues[0].InstanceCount | Should Be 1
+            $actual.OutputValues[1].ServerName | Should Be "Server1"
+            $actual.OutputValues[1].Message | Should Be "3rd Sample Message"
+			$actual.OutputValues[1].InstanceCount | Should Be 1
+        }
+        
+        It "Should Ignore items within count (using deprecated EventIDIgnoreList)" {
+
+            $poShMonConfiguration = New-PoShMonConfiguration {
+                                        General -ServerNames 'Server1'
+                                        OperatingSystem -EventIDIgnoreList @{ "456" = "foo"}
+                                    }
+
+            $actual = Test-EventLogs $poShMonConfiguration -WarningAction SilentlyContinue
+        
+            $actual.NoIssuesFound | Should Be $false
+
+            $actual.OutputValues.Count | Should Be 2
+            $actual.OutputValues[0].ServerName | Should Be "Server1"
+            $actual.OutputValues[0].Message | Should Be "Sample Message"
+            $actual.OutputValues[0].InstanceCount | Should Be 1
+            $actual.OutputValues[1].ServerName | Should Be "Server1"
+            $actual.OutputValues[1].Message | Should Be "3rd Sample Message"
+			$actual.OutputValues[1].InstanceCount | Should Be 1
+        }
+        
+        It "Should write the expected Warning output for deprecated EventIDIgnoreList" {
+
+            $actual = New-PoShMonConfiguration {
+                        General -ServerNames 'Server1'
+                        OperatingSystem -EventIDIgnoreList @{ "456" = "foo"}
+                    }
+            $output = $($actual = New-PoShMonConfiguration {
+                                    General -ServerNames 'Server1'
+                                    OperatingSystem -EventIDIgnoreList @{ "456" = "foo"}
+                                }) 3>&1
+
+            $output.Count | Should Be 1
+            $output[0].ToString() | Should Be "The 'EventIDIgnoreList' setting has been deprecated, please use 'EventLogIgnore' instances, for example New-PoShMonConfiguration { OperatingSystem { EventLogIgnore 123, EventLogIgnore 456 }}"
+        }
+
+        It "Should NOT show items marked for Ignore (single item)" {
+
+            $poShMonConfiguration = New-PoShMonConfiguration {
+                                        General -ServerNames 'Server1'
+                                        OperatingSystem -EventLogIgnores { 
+                                            EventLogIgnore -EventID 456
+                                        }
+                                    }
+
+            $actual = Test-EventLogs $poShMonConfiguration -WarningAction SilentlyContinue
+        
+            $actual.NoIssuesFound | Should Be $false
+
+            $actual.OutputValues.Count | Should Be 2
+            $actual.OutputValues[0].ServerName | Should Be "Server1"
+            $actual.OutputValues[0].Message | Should Be "Sample Message"
+            $actual.OutputValues[0].InstanceCount | Should Be 1
+            $actual.OutputValues[1].ServerName | Should Be "Server1"
+            $actual.OutputValues[1].Message | Should Be "3rd Sample Message"
+			$actual.OutputValues[1].InstanceCount | Should Be 1
+        }
+
+        It "Should NOT show items marked for Ignore (multiple ignores)" {
+
+            $poShMonConfiguration = New-PoShMonConfiguration {
+                                        General -ServerNames 'Server1'
+                                        OperatingSystem -EventLogIgnores { 
+                                            EventLogIgnore -EventID 123
+                                            EventLogIgnore -EventID 456
+                                        }
+                                    }
+
+            $actual = Test-EventLogs $poShMonConfiguration -WarningAction SilentlyContinue
+        
+            $actual.NoIssuesFound | Should Be $false
+
+            $actual.OutputValues.Count | Should Be 1
+            $actual.OutputValues[0].ServerName | Should Be "Server1"
+            $actual.OutputValues[0].Message | Should Be "3rd Sample Message"
+			$actual.OutputValues[0].InstanceCount | Should Be 1
+        }
+        
+        It "Should NOT show items marked for Ignore (other config parameters)" {
+
+            $poShMonConfiguration = New-PoShMonConfiguration {
+                                        General -ServerNames 'Server1'
+                                        OperatingSystem -CPULoadThresholdPercent 50 -EventLogIgnores { 
+                                            EventLogIgnore -EventID 123
+                                            EventLogIgnore -EventID 456
+                                        } -DriveSpaceThreshold 55
+                                    }
+
+            $actual = Test-EventLogs $poShMonConfiguration -WarningAction SilentlyContinue
+        
+            $actual.NoIssuesFound | Should Be $false
+
+            $actual.OutputValues.Count | Should Be 1
+            $actual.OutputValues[0].ServerName | Should Be "Server1"
+            $actual.OutputValues[0].Message | Should Be "3rd Sample Message"
+			$actual.OutputValues[0].InstanceCount | Should Be 1
+        }
+        
+        It "Should Ignore items within count" {
+
+            $poShMonConfiguration = New-PoShMonConfiguration {
+                                        General -ServerNames 'Server1'
+                                        OperatingSystem -EventLogIgnores { 
+                                            EventLogIgnore -EventID 456 -IgnoreIfLessThan 3
+                                        }
+                                    }
+
+            $actual = Test-EventLogs $poShMonConfiguration -WarningAction SilentlyContinue
+        
+            $actual.NoIssuesFound | Should Be $false
+
+            $actual.OutputValues.Count | Should Be 2
+            $actual.OutputValues[0].ServerName | Should Be "Server1"
+            $actual.OutputValues[0].Message | Should Be "Sample Message"
+            $actual.OutputValues[0].InstanceCount | Should Be 1
+            $actual.OutputValues[1].ServerName | Should Be "Server1"
+            $actual.OutputValues[1].Message | Should Be "3rd Sample Message"
+			$actual.OutputValues[1].InstanceCount | Should Be 1
+        }
+
+        It "Should flag items outside count" {
+
+            $poShMonConfiguration = New-PoShMonConfiguration {
+                                        General -ServerNames 'Server1'
+                                        OperatingSystem -EventLogIgnores { 
+                                            EventLogIgnore -EventID 456 -IgnoreIfLessThan 1
+                                            EventLogIgnore -EventID 999
+                                        }
+                                    }
+
+            $actual = Test-EventLogs $poShMonConfiguration -WarningAction SilentlyContinue
+        
+            $actual.NoIssuesFound | Should Be $false
+
+            $actual.OutputValues.Count | Should Be 3
+            $actual.OutputValues[0].ServerName | Should Be "Server1"
+            $actual.OutputValues[0].Message | Should Be "Sample Message"
+            $actual.OutputValues[0].InstanceCount | Should Be 1
+            $actual.OutputValues[1].ServerName | Should Be "Server1"
+            $actual.OutputValues[1].Message | Should Be "Another Sample Message"
+            $actual.OutputValues[1].InstanceCount | Should Be 2
+            $actual.OutputValues[2].ServerName | Should Be "Server1"
+            $actual.OutputValues[2].Message | Should Be "3rd Sample Message"
+			$actual.OutputValues[2].InstanceCount | Should Be 1
+        }
     }
 }

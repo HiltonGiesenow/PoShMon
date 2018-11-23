@@ -12,7 +12,8 @@ Function New-OSConfig
         [double]$DriveSpaceThresholdPercent, #This is GB
         [string[]]$WindowsServices = @(),
         [string[]]$WindowsServicesToSkip = @(),        
-        [int]$AllowedMinutesVarianceBetweenServerTimes = 1
+        [int]$AllowedMinutesVarianceBetweenServerTimes = 1,
+        [scriptblock]$EventLogIgnores
     )
 
     if ($Script:PoShMon.ConfigurationItems.OperatingSystem -eq $null)
@@ -28,10 +29,21 @@ Function New-OSConfig
     if ($DriveSpaceThreshold -eq 0 -and $DriveSpaceThresholdPercent -eq 0)
         { $DriveSpaceThreshold = 10 } #GB
 
+    if ($EventIDIgnoreList.Count -gt 0)
+    {
+        Write-Warning "The 'EventIDIgnoreList' setting has been deprecated, please use 'EventLogIgnore' instances, for example New-PoShMonConfiguration { OperatingSystem { EventLogIgnore 123, EventLogIgnore 456 }}"
+        foreach ($EventIDIgnoreListKey in $EventIDIgnoreList.Keys) {
+            $eventLogIgnoresActual += New-EventLogIgnore $EventIDIgnoreListKey
+        }
+    } else {
+        if ($EventLogIgnores -ne $null)
+            { $eventLogIgnoresActual = . $EventLogIgnores }
+    }
+
     return @{
             TypeName = "PoShMon.ConfigurationItems.OperatingSystem"
             EventLogCodes = $EventLogCodes
-            EventIDIgnoreList = $EventIDIgnoreList
+            #EventIDIgnoreList = $EventIDIgnoreList
             CPULoadThresholdPercent = $CPULoadThresholdPercent
             FreeMemoryThresholdPercent = $FreeMemoryThresholdPercent
             DriveSpaceThreshold = $DriveSpaceThreshold
@@ -39,5 +51,6 @@ Function New-OSConfig
             WindowsServices = $WindowsServices
             WindowsServicesToSkip = $WindowsServicesToSkip
             AllowedMinutesVarianceBetweenServerTimes = $AllowedMinutesVarianceBetweenServerTimes
+            EventLogIgnores = $eventLogIgnoresActual
         }
 }
