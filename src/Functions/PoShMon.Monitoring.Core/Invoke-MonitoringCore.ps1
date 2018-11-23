@@ -22,9 +22,9 @@ Function Invoke-MonitoringCore
     $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
 
     try {
-        # Auto-Discover Servers
-        if ($FarmDiscoveryFunctionName -ne $null -and $FarmDiscoveryFunctionName -ne '')
-            { $PoShMonConfiguration.General.ServerNames = & $FarmDiscoveryFunctionName $PoShMonConfiguration }
+        # Auto-Discover Servers if none are supplied
+        if ($PoShMonConfiguration.General.ServerNames -eq $null)
+            { $PoShMonConfiguration.General.ServerNames = AutoDiscover-ServerNames $PoShMonConfiguration $FarmDiscoveryFunctionName }
 
         # Perform the actual main monitoring tests
         $outputValues = $TestList | `
@@ -53,7 +53,7 @@ Function Invoke-MonitoringCore
         $stopWatch.Stop()
     }
 
-	$Global:TotalElapsedPoShMonTime = $stopWatch.Elapsed
+	$Global:PoShMon_TotalElapsedTime = $stopWatch.Elapsed
 
     Initialize-Notifications -PoShMonConfiguration $PoShMonConfiguration -TestOutputValues $outputValues -TotalElapsedTime $stopWatch.Elapsed
 

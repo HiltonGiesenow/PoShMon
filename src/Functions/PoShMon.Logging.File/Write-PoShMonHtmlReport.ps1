@@ -17,7 +17,7 @@ Function Write-PoShMonHtmlReport {
 	if ($TotalElapsedTime -eq $null -or $TotalElapsedTime.Ticks -eq 0)
 	{
 		Write-Verbose "No TotalElapsedTime supplied, using Global one created previously"	
-		$TotalElapsedTime = $Global:TotalElapsedPoShMonTime
+		$TotalElapsedTime = $Global:PoShMon_TotalElapsedTime
 	}
 
 	$htmlBody = New-HtmlBody -PoShMonConfiguration $PoShMonConfiguration -SendNotificationsWhen "All" `

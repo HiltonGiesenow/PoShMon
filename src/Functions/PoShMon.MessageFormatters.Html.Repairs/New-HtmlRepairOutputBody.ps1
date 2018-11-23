@@ -9,8 +9,10 @@ Function New-HtmlRepairOutputBody
 
     $title = $output.SectionHeader
 
-    $emailSection += "<p><h1>$title</h1>"
-    $emailSection += '<table border="1">'
+    $emailSection += '<div style="width:100%; background-color: #FFFFFF;">'
+    $emailSection += '<table style="border-collapse: collapse; min-width: 500px; " cellpadding="3">'
+    $emailSection += '<thead><tr><th align=left style="border: 1px solid CCCCCC; background-color: #1D6097;">'
+    $emailSection +=    "<h2 style=""font-size: 16px; color: #FFFFFF"">$title</h2></th></tr></thead>"
 
     if ($output.ContainsKey("Exception"))
     {
@@ -19,7 +21,7 @@ Function New-HtmlRepairOutputBody
         $emailSection += "<tbody><tr><td>$($output.RepairResult)</td></tr></tbody>"
     }
 
-    $emailSection += '</table>'
+    $emailSection += '</table></div><br/>'
 
     return $emailSection
 }

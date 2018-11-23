@@ -17,8 +17,8 @@ Function New-TestOutputHtmlBody
     $emailSection += '<div style="width:100%; background-color: #FFFFFF;">'
     $emailSection += '<table style="border-collapse: collapse; min-width: 500px; " cellpadding="3">'
     $emailSection += "<thead><tr><th align=""left"" style=""border: 1px solid CCCCCC; background-color: #1D6097;"" colspan=""$($output.OutputHeaders.Keys.Count - 1)"">"
-    $emailSection +=    "<h2 style=""font-size: 16px; color: #FFFFFF"">$title</h2>"
-    $emailSection += "<th align=""right"" style=""border: 1px solid CCCCCC; background-color: #1D6097;"">"
+    $emailSection +=        "<h2 style=""font-size: 16px; color: #FFFFFF"">$title</h2>"
+    $emailSection +=    "<th align=""right"" style=""border: 1px solid CCCCCC; background-color: #1D6097;"">"
     if ($output.ContainsKey("HeaderUrl"))
         { $emailSection += "<a href=""$($output.HeaderUrl)"">[link]</a>" }
     $emailSection += "</th></tr></thead>"

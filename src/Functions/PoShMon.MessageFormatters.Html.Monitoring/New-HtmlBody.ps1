@@ -10,7 +10,7 @@ Function New-HtmlBody
 
     $emailBody = ''
             
-    $emailBody += New-HtmlHeader $PoShMonConfiguration
+    $emailBody += New-HtmlHeader $PoShMonConfiguration "PoShMon Monitoring Report"
 
     foreach ($testOutputValue in $testOutputValues)
     {
