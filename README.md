@@ -94,6 +94,14 @@ Of course there are loads of monitoring systems and tools out there, both paid a
 ---
 
 ## Release Notes
+1.2.0
+* Improved ability to ignore event log entries (based on a minimum count)
+* Added a repair for Office Online Server (previously 'Office Web Apps') to repair the W3C service if stopped
+* Improved discovery of other servers in a 'farm' product (e.g. SharePoint, Office Online Server)
+* Improved some Verbose output
+* Improved formatting for Exception and Repair emails
+* Other minor bug fixes
+
 1.1.1
 * Various bug fixes in Web tests
 * Renamed html ad hoc report function
@@ -149,15 +157,5 @@ Of course there are loads of monitoring systems and tools out there, both paid a
 * Fixed bug where Pushbullet and Office 365 Teams were not showing Environment name
 * Fixed bug in harddrive space percent test
 * Fixed bug in cpu test for standalone 'minimal config test
-
-0.10.1
-* Added Proxy settings to enable PushBullet and 0365 Teams connectivity
-* Introduced a 'minimum configuration' for local machine monitoring
-* Fixed bug in SharePoint UPS Sync monitor
-* Added Resolver for High CPU usage while SharePoint Search Index is running
-* Improved Verbose output logging
-* Added option for harddrive space to track by percent
-* Add a check for any invalid TestsToSkip
-* Fixed bug in Update-PoShMon
 
 See [here](https://github.com/HiltonGiesenow/PoShMon/wiki/Changelog) for full Changelog

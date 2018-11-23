@@ -1,4 +1,4 @@
-﻿$version = "1.1.1"
+﻿$version = "1.2.0"
 $manifestPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPath "\PoShMon.psd1"
 
 Remove-Item -Path $manifestPath -ErrorAction SilentlyContinue
@@ -19,6 +19,14 @@ Some of the key features / benefits of PoShMon are:
 For more information, documentation etc. visit https://github.com/HiltonGiesenow/PoShMon as well as the Samples folder within the module itself."
 
 $releaseNotes = "
+1.2.0
+* Improved ability to ignore event log entries (based on a minimum count)
+* Added a repair for Office Online Server (previously 'Office Web Apps') to repair the W3C service if stopped
+* Improved discovery of other servers in a 'farm' product (e.g. SharePoint, Office Online Server)
+* Improved some Verbose output
+* Improved formatting for Exception and Repair emails
+* Other minor bug fixes
+
 1.1.1
 * Various bug fixes in Web tests
 * Renamed html ad hoc report function
