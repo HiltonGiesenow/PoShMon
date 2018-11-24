@@ -31,12 +31,12 @@ $poShMonConfiguration = New-PoShMonConfiguration {
 
 $monitoringOutput = Invoke-SPMonitoring -PoShMonConfiguration $poShMonConfiguration
 
-$poShMonConfiguration.General.PrimaryServerName = ''
+$poShMonConfiguration.General.PrimaryServerName = 'OWASVR01'
 $poShMonConfiguration.General.ServerNames = 'OWASVR01'
 $poShMonConfiguration.General.EnvironmentName = 'Office Web Apps'
 $poShMonConfiguration.General.ConfigurationName = $null
 $poShMonConfiguration.WebSite = $null
 
-$monitoringOutput = Invoke-OSMonitoring -PoShMonConfiguration $poShMonConfiguration
+$monitoringOutput = Invoke-OOSMonitoring -PoShMonConfiguration $poShMonConfiguration
 
 #Remove-Module PoShMon
