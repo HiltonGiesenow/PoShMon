@@ -32,7 +32,7 @@ $poShMonConfiguration = New-PoShMonConfiguration {
 $monitoringOutput = Invoke-SPMonitoring -PoShMonConfiguration $poShMonConfiguration
 
 $poShMonConfiguration.General.PrimaryServerName = 'OWASVR01'
-$poShMonConfiguration.General.ServerNames = 'OWASVR01'
+$poShMonConfiguration.General.ServerNames = $null # this needs to be reset
 $poShMonConfiguration.General.EnvironmentName = 'Office Web Apps'
 $poShMonConfiguration.General.ConfigurationName = $null
 $poShMonConfiguration.WebSite = $null
