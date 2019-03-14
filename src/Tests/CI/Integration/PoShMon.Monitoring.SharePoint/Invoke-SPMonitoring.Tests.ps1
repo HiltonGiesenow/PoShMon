@@ -60,6 +60,10 @@ Describe "Invoke-SPMonitoring" {
             return
         }
 
+        Mock -CommandName Get-SPFarmMajorVersion -ModuleName PoShMon -Verifiable -MockWith {
+            return 16 #2016
+        }
+
         #Mock -CommandName Get-PSSession -Verifiable -MockWith {
         #    return $null
         #}
