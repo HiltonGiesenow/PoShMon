@@ -6,6 +6,7 @@ Function Invoke-MonitoringCore
         [hashtable]$PoShMonConfiguration,
         [parameter(Mandatory=$true)]
         [string[]]$TestList,
+        [string]$TestsToAutoIgnoreFunctionName = $null,
         [Parameter(HelpMessage="In the case of a Farm product, such as SharePoint, provide a function to call to auto-discover the remaining servers")]
         [string]$FarmDiscoveryFunctionName = $null,
         [string[]]$OutputOptimizationList = @(),
@@ -25,6 +26,10 @@ Function Invoke-MonitoringCore
         # Auto-Discover Servers if none are supplied
         if ($PoShMonConfiguration.General.ServerNames -eq $null)
             { $PoShMonConfiguration.General.ServerNames = AutoDiscover-ServerNames $PoShMonConfiguration $FarmDiscoveryFunctionName }
+
+        # Check for any tests that can be auto-ignored (e.g. wrong version of platform)
+        if ($TestsToAutoIgnoreFunctionName -ne $null -and $TestsToAutoIgnoreFunctionName -ne '')
+            { & $TestsToAutoIgnoreFunctionName $PoShMonConfiguration }
 
         # Perform the actual main monitoring tests
         $outputValues = $TestList | `
