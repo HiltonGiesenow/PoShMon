@@ -441,7 +441,6 @@ It "Should store exceptions in the main process for later" {
 
     $Global:PoShMon_GlobalException | Should Not Be $null
     $Global:PoShMon_GlobalException.Message | Should Be "The Exception"
-
 }
 
 }
