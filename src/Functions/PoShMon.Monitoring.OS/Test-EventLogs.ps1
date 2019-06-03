@@ -50,6 +50,9 @@ Function Test-EventLogs
 
                         Write-Warning ("`t`t" + $currentEntry.EventCode.ToString() + ' : ' + $eventLogEntryGroup.Count + ' : ' + $currentEntry.SourceName + ' : ' + $currentEntry.User + ' : ' + $currentEntry.ConvertToDateTime($currentEntry.TimeGenerated) + ' - ' + $currentEntry.Message)
                 
+                        # Depending on what happened, the Message can be empty so 'InsertionStrings' has the details
+                        $message = if ([String]::IsNullOrEmpty($currentEntry.Message) -eq $false) { $currentEntry.Message } else { $currentEntry.InsertionStrings -join ", " }
+
                         $mainOutput.OutputValues += [pscustomobject]@{
                                         'ServerName' = $serverName;
                                         'EventID' = $currentEntry.EventCode;
@@ -57,7 +60,7 @@ Function Test-EventLogs
                                         'Source' = $currentEntry.SourceName;
                                         'User' = $currentEntry.User;
                                         'Timestamp' = $currentEntry.ConvertToDateTime($currentEntry.TimeGenerated);
-                                        'Message' = $currentEntry.Message
+                                        'Message' = $message
                                     }
                     }
                 }
