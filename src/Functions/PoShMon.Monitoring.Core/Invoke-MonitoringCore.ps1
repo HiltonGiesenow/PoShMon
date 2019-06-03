@@ -23,6 +23,9 @@ Function Invoke-MonitoringCore
     $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
 
     try {
+
+        $Global:PoShMon_GlobalException = $null # clear any previous run's global exception 
+
         # Auto-Discover Servers if none are supplied
         if ($PoShMonConfiguration.General.ServerNames -eq $null)
             { $PoShMonConfiguration.General.ServerNames = AutoDiscover-ServerNames $PoShMonConfiguration $FarmDiscoveryFunctionName }
@@ -46,6 +49,7 @@ Function Invoke-MonitoringCore
         $outputValues = Invoke-Merges $PoShMonConfiguration $outputValues $MergesList
 
     } catch {
+        $Global:PoShMon_GlobalException = $_.Exception
         Send-ExceptionNotifications -PoShMonConfiguration $PoShMonConfiguration -Exception $_.Exception
     } finally {
         if ($PoShMonConfiguration.General.PrimaryServerName -ne $null -and $PoShMonConfiguration.General.PrimaryServerName -ne '')
