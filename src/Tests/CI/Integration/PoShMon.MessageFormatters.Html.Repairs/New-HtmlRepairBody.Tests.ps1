@@ -13,6 +13,17 @@ Describe "New-HtmlRepairBody" {
                 )
     }
 
+    Mock -CommandName Get-PlatformVersion -ModuleName PoShMon -Verifiable -MockWith {
+        return @(
+                    [pscustomobject]@{
+                        Major = "16"
+                        Minor = "0"
+                        Build = "1234"
+                        Revision = "1000"
+                    }
+        )
+    }
+
     It "Should return a the correct html for given repair output" {
 
             $poShMonConfiguration = New-PoShMonConfiguration {
