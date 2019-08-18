@@ -6,8 +6,10 @@ Function Invoke-MonitoringCore
         [hashtable]$PoShMonConfiguration,
         [parameter(Mandatory=$true)]
         [string[]]$TestList,
+        [string]$TestsToAutoIgnoreFunctionName = $null,
         [Parameter(HelpMessage="In the case of a Farm product, such as SharePoint, provide a function to call to auto-discover the remaining servers")]
         [string]$FarmDiscoveryFunctionName = $null,
+        [string]$PlatformVersionDiscoveryFunctionName = $null,
         [string[]]$OutputOptimizationList = @(),
         [string[]]$MergesList = @()
     )
@@ -22,9 +24,18 @@ Function Invoke-MonitoringCore
     $stopWatch = [System.Diagnostics.Stopwatch]::StartNew()
 
     try {
+
+        $Global:PoShMon_GlobalException = $null # clear any previous run's global exception 
+
         # Auto-Discover Servers if none are supplied
         if ($PoShMonConfiguration.General.ServerNames -eq $null)
             { $PoShMonConfiguration.General.ServerNames = AutoDiscover-ServerNames $PoShMonConfiguration $FarmDiscoveryFunctionName }
+
+        $PoShMonConfiguration.General.EnvironmentVersion = TryAutoDiscover-PlatformVersion $PoShMonConfiguration $PlatformVersionDiscoveryFunctionName
+
+        # Check for any tests that can be auto-ignored (e.g. wrong version of platform)
+        if ($TestsToAutoIgnoreFunctionName -ne $null -and $TestsToAutoIgnoreFunctionName -ne '')
+            { & $TestsToAutoIgnoreFunctionName $PoShMonConfiguration }
 
         # Perform the actual main monitoring tests
         $outputValues = $TestList | `
@@ -41,6 +52,7 @@ Function Invoke-MonitoringCore
         $outputValues = Invoke-Merges $PoShMonConfiguration $outputValues $MergesList
 
     } catch {
+        $Global:PoShMon_GlobalException = $_.Exception
         Send-ExceptionNotifications -PoShMonConfiguration $PoShMonConfiguration -Exception $_.Exception
     } finally {
         if ($PoShMonConfiguration.General.PrimaryServerName -ne $null -and $PoShMonConfiguration.General.PrimaryServerName -ne '')

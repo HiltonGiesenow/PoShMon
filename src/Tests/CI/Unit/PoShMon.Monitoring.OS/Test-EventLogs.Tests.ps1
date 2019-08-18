@@ -544,3 +544,57 @@ Describe "Test-EventLogs-IgnoreListScope" {
         }
     }
 }
+
+Describe "Test-EventLogs-NoMessageScope" {
+	InModuleScope PoShMon {
+
+        class EventLogItemMock {
+            [int]$EventCode
+            [string]$SourceName
+            [string]$User
+            [datetime]$TimeGenerated
+            [string]$Message
+            [string[]]$InsertionStrings
+
+            EventLogItemMock ([int]$NewEventCode, [String]$NewSourceName, [String]$NewUser, [datetime]$NewTimeGenerated, [String]$NewMessage, [String[]]$InsertionStrings) {
+                $this.EventCode = $NewEventCode;
+                $this.SourceName = $NewSourceName;
+                $this.User = $NewUser;
+                $this.TimeGenerated = $NewTimeGenerated;
+                $this.Message = $NewMessage;
+                $this.InsertionStrings = $InsertionStrings
+            }
+
+            [string] ConvertToDateTime([datetime]$something) {
+                return $something.ToString()
+            }
+		}
+		
+		Mock -CommandName Get-WmiObject -MockWith {
+			$eventsCollection = @()
+
+            $date = Get-Date -Year 2017 -Month 1 -Day 1 -Hour 9 -Minute 30 -Second 15
+
+            $eventsCollection += [EventLogItemMock]::new(123, "Test App", "domain\user1", $date, $null, @("This", "is", "the message"))
+
+			return $eventsCollection
+		}
+
+        It "Should use InsertionStrings for empty Message" {
+
+            $poShMonConfiguration = New-PoShMonConfiguration {
+                            General -ServerNames 'Server1'
+                            OperatingSystem
+                        }
+
+            $actual = Test-EventLogs $poShMonConfiguration -WarningAction SilentlyContinue
+        
+            $actual.NoIssuesFound | Should Be $false
+
+            $actual.OutputValues.Count | Should Be 1
+            $actual.OutputValues[0].ServerName | Should Be "Server1"
+            $actual.OutputValues[0].Message | Should Be "This, is, the message"
+            $actual.OutputValues[0].InstanceCount | Should Be 1
+        }
+    }
+}

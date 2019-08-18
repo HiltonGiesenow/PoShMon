@@ -12,7 +12,9 @@ Function Invoke-SPMonitoring
     $outputValues = Invoke-MonitoringCore `
                         -PoShMonConfiguration $PoShMonConfiguration `
                         -TestList (Get-SPTests) `
+                        -TestsToAutoIgnoreFunctionName 'Get-SPTestsToAutoIgnore' `
                         -FarmDiscoveryFunctionName 'Get-ServersInSPFarm' `
+                        -PlatformVersionDiscoveryFunctionName 'Get-SPFarmVersion' `
                         -OutputOptimizationList (Get-SPResolutions) `
                         -MergesList (Get-SPMerges)
 

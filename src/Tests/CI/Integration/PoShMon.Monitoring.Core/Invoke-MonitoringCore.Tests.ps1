@@ -390,3 +390,57 @@ Describe "Invoke-MonitoringCore (New Scope)" {
         $output[0].ToString().EndsWith("Dummy-MergerThatDoesntExist.ps1") | Should Be $true
     }
 }
+
+Describe "Invoke-MonitoringCore (Exception Scope)" {
+
+    Mock -CommandName AutoDiscover-ServerNames -ModuleName PoShMon -MockWith {
+        throw "The Exception"
+    }
+
+    Mock -CommandName Send-ExceptionNotifications -ModuleName PoShMon -MockWith {
+    }
+
+    Mock -CommandName Initialize-Notifications -ModuleName PoShMon -Verifiable -MockWith {
+        Write-Verbose "Final Output Received:"
+        $TestOutputValues | % { Write-Verbose "`t$($_.SectionHeader)" }
+        return
+    }
+
+It "Should notify for exceptions in the main process" {
+
+    $poShMonConfiguration = New-PoShMonConfiguration {
+                    General `
+                        -EnvironmentName 'SharePoint' `
+                        -MinutesToScanHistory 60 `
+                        -PrimaryServerName 'AppServer01' `
+                        -ConfigurationName SpFarmPosh
+                    Notifications -When All {
+                        Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
+                    }               
+                }
+
+    $actual = Invoke-MonitoringCore $poShMonConfiguration -TestList "SPServerStatus"
+
+    Assert-VerifiableMock
+}
+
+It "Should store exceptions in the main process for later" {
+
+    $poShMonConfiguration = New-PoShMonConfiguration {
+                    General `
+                        -EnvironmentName 'SharePoint' `
+                        -MinutesToScanHistory 60 `
+                        -PrimaryServerName 'AppServer01' `
+                        -ConfigurationName SpFarmPosh
+                    Notifications -When All {
+                        Email -ToAddress "someone@email.com" -FromAddress "all@jones.com" -SmtpServer "smtp.company.com"
+                    }               
+                }
+
+    $actual = Invoke-MonitoringCore $poShMonConfiguration -TestList "SPServerStatus"
+
+    $Global:PoShMon_GlobalException | Should Not Be $null
+    $Global:PoShMon_GlobalException.Message | Should Be "The Exception"
+}
+
+}

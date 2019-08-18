@@ -94,6 +94,12 @@ Of course there are loads of monitoring systems and tools out there, both paid a
 ---
 
 ## Release Notes
+1.3.0
+* Added storing of exceptions for later resolution, where possible (Exception might be environmental, and repairable)
+* Fixed bug in Windows Event Log monitoring returning empty details
+* Added platform build number to email notifications (SharePoint and OOS)
+* Added ability to set SMTP authentication separately from other Internet access
+
 1.2.0
 * Improved ability to ignore event log entries (based on a minimum count)
 * Added a repair for Office Online Server (previously 'Office Web Apps') to repair the W3C service if stopped
@@ -150,12 +156,5 @@ Of course there are loads of monitoring systems and tools out there, both paid a
 * Added some style to Email output
 * Changed display to Hard Drive and Memory output
 * Fixed bug in email footer for skipped tests
-
-0.11.0
-* Created 'Self-Healing' Framework into which custom scripts can be injected
-* Added ability to skip auto-discovered Windows services
-* Fixed bug where Pushbullet and Office 365 Teams were not showing Environment name
-* Fixed bug in harddrive space percent test
-* Fixed bug in cpu test for standalone 'minimal config test
 
 See [here](https://github.com/HiltonGiesenow/PoShMon/wiki/Changelog) for full Changelog
