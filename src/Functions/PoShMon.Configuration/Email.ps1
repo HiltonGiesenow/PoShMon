@@ -9,6 +9,7 @@ Function New-EmailConfig
         [parameter(Mandatory)]
         [string]$SmtpServer,
         [int]$Port = 25,
+        [pscredential]$SmtpCredential,
         [bool]$UseSSL = $false
     )
 
@@ -18,6 +19,7 @@ Function New-EmailConfig
         FromAddress = $FromAddress
         SmtpServer = $SmtpServer
         Port = $Port
+        SmtpCredential = $SmtpCredential
         UseSSL = $UseSSL
     }
 }
