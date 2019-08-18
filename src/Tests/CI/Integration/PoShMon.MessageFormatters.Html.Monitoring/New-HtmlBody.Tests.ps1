@@ -5,13 +5,24 @@ Import-Module (Join-Path $rootPath -ChildPath "PoShMon.psd1")
 Describe "New-HtmlBody" {
     InModuleScope PoShMon {
 
-                                Mock -CommandName Get-Module -Verifiable -MockWith {
-        return @(
-                    [pscustomobject]@{
-                        Version = "1.2.3"
-                    }
-                )
-    }
+        Mock -CommandName Get-Module -Verifiable -MockWith {
+            return @(
+                        [pscustomobject]@{
+                            Version = "1.2.3"
+                        }
+            )
+        }
+
+        Mock -CommandName Get-PlatformVersion -ModuleName PoShMon -Verifiable -MockWith {
+            return @(
+                        [pscustomobject]@{
+                            Major = "16"
+                            Minor = "0"
+                            Build = "1234"
+                            Revision = "1000"
+                        }
+            )
+        }
 
         It "Should return a the correct html for given test output" -skip {
 

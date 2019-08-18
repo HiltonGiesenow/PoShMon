@@ -8,11 +8,14 @@ Function Get-SPFarmMajorVersion
     Write-Verbose "Checking SharePoint farm major version..."
 
     # Ignore UPS Sync check for SP 2016 and up farms - no built in Sync tool exists anymore 
-    $farmMajorVersion = Invoke-RemoteCommand -PoShMonConfiguration $PoShMonConfiguration -ScriptBlock {
-                            return (Get-SPFarm).BuildVersion.Major
-                        }
+    # $farmMajorVersion = Invoke-RemoteCommand -PoShMonConfiguration $PoShMonConfiguration -ScriptBlock {
+    #                         return (Get-SPFarm).BuildVersion.Major
+    #                     }
 
-    $versionTitle
+    $farmVersion = Get-SPFarmVersion $PoShMonConfiguration
+    $farmMajorVersion = $farmVersion.Major
+
+    $versionTitle = ""
 
     if ($farmMajorVersion -eq 14) { $versionTitle = "2010" }
     elseif ($farmMajorVersion -eq 15) { $versionTitle = "2013" }
