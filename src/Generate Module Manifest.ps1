@@ -1,4 +1,4 @@
-﻿$version = "1.2.0"
+﻿$version = "1.3.0"
 $manifestPath = Join-Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPath "\PoShMon.psd1"
 
 Remove-Item -Path $manifestPath -ErrorAction SilentlyContinue
@@ -19,6 +19,12 @@ Some of the key features / benefits of PoShMon are:
 For more information, documentation etc. visit https://github.com/HiltonGiesenow/PoShMon as well as the Samples folder within the module itself."
 
 $releaseNotes = "
+1.3.0
+* Added storing of exceptions for later resolution, where possible (Exception might be environmental, and repairable)
+* Fixed bug in Windows Event Log monitoring returning empty details
+* Added platform build number to email notifications (SharePoint and OOS)
+* Added ability to set SMTP authentication separately from other Internet access
+
 1.2.0
 * Improved ability to ignore event log entries (based on a minimum count)
 * Added a repair for Office Online Server (previously 'Office Web Apps') to repair the W3C service if stopped
@@ -82,17 +88,6 @@ $releaseNotes = "
 * Fixed bug where Pushbullet and Office 365 Teams were not showing Environment name
 * Fixed bug in harddrive space percent test
 * Fixed bug in cpu test for standalone 'minimal config test
-
-0.10.1
-* Added Proxy settings to enable Pushbullet and 0365 Teams connectivity
-* Introduced a 'minimum configuration' for local machine monitoring
-* Fixed bug in SharePoint UPS Sync monitor
-* Added Resolver for High CPU usage while SharePoint Search Index is running
-* Improved Verbose output logging
-* Added option for harddrive space to track by percent
-* Add a check for any invalid TestsToSkip
-* Fixed bug in Update-PoShMon
-
 "
 
 New-ModuleManifest -Path $manifestPath -ModuleVersion $version -RootModule "PoShMon.psm1" -Guid '6e6cb274-1bed-4540-b288-95bc638bf679' -Author "Hilton Giesenow" -CompanyName "Experts Inside" -FunctionsToExport '*' -Copyright "2016 Hilton Giesenow, All Rights Reserved" -ProjectUri "https://github.com/HiltonGiesenow/PoShMon" -LicenseUri "https://github.com/HiltonGiesenow/PoShMon/blob/master/LICENSE" -Description $description -Tags 'Monitoring','Server','Farm','SharePoint' -ReleaseNotes $releaseNotes -Verbose
