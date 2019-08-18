@@ -9,6 +9,7 @@ Function Invoke-MonitoringCore
         [string]$TestsToAutoIgnoreFunctionName = $null,
         [Parameter(HelpMessage="In the case of a Farm product, such as SharePoint, provide a function to call to auto-discover the remaining servers")]
         [string]$FarmDiscoveryFunctionName = $null,
+        [string]$PlatformVersionDiscoveryFunctionName = $null,
         [string[]]$OutputOptimizationList = @(),
         [string[]]$MergesList = @()
     )
@@ -29,6 +30,8 @@ Function Invoke-MonitoringCore
         # Auto-Discover Servers if none are supplied
         if ($PoShMonConfiguration.General.ServerNames -eq $null)
             { $PoShMonConfiguration.General.ServerNames = AutoDiscover-ServerNames $PoShMonConfiguration $FarmDiscoveryFunctionName }
+
+        $PoShMonConfiguration.General.EnvironmentVersion = TryAutoDiscover-PlatformVersion $PoShMonConfiguration $PlatformVersionDiscoveryFunctionName
 
         # Check for any tests that can be auto-ignored (e.g. wrong version of platform)
         if ($TestsToAutoIgnoreFunctionName -ne $null -and $TestsToAutoIgnoreFunctionName -ne '')

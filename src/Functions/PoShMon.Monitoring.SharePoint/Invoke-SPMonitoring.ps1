@@ -14,6 +14,7 @@ Function Invoke-SPMonitoring
                         -TestList (Get-SPTests) `
                         -TestsToAutoIgnoreFunctionName 'Get-SPTestsToAutoIgnore' `
                         -FarmDiscoveryFunctionName 'Get-ServersInSPFarm' `
+                        -PlatformVersionDiscoveryFunctionName 'Get-SPFarmVersion' `
                         -OutputOptimizationList (Get-SPResolutions) `
                         -MergesList (Get-SPMerges)
 

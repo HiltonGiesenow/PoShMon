@@ -10,6 +10,7 @@ Function Invoke-OOSMonitoring
                         -PoShMonConfiguration $PoShMonConfiguration `
                         -TestList (Get-OOSTests) `
                         -FarmDiscoveryFunctionName 'Get-ServersInOOSFarm' `
+                        -PlatformVersionDiscoveryFunctionName 'Get-OOSFarmVersion' `
                         -OutputOptimizationList @() #(Get-OOSResolutions) later when these get written one day...
 
     return $outputValues
