@@ -16,7 +16,7 @@ Function Get-PlatformVersion
         Write-Verbose ("Found the following platform version: " + $platformVersion)
     }
     else {
-        $platformVersion = ""
+        $platformVersion = $null
 
         Write-Verbose ("Platform version not found: " + $platformVersion)
     }
